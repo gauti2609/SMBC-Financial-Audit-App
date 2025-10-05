@@ -1,0 +1,1021 @@
+' VBA Code for Financials_Automation_Tool.xlsm - FINAL STABLE BUILD v15
+'
+' CHANGE LOG:
+' 1. [v15] Corrected Aging Schedule logic. The SUMIFS formulas in Generate_Aging_Schedules_Layout were
+'    not matching the aging bucket text correctly. Standardized the aging bucket formulas in
+'    Setup_InputLedgerSheets and fixed the criteria to ensure data is populated correctly.
+' 2. [v15] Corrected Note Numbering logic. Rewrote AutoNumber_Selected_Notes to handle sub-notes.
+'    Accounting policies (A.2.x) are now correctly numbered as sub-points (e.g., 1.1, 1.2)
+'    under a single main note, instead of getting their own primary note numbers.
+' 3. [v14] Implemented a global debug mode for more efficient development and error tracking.
+'
+' TO USE:
+' 1. Open the existing macro-enabled workbook.
+' 2. Open the VBA Editor (ALT+F11).
+' 3. Go to Module1, delete all existing code, and paste this entire script.
+' 4. Close the VBA Editor.
+' 5. Run the "Final_Setup_And_Button_Creation" macro ONCE.
+
+Option Explicit
+
+'================================================================================================'
+' GLOBAL DEBUG FLAG
+'================================================================================================'
+' Set to TRUE when developing/debugging. VBA will stop on the exact line of an error.
+' Set to FALSE for normal production use. User-friendly error messages will be shown.
+Public Const g_DebugMode As Boolean = True
+
+'================================================================================================'
+' SECTION 1: ONE-CLICK SETUP & MAIN BUTTON MACROS
+'================================================================================================'
+
+Public Sub Final_Setup_And_Button_Creation()
+    ' This is the main macro to run ONCE to set up the entire workbook.
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+    
+    Call Setup_Complete_Workbook
+    
+    Application.Calculation = xlCalculationAutomatic
+    Application.ScreenUpdating = True
+End Sub
+
+Public Sub Create_Control_Button()
+    ' This subroutine creates the "Refresh Financials" button on the control sheet.
+    Dim btn As Button, ws As Worksheet
+    
+    ' Only use the error handler if NOT in debug mode
+    If Not g_DebugMode Then On Error GoTo ButtonCreationError
+    
+    Set ws = ThisWorkbook.Sheets("Common_Control_Sheet")
+    
+    On Error Resume Next
+    ws.Shapes("btnGenerateFinancials").Delete
+    On Error GoTo 0 ' Reset error handling immediately after expected error
+    If Not g_DebugMode Then On Error GoTo ButtonCreationError ' Re-enable for subsequent errors
+    
+    Set btn = ws.Buttons.Add(ws.Range("I2").Left, ws.Range("I2").Top, 200, 40)
+    With btn
+        .OnAction = "Refresh_Financials"
+        .Caption = "Refresh Financials"
+        .Name = "btnGenerateFinancials"
+        .Font.Name = "Bookman Old Style"
+        .Font.Size = 11
+        .Font.Bold = True
+    End With
+    
+    If g_DebugMode Then Debug.Print "SUCCESS: Control button created."
+    
+    Exit Sub
+    
+ButtonCreationError:
+    MsgBox "An unexpected error occurred while creating the control button: " & vbCrLf & Err.Description, vbCritical
+End Sub
+
+
+'================================================================================================'
+' SECTION 2: REFRESH & GENERATION ORCHESTRATORS
+'================================================================================================'
+
+Public Sub Refresh_Financials()
+    If g_DebugMode Then Debug.Print "--- Starting Refresh_Financials ---"
+    
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+    
+    ' Only use the error handler if NOT in debug mode
+    If Not g_DebugMode Then On Error GoTo GenerationError
+    
+    Call Update_System_Recommendations
+    Call Generate_Notes_To_Accounts
+    Call Link_Note_Numbers_To_Statements
+    
+    Application.Calculation = xlCalculationAutomatic
+    Application.CalculateFull
+    Application.ScreenUpdating = True
+    
+    If g_DebugMode Then Debug.Print "--- Finished Refresh_Financials ---"
+    
+    MsgBox "Financials have been refreshed successfully.", vbInformation
+    ThisWorkbook.Sheets("Balance_Sheet").Activate
+    Exit Sub
+GenerationError:
+    Application.Calculation = xlCalculationAutomatic
+    Application.ScreenUpdating = True
+    MsgBox "An error occurred while refreshing the financials: " & vbCrLf & Err.Description, vbCritical
+End Sub
+
+Public Sub Full_Generate_Financial_Statements()
+    ' Only use the error handler if NOT in debug mode
+    If Not g_DebugMode Then On Error GoTo FullGenerationError
+    
+    Application.ScreenUpdating = False
+    
+    Call Generate_BalanceSheet_Layout
+    Call Generate_PL_Layout
+    Call Generate_CashFlow_Layout
+    Call Update_System_Recommendations
+    Call Generate_Notes_To_Accounts
+    Call Link_Note_Numbers_To_Statements
+    Call Generate_Ratio_Analysis_Layout
+    Call Generate_Aging_Schedules_Layout
+    
+    Application.ScreenUpdating = True
+    Exit Sub
+FullGenerationError:
+    Application.ScreenUpdating = True
+    MsgBox "An error occurred during the full generation: " & vbCrLf & Err.Description, vbCritical
+End Sub
+
+'================================================================================================'
+' SECTION 3: DETAILED GENERATION & SETUP SUBROUTINES
+'================================================================================================'
+
+Private Sub Setup_Complete_Workbook()
+    Dim currentStep As String
+    currentStep = "initializing"
+    
+    ' Only use the broad error handler if NOT in debug mode
+    If Not g_DebugMode Then On Error GoTo SetupError
+    
+    If g_DebugMode Then Debug.Print "--- Starting Full Workbook Setup (Debug Mode is ON) ---"
+    
+    Application.DisplayAlerts = False
+    
+    currentStep = "deleting existing sheets"
+    If g_DebugMode Then Debug.Print "Setup Step: " & currentStep
+    Dim ws As Worksheet, tempSheetName As String: tempSheetName = "TempSetupSheet"
+    On Error Resume Next
+    ThisWorkbook.Sheets(tempSheetName).Delete
+    On Error GoTo 0 ' Reset immediately
+    If Not g_DebugMode Then On Error GoTo SetupError ' Re-enable
+    ThisWorkbook.Sheets.Add.Name = tempSheetName
+    For Each ws In ThisWorkbook.Worksheets
+        If ws.Name <> tempSheetName Then ws.Delete
+    Next ws
+
+    currentStep = "creating new sheets"
+    If g_DebugMode Then Debug.Print "Setup Step: " & currentStep
+    Dim sheetNames As Variant, i As Integer
+    sheetNames = Array("Common_Control_Sheet", "Input_Trial_Balance", "Input_PPE_Schedule", "Input_Receivables_Ledger", "Input_Payables_Ledger", "Selection_Sheet", "Balance_Sheet", "Statement_of_PL", "Cash_Flow_Statement", "Notes_to_Accounts", "Ratio_Analysis", "Aging_Schedules")
+    ThisWorkbook.Sheets(tempSheetName).Name = sheetNames(0)
+    For i = 1 To UBound(sheetNames)
+        ThisWorkbook.Sheets.Add(After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count)).Name = sheetNames(i)
+    Next i
+    
+    DoEvents
+
+    currentStep = "setting up Common_Control_Sheet"
+    If g_DebugMode Then Debug.Print "Setup Step: " & currentStep
+    Call Setup_CommonControlSheet
+    
+    currentStep = "creating dynamic Named Ranges"
+    If g_DebugMode Then Debug.Print "Setup Step: " & currentStep
+    Call Create_Dynamic_Named_Ranges
+    
+    currentStep = "setting up Input_Trial_Balance sheet"
+    If g_DebugMode Then Debug.Print "Setup Step: " & currentStep
+    Call Setup_InputTrialBalanceSheet
+    
+    currentStep = "setting up Input Ledger sheets"
+    If g_DebugMode Then Debug.Print "Setup Step: " & currentStep
+    Call Setup_InputLedgerSheets
+    
+    currentStep = "setting up Selection_Sheet"
+    If g_DebugMode Then Debug.Print "Setup Step: " & currentStep
+    Call Setup_SelectionSheet
+    
+    currentStep = "setting up financial statement headers"
+    If g_DebugMode Then Debug.Print "Setup Step: " & currentStep
+    Call Setup_FinancialStatementSheets
+    
+    currentStep = "running Full_Generate_Financial_Statements"
+    If g_DebugMode Then Debug.Print "Setup Step: " & currentStep
+    Call Full_Generate_Financial_Statements
+    
+    currentStep = "updating data validation lists"
+    If g_DebugMode Then Debug.Print "Setup Step: " & currentStep
+    Call Update_Data_Validation_Lists
+    
+    currentStep = "applying conditional formatting"
+    If g_DebugMode Then Debug.Print "Setup Step: " & currentStep
+    Call Apply_Conditional_Formatting
+    
+    currentStep = "setting default font"
+    If g_DebugMode Then Debug.Print "Setup Step: " & currentStep
+    Call Set_Default_Font
+    
+    currentStep = "creating the main control button"
+    If g_DebugMode Then Debug.Print "Setup Step: " & currentStep
+    Call Create_Control_Button
+    
+    currentStep = "finalizing setup"
+    If g_DebugMode Then Debug.Print "Setup Step: " & currentStep
+    ThisWorkbook.Sheets("Common_Control_Sheet").Activate
+    Application.DisplayAlerts = True
+    
+    If g_DebugMode Then Debug.Print "--- Full Workbook Setup Complete ---"
+    
+    MsgBox "Definitive setup is complete." & vbCrLf & vbCrLf & "The tool is now ready to use with enhanced debugging capabilities.", vbInformation
+    Exit Sub
+
+SetupError:
+    Application.DisplayAlerts = True
+    Application.Calculation = xlCalculationAutomatic
+    Application.ScreenUpdating = True
+    MsgBox "A critical error occurred during setup." & vbCrLf & vbCrLf & _
+           "Failed at step: '" & currentStep & "'." & vbCrLf & _
+           "Error: " & Err.Description & vbCrLf & vbCrLf & _
+           "Please run the 'Final_Setup_And_Button_Creation' macro again.", vbCritical
+End Sub
+
+Private Sub Create_Dynamic_Named_Ranges()
+    Dim wb As Workbook, ws As Worksheet
+    Set wb = ThisWorkbook
+    Set ws = wb.Sheets("Common_Control_Sheet")
+    
+    On Error Resume Next
+    wb.Names("MajorHeads").Delete
+    wb.Names("MinorHeads").Delete
+    wb.Names("Groupings").Delete
+    On Error GoTo 0
+    
+    wb.Names.Add Name:="MajorHeads", RefersTo:="=OFFSET('" & ws.Name & "'!$C$2,0,0,COUNTA('" & ws.Name & "'!$C:$C)-1,1)"
+    wb.Names.Add Name:="MinorHeads", RefersTo:="=OFFSET('" & ws.Name & "'!$D$2,0,0,COUNTA('" & ws.Name & "'!$D:$D)-1,1)"
+    wb.Names.Add Name:="Groupings", RefersTo:="=OFFSET('" & ws.Name & "'!$E$2,0,0,COUNTA('" & ws.Name & "'!$E:$E)-1,1)"
+End Sub
+
+Private Sub Apply_Conditional_Formatting()
+    Dim wsTB As Worksheet
+    Set wsTB = ThisWorkbook.Sheets("Input_Trial_Balance")
+    Dim lastRow As Long
+    lastRow = 20000
+    
+    wsTB.Columns("G:I").FormatConditions.Delete
+    
+    If g_DebugMode Then Debug.Print "Applying CF to G2:G" & lastRow
+    With wsTB.Range("G2:G" & lastRow).FormatConditions.Add(Type:=xlExpression, Formula1:="=AND(G2<>"""",COUNTIF(MajorHeads,G2)=0)")
+        .Interior.Color = RGB(255, 199, 206)
+    End With
+    
+    If g_DebugMode Then Debug.Print "Applying CF to H2:H" & lastRow
+    With wsTB.Range("H2:H" & lastRow).FormatConditions.Add(Type:=xlExpression, Formula1:="=AND(H2<>"""",COUNTIF(MinorHeads,H2)=0)")
+        .Interior.Color = RGB(255, 199, 206)
+    End With
+    
+    If g_DebugMode Then Debug.Print "Applying CF to I2:I" & lastRow
+    With wsTB.Range("I2:I" & lastRow).FormatConditions.Add(Type:=xlExpression, Formula1:="=AND(I2<>"""",COUNTIF(Groupings,I2)=0)")
+        .Interior.Color = RGB(255, 199, 206)
+    End With
+End Sub
+
+Private Sub Update_Data_Validation_Lists()
+    Dim wsTB As Worksheet
+    Set wsTB = ThisWorkbook.Sheets("Input_Trial_Balance")
+    Dim lastRow As Long
+    lastRow = 20000
+    
+    On Error Resume Next ' Data validation can be sensitive, so keep this local handler
+    
+    If g_DebugMode Then Debug.Print "Applying DV to G2:G" & lastRow
+    With wsTB.Range("G2:G" & lastRow).Validation
+        .Delete
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:=xlBetween, Formula1:="=MajorHeads"
+        .IgnoreBlank = True
+        .InCellDropdown = True
+    End With
+    
+    If g_DebugMode Then Debug.Print "Applying DV to H2:H" & lastRow
+    With wsTB.Range("H2:H" & lastRow).Validation
+        .Delete
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:=xlBetween, Formula1:="=MinorHeads"
+        .IgnoreBlank = True
+        .InCellDropdown = True
+    End With
+
+    If g_DebugMode Then Debug.Print "Applying DV to I2:I" & lastRow
+    With wsTB.Range("I2:I" & lastRow).Validation
+        .Delete
+        .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:=xlBetween, Formula1:="=Groupings"
+        .IgnoreBlank = True
+        .InCellDropdown = True
+    End With
+    
+    On Error GoTo 0
+End Sub
+
+Private Sub Generate_BalanceSheet_Layout()
+    Dim ws As Worksheet, r As Long
+    Set ws = ThisWorkbook.Sheets("Balance_Sheet")
+    ws.Range("A7:E1000").Clear
+    ws.Range("A7:E1000").ClearFormats
+    ws.Columns("A").ColumnWidth = 50: ws.Columns("B").ColumnWidth = 10: ws.Columns("C").ColumnWidth = 30: ws.Columns("D").ColumnWidth = 30
+    ws.Range("A7:D7").Value = Array("Particulars", "Note No.", "Figures as at the end of current reporting period", "Figures as at the end of previous reporting period")
+    ws.Range("A7:D7").Font.Bold = True
+    r = 8
+    ws.Range("A" & r).Value = "I. ASSETS": ws.Range("A" & r).Font.Bold = True: r = r + 1
+    ws.Range("A" & r).Value = "(1) Non-current assets": ws.Range("A" & r).Font.Bold = True: r = r + 1
+    ws.Range("A" & r).Value = "   (a) Property, Plant and Equipment": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Property, Plant and Equipment"")": r = r + 1
+    ws.Range("A" & r).Value = "   (b) Intangible assets": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Intangible Assets"")": r = r + 1
+    ws.Range("A" & r).Value = "   (c) Non-current investments": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Non-current Investments"")": r = r + 1
+    ws.Range("A" & r).Value = "   (d) Long-term loans and advances": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Long-term Loans and Advances"")": r = r + 1
+    ws.Range("A" & r).Value = "   (e) Other non-current assets": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Other Non-current Assets"")": r = r + 1
+    ws.Range("A" & r).Value = "Total Non-current assets": ws.Range("A" & r, "C" & r).Font.Bold = True: ws.Range("C" & r).formula = "=SUM(C" & r - 5 & ":C" & r - 1 & ")": r = r + 2
+    ws.Range("A" & r).Value = "(2) Current assets": ws.Range("A" & r).Font.Bold = True: r = r + 1
+    ws.Range("A" & r).Value = "   (a) Current investments": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Current Investments"")": r = r + 1
+    ws.Range("A" & r).Value = "   (b) Inventories": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Inventories"")": r = r + 1
+    ws.Range("A" & r).Value = "   (c) Trade receivables": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Trade Receivables"")": r = r + 1
+    ws.Range("A" & r).Value = "   (d) Cash and cash equivalents": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Cash and Cash Equivalents"")": r = r + 1
+    ws.Range("A" & r).Value = "   (e) Short-term loans and advances": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Short-term Loans and Advances"")": r = r + 1
+    ws.Range("A" & r).Value = "   (f) Other current assets": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Other Current Assets"")": r = r + 1
+    ws.Range("A" & r).Value = "Total Current assets": ws.Range("A" & r, "C" & r).Font.Bold = True: ws.Range("C" & r).formula = "=SUM(C" & r - 6 & ":C" & r - 1 & ")": r = r + 1
+    ws.Range("A" & r).Value = "TOTAL ASSETS": ws.Range("A" & r, "C" & r).Font.Bold = True: ws.Range("C" & r).formula = "=C" & r - 8 & "+C" & r - 1 & "": ws.Range("A" & r & ":D" & r).Borders(xlEdgeTop).LineStyle = xlContinuous: ws.Range("A" & r & ":D" & r).Borders(xlEdgeBottom).LineStyle = xlDouble: r = r + 2
+    ws.Range("A" & r).Value = "II. EQUITY AND LIABILITIES": ws.Range("A" & r).Font.Bold = True: r = r + 1
+    ws.Range("A" & r).Value = "(1) Equity": ws.Range("A" & r).Font.Bold = True: r = r + 1
+    ws.Range("A" & r).Value = "   (a) Equity Share Capital": ws.Range("C" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Equity Share Capital"")": r = r + 1
+    ws.Range("A" & r).Value = "   (b) Other Equity": ws.Range("C" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Other Equity"")": r = r + 1
+    ws.Range("A" & r).Value = "Total Equity": ws.Range("A" & r, "C" & r).Font.Bold = True: ws.Range("C" & r).formula = "=SUM(C" & r - 2 & ":C" & r - 1 & ")": r = r + 2
+    ws.Range("A" & r).Value = "(2) Liabilities": ws.Range("A" & r).Font.Bold = True: r = r + 1
+    ws.Range("A" & r).Value = "Non-current liabilities": ws.Range("A" & r).Font.Bold = True: r = r + 1
+    ws.Range("A" & r).Value = "   (a) Long-term borrowings": ws.Range("C" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Long-term Borrowings"")": r = r + 1
+    ws.Range("A" & r).Value = "   (b) Deferred tax liabilities (Net)": ws.Range("C" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Deferred Tax Liabilities (Net)"")": r = r + 1
+    ws.Range("A" & r).Value = "   (c) Other long-term liabilities": ws.Range("C" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Other Long-term Liabilities"")": r = r + 1
+    ws.Range("A" & r).Value = "   (d) Long-term provisions": ws.Range("C" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Long-term Provisions"")": r = r + 1
+    ws.Range("A" & r).Value = "Total Non-current liabilities": ws.Range("A" & r, "C" & r).Font.Bold = True: ws.Range("C" & r).formula = "=SUM(C" & r - 4 & ":C" & r - 1 & ")": r = r + 2
+    ws.Range("A" & r).Value = "Current liabilities": ws.Range("A" & r).Font.Bold = True: r = r + 1
+    ws.Range("A" & r).Value = "   (a) Short-term borrowings": ws.Range("C" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Short-term Borrowings"")": r = r + 1
+    ws.Range("A" & r).Value = "   (b) Trade payables": ws.Range("C" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Trade Payables"")": r = r + 1
+    ws.Range("A" & r).Value = "   (c) Other current liabilities": ws.Range("C" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Other Current Liabilities"")": r = r + 1
+    ws.Range("A" & r).Value = "   (d) Short-term provisions": ws.Range("C" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Short-term Provisions"")": r = r + 1
+    ws.Range("A" & r).Value = "Total Current liabilities": ws.Range("A" & r, "C" & r).Font.Bold = True: ws.Range("C" & r).formula = "=SUM(C" & r - 4 & ":C" & r - 1 & ")": r = r + 1
+    ws.Range("A" & r).Value = "TOTAL EQUITY AND LIABILITIES": ws.Range("A" & r, "C" & r).Font.Bold = True: ws.Range("C" & r).formula = "=C" & r - 13 & "+C" & r - 7 & "+C" & r - 1 & "": ws.Range("A" & r & ":D" & r).Borders(xlEdgeTop).LineStyle = xlContinuous: ws.Range("A" & r & ":D" & r).Borders(xlEdgeBottom).LineStyle = xlDouble
+    ws.Range("C8:D" & r).NumberFormat = "_(* #,##0.00_);_(* (#,##0.00);_(* ""-""??_);_(@_)"
+End Sub
+
+Private Sub Generate_PL_Layout()
+    Dim ws As Worksheet, r As Long
+    Set ws = ThisWorkbook.Sheets("Statement_of_PL")
+    ws.Range("A7:E1000").Clear: ws.Range("A7:E1000").ClearFormats
+    ws.Columns("A").ColumnWidth = 60: ws.Columns("B").ColumnWidth = 10: ws.Columns("C").ColumnWidth = 30: ws.Columns("D").ColumnWidth = 30
+    ws.Range("A7:D7").Value = Array("Particulars", "Note No.", "Figures for the current reporting period", "Figures for the previous reporting period")
+    ws.Range("A7:D7").Font.Bold = True
+    r = 8
+    ws.Range("A" & r).Value = "I. Revenue from operations": ws.Range("C" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Revenue from Operations"")": r = r + 1
+    ws.Range("A" & r).Value = "II. Other income": ws.Range("C" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Other Income"")": r = r + 1
+    ws.Range("A" & r).Value = "III. Total Income": ws.Range("A" & r, "C" & r).Font.Bold = True: ws.Range("C" & r).formula = "=SUM(C" & r - 2 & ":C" & r - 1 & ")": ws.Range("A" & r & ":D" & r).Borders(xlEdgeBottom).LineStyle = xlContinuous: r = r + 2
+    ws.Range("A" & r).Value = "IV. EXPENSES": ws.Range("A" & r).Font.Bold = True: r = r + 1
+    ws.Range("A" & r).Value = "   Cost of materials consumed": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Cost of Materials Consumed"")": r = r + 1
+    ws.Range("A" & r).Value = "   Purchases of Stock-in-Trade": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Purchases of Stock-in-Trade"")": r = r + 1
+    ws.Range("A" & r).Value = "   Changes in inventories of finished goods, work-in-progress and Stock-in-Trade": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Changes in Inventories"")": r = r + 1
+    ws.Range("A" & r).Value = "   Employee benefits expense": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Employee Benefits Expense"")": r = r + 1
+    ws.Range("A" & r).Value = "   Finance costs": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Finance Costs"")": r = r + 1
+    ws.Range("A" & r).Value = "   Depreciation and amortization expense": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Depreciation and Amortization"")": r = r + 1
+    ws.Range("A" & r).Value = "   Other expenses": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Other Expenses"")": r = r + 1
+    ws.Range("A" & r).Value = "Total expenses": ws.Range("A" & r, "C" & r).Font.Bold = True: ws.Range("C" & r).formula = "=SUM(C" & r - 7 & ":C" & r - 1 & ")": ws.Range("A" & r & ":D" & r).Borders(xlEdgeBottom).LineStyle = xlContinuous: r = r + 2
+    ws.Range("A" & r).Value = "V. Profit before exceptional and extraordinary items and tax (III - IV)": ws.Range("A" & r, "C" & r).Font.Bold = True: ws.Range("C" & r).formula = "=C" & r - 10 & "-C" & r - 1 & "": r = r + 1
+    ws.Range("A" & r).Value = "VI. Exceptional items": ws.Range("C" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Exceptional Items"")": r = r + 1
+    ws.Range("A" & r).Value = "VII. Profit before extraordinary items and tax (V - VI)": ws.Range("A" & r, "C" & r).Font.Bold = True: ws.Range("C" & r).formula = "=C" & r - 2 & "-C" & r - 1 & "": r = r + 1
+    ws.Range("A" & r).Value = "VIII. Extraordinary Items": ws.Range("C" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Extraordinary Items"")": r = r + 1
+    ws.Range("A" & r).Value = "IX. Profit before tax (VII - VIII)": ws.Range("A" & r, "C" & r).Font.Bold = True: ws.Range("C" & r).formula = "=C" & r - 2 & "-C" & r - 1 & "": r = r + 1
+    ws.Range("A" & r).Value = "X. Tax expense:": ws.Range("C" & r).formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, ""Taxes on Income"")": r = r + 1
+    ws.Range("A" & r).Value = "XI. Profit (Loss) for the period from continuing operations (IX - X)": ws.Range("A" & r, "C" & r).Font.Bold = True: ws.Range("C" & r).formula = "=C" & r - 2 & "-C" & r - 1 & "": ws.Range("A" & r & ":D" & r).Borders(xlEdgeTop).LineStyle = xlContinuous: ws.Range("A" & r & ":D" & r).Borders(xlEdgeBottom).LineStyle = xlDouble: r = r + 2
+    ws.Range("A" & r).Value = "XII. Earnings per equity share (for continuing operation):": ws.Range("A" & r).Font.Bold = True: r = r + 1
+    ws.Range("A" & r).Value = "   (1) Basic": r = r + 1
+    ws.Range("A" & r).Value = "   (2) Diluted"
+    ws.Range("C8:D" & r).NumberFormat = "_(* #,##0.00_);_(* (#,##0.00);_(* ""-""??_);_(@_)"
+End Sub
+
+Private Sub Generate_CashFlow_Layout()
+    Dim ws As Worksheet, r As Long, pbt_address As String, pbt_cell As Range
+    Set ws = ThisWorkbook.Sheets("Cash_Flow_Statement")
+    
+    Application.Calculate
+    Set pbt_cell = ThisWorkbook.Sheets("Statement_of_PL").Range("A1:A100").Find("Profit before tax", LookIn:=xlValues, lookat:=xlPart)
+    
+    If pbt_cell Is Nothing Then
+        pbt_address = "0 'PBT not found!'"
+        If g_DebugMode Then Debug.Print "WARNING: Could not find 'Profit before tax' on PL sheet."
+    Else
+        pbt_address = "'Statement_of_PL'!" & pbt_cell.Offset(0, 2).Address(False, False)
+    End If
+    
+    ws.Range("A7:D1000").Clear: ws.Range("A7:D1000").ClearFormats
+    ws.Columns("A").ColumnWidth = 60: ws.Columns("B").ColumnWidth = 30: ws.Columns("C").ColumnWidth = 30
+    ws.Range("A7:C7").Value = Array("Particulars", "Current Year", "Previous Year")
+    ws.Range("A7:C7").Font.Bold = True
+    r = 8
+    
+    ws.Range("A" & r).Value = "A. Cash flow from operating activities": ws.Range("A" & r).Font.Bold = True: r = r + 1
+    ws.Range("A" & r).Value = "Net profit before tax": ws.Range("B" & r).formula = "=" & pbt_address: r = r + 1
+    ws.Range("A" & r).Value = "Adjustments for:": r = r + 1
+    ws.Range("A" & r).Value = "   Depreciation and amortization expense": ws.Range("B" & r).formula = "=Statement_of_PL!C17": r = r + 1
+    ws.Range("A" & r).Value = "   Finance costs": ws.Range("B" & r).formula = "=Statement_of_PL!C16": r = r + 1
+    ws.Range("A" & r).Value = "   Interest income": ws.Range("B" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$I:$I, ""Interest Income"")": r = r + 1
+    ws.Range("A" & r).Value = "Operating profit before working capital changes": ws.Range("A" & r, "B" & r).Font.Bold = True: ws.Range("B" & r).formula = "=SUM(B" & r - 4 & ":B" & r - 1 & ")": r = r + 1
+    ws.Range("A" & r).Value = "Adjustments for changes in working capital:": r = r + 1
+    ws.Range("A" & r).Value = "   (Increase)/Decrease in Trade Receivables": ws.Range("B" & r).formula = "=(SUMIF(Input_Trial_Balance!G:G,""Trade Receivables"",Input_Trial_Balance!B:B)-SUMIF(Input_Trial_Balance!G:G,""Trade Receivables"",Input_Trial_Balance!E:E))": r = r + 1
+    ws.Range("A" & r).Value = "   (Increase)/Decrease in Inventories": ws.Range("B" & r).formula = "=(SUMIF(Input_Trial_Balance!G:G,""Inventories"",Input_Trial_Balance!B:B)-SUMIF(Input_Trial_Balance!G:G,""Inventories"",Input_Trial_Balance!E:E))": r = r + 1
+    ws.Range("A" & r).Value = "   Increase/(Decrease) in Trade Payables": ws.Range("B" & r).formula = "=(SUMIF(Input_Trial_Balance!G:G,""Trade Payables"",Input_Trial_Balance!E:E)-SUMIF(Input_Trial_Balance!G:G,""Trade Payables"",Input_Trial_Balance!B:B))": r = r + 1
+    ws.Range("A" & r).Value = "Cash generated from operations": ws.Range("A" & r, "B" & r).Font.Bold = True: ws.Range("B" & r).formula = "=SUM(B" & r - 4 & ":B" & r - 1 & ")": r = r + 1
+    ws.Range("A" & r).Value = "   Direct taxes paid": ws.Range("B" & r).formula = "=-" & pbt_address & "*0.25": r = r + 1
+    ws.Range("A" & r).Value = "Net cash from operating activities": ws.Range("A" & r, "B" & r).Font.Bold = True: ws.Range("B" & r).formula = "=B" & r - 2 & "+B" & r - 1 & "": r = r + 2
+
+    ws.Range("A" & r).Value = "B. Cash flow from investing activities": ws.Range("A" & r).Font.Bold = True: r = r + 1
+    ws.Range("A" & r).Value = "   Purchase of Property, Plant and Equipment": ws.Range("B" & r).formula = "=(SUMIF(Input_Trial_Balance!G:G,""Property, Plant and Equipment"",Input_Trial_Balance!B:B)-SUMIF(Input_Trial_Balance!G:G,""Property, Plant and Equipment"",Input_Trial_Balance!E:E))": r = r + 1
+    ws.Range("A" & r).Value = "   Interest received": ws.Range("B" & r).formula = "=-SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$I:$I, ""Interest Income"")": r = r + 1
+    ws.Range("A" & r).Value = "Net cash from investing activities": ws.Range("A" & r, "B" & r).Font.Bold = True: ws.Range("B" & r).formula = "=SUM(B" & r - 2 & ":B" & r - 1 & ")": r = r + 2
+    
+    ws.Range("A" & r).Value = "C. Cash flow from financing activities": ws.Range("A" & r).Font.Bold = True: r = r + 1
+    ws.Range("A" & r).Value = "   Proceeds from issue of Equity Share Capital": ws.Range("B" & r).formula = "=(SUMIF(Input_Trial_Balance!G:G,""Equity Share Capital"",Input_Trial_Balance!E:E)-SUMIF(Input_Trial_Balance!G:G,""Equity Share Capital"",Input_Trial_Balance!B:B))": r = r + 1
+    ws.Range("A" & r).Value = "   Proceeds from Long-term borrowings": ws.Range("B" & r).formula = "=(SUMIF(Input_Trial_Balance!G:G,""Long-term Borrowings"",Input_Trial_Balance!E:E)-SUMIF(Input_Trial_Balance!G:G,""Long-term Borrowings"",Input_Trial_Balance!B:B))": r = r + 1
+    ws.Range("A" & r).Value = "   Finance costs paid": ws.Range("B" & r).formula = "=-Statement_of_PL!C16": r = r + 1
+    ws.Range("A" & r).Value = "Net cash from financing activities": ws.Range("A" & r, "B" & r).Font.Bold = True: ws.Range("B" & r).formula = "=SUM(B" & r - 3 & ":B" & r - 1 & ")": r = r + 2
+    
+    ws.Range("A" & r).Value = "Net increase/(decrease) in cash and cash equivalents (A+B+C)": ws.Range("A" & r, "B" & r).Font.Bold = True: ws.Range("B" & r).formula = "=B" & r - 11 & "+B" & r - 6 & "+B" & r - 1 & "": r = r + 1
+    ws.Range("A" & r).Value = "Cash and cash equivalents at the beginning of the year": ws.Range("B" & r).formula = "=SUMIF(Input_Trial_Balance!G:G,""Cash and Cash Equivalents"",Input_Trial_Balance!B:B)": r = r + 1
+    ws.Range("A" & r).Value = "Cash and cash equivalents at the end of the year": ws.Range("A" & r, "B" & r).Font.Bold = True: ws.Range("B" & r).formula = "=SUM(B" & r - 2 & ":B" & r - 1 & ")": r = r + 1
+    
+    ws.Range("B8:C" & r).NumberFormat = "_(* #,##0.00_);_(* (#,##0.00);_(* ""-""??_);_(@_)"
+End Sub
+
+Private Sub Generate_Ratio_Analysis_Layout()
+    Dim ws As Worksheet, r As Long
+    Set ws = ThisWorkbook.Sheets("Ratio_Analysis")
+    
+    ws.Cells.Clear: ws.Cells.ClearFormats
+    ws.Columns("A").ColumnWidth = 35: ws.Columns("B").ColumnWidth = 45: ws.Columns("C").ColumnWidth = 20: ws.Columns("D").ColumnWidth = 40
+    
+    ws.Range("A1").Value = "Ratio Analysis"
+    ws.Range("A1").Font.Bold = True: ws.Range("A1").Font.Size = 14
+    
+    ws.Range("A3:D3").Value = Array("Ratio Name", "Formula", "Result", "Comments / Variance Explanation")
+    ws.Range("A3:D3").Font.Bold = True
+    
+    r = 4
+    ws.Range("A" & r).Value = "Current Ratio": ws.Range("B" & r).Value = "Current Assets / Current Liabilities": ws.Range("C" & r).formula = "=IFERROR(Balance_Sheet!C23/Balance_Sheet!C42, ""N/A"")": r = r + 1
+    ws.Range("A" & r).Value = "Debt to Equity Ratio": ws.Range("B" & r).Value = "(Long-term Borrowings + Short-term Borrowings) / Total Equity": ws.Range("C" & r).formula = "=IFERROR((Balance_Sheet!C34+Balance_Sheet!C39)/Balance_Sheet!C30, ""N/A"")": r = r + 1
+    ws.Range("A" & r).Value = "Net Profit Ratio": ws.Range("B" & r).Value = "Net Profit After Tax / Revenue from Operations": ws.Range("C" & r).formula = "=IFERROR(Statement_of_PL!C27/Statement_of_PL!C8, ""N/A"")": ws.Range("C" & r).NumberFormat = "0.00%": r = r + 1
+    ws.Range("A" & r).Value = "Return on Equity (ROE)": ws.Range("B" & r).Value = "Net Profit After Tax / Total Equity": ws.Range("C" & r).formula = "=IFERROR(Statement_of_PL!C27/Balance_Sheet!C30, ""N/A"")": ws.Range("C" & r).NumberFormat = "0.00%": r = r + 1
+    ws.Range("A" & r).Value = "Return on Capital Employed (ROCE)": ws.Range("B" & r).Value = "EBIT / (Total Assets - Current Liabilities)": ws.Range("C" & r).formula = "=IFERROR((Statement_of_PL!C25+Statement_of_PL!C16)/(Balance_Sheet!C24-Balance_Sheet!C42), ""N/A"")": ws.Range("C" & r).NumberFormat = "0.00%": r = r + 1
+    ws.Range("A" & r).Value = "Inventory Turnover Ratio": ws.Range("B" & r).Value = "Cost of Materials Consumed / Closing Inventory": ws.Range("C" & r).formula = "=IFERROR(Statement_of_PL!C12/Balance_Sheet!C18, ""N/A"")": r = r + 1
+    ws.Range("A" & r).Value = "Trade Receivables Turnover Ratio": ws.Range("B" & r).Value = "Revenue from Operations / Closing Trade Receivables": ws.Range("C" & r).formula = "=IFERROR(Statement_of_PL!C8/Balance_Sheet!C19, ""N/A"")": r = r + 1
+    
+    ws.Range("C4:C" & r - 1).NumberFormat = "0.00"
+    ws.Range("A3:D" & r - 1).Borders.LineStyle = xlContinuous
+    ws.Range("A3:D" & r - 1).Borders.Weight = xlThin
+End Sub
+
+Private Sub Generate_Aging_Schedules_Layout()
+    Dim ws As Worksheet, r As Long
+    Set ws = ThisWorkbook.Sheets("Aging_Schedules")
+    
+    ws.Cells.Clear
+    
+    r = 2
+    ws.Range("A" & r).Value = "Trade Receivables Aging Schedule": ws.Range("A" & r).Font.Bold = True: ws.Range("A" & r).Font.Size = 12
+    r = r + 2
+    
+    Dim headers() As Variant
+    headers = Array("Particulars", "< 6 Months", "6 Months - 1 Year", "1-2 Years", "2-3 Years", "> 3 Years", "Total")
+    ws.Range("A" & r).Resize(1, UBound(headers) + 1).Value = headers
+    ws.Range("A" & r, "G" & r).Font.Bold = True
+    r = r + 1
+    
+    ' [FIX] Corrected SUMIFS criteria to match the standardized aging bucket text
+    ws.Range("A" & r).Value = "Undisputed"
+    ws.Range("B" & r).formula = "=SUMIFS(Input_Receivables_Ledger!$F:$F, Input_Receivables_Ledger!$G:$G, ""No"", Input_Receivables_Ledger!$I:$I, ""< 182 Days"")"
+    ws.Range("C" & r).formula = "=SUMIFS(Input_Receivables_Ledger!$F:$F, Input_Receivables_Ledger!$G:$G, ""No"", Input_Receivables_Ledger!$I:$I, ""182-365 Days"")"
+    ws.Range("D" & r).formula = "=SUMIFS(Input_Receivables_Ledger!$F:$F, Input_Receivables_Ledger!$G:$G, ""No"", Input_Receivables_Ledger!$I:$I, ""1-2 Years"")"
+    ws.Range("E" & r).formula = "=SUMIFS(Input_Receivables_Ledger!$F:$F, Input_Receivables_Ledger!$G:$G, ""No"", Input_Receivables_Ledger!$I:$I, ""2-3 Years"")"
+    ws.Range("F" & r).formula = "=SUMIFS(Input_Receivables_Ledger!$F:$F, Input_Receivables_Ledger!$G:$G, ""No"", Input_Receivables_Ledger!$I:$I, ""> 3 Years"")"
+    ws.Range("G" & r).formula = "=SUM(B" & r & ":F" & r & ")"
+    r = r + 1
+    
+    ws.Range("A" & r).Value = "Disputed"
+    ws.Range("B" & r).formula = "=SUMIFS(Input_Receivables_Ledger!$F:$F, Input_Receivables_Ledger!$G:$G, ""Yes"", Input_Receivables_Ledger!$I:$I, ""< 182 Days"")"
+    ws.Range("C" & r).formula = "=SUMIFS(Input_Receivables_Ledger!$F:$F, Input_Receivables_Ledger!$G:$G, ""Yes"", Input_Receivables_Ledger!$I:$I, ""182-365 Days"")"
+    ws.Range("D" & r).formula = "=SUMIFS(Input_Receivables_Ledger!$F:$F, Input_Receivables_Ledger!$G:$G, ""Yes"", Input_Receivables_Ledger!$I:$I, ""1-2 Years"")"
+    ws.Range("E" & r).formula = "=SUMIFS(Input_Receivables_Ledger!$F:$F, Input_Receivables_Ledger!$G:$G, ""Yes"", Input_Receivables_Ledger!$I:$I, ""2-3 Years"")"
+    ws.Range("F" & r).formula = "=SUMIFS(Input_Receivables_Ledger!$F:$F, Input_Receivables_Ledger!$G:$G, ""Yes"", Input_Receivables_Ledger!$I:$I, ""> 3 Years"")"
+    ws.Range("G" & r).formula = "=SUM(B" & r & ":F" & r & ")"
+    r = r + 1
+    
+    ws.Range("A" & r).Value = "Total": ws.Range("A" & r).Font.Bold = True
+    ws.Range("B" & r).formula = "=SUM(B" & r - 2 & ":B" & r - 1 & ")": ws.Range("B" & r, "G" & r).Font.Bold = True
+    ws.Range("C" & r).formula = "=SUM(C" & r - 2 & ":C" & r - 1 & ")"
+    ws.Range("D" & r).formula = "=SUM(D" & r - 2 & ":D" & r - 1 & ")"
+    ws.Range("E" & r).formula = "=SUM(E" & r - 2 & ":E" & r - 1 & ")"
+    ws.Range("F" & r).formula = "=SUM(F" & r - 2 & ":F" & r - 1 & ")"
+    ws.Range("G" & r).formula = "=SUM(G" & r - 2 & ":G" & r - 1 & ")"
+    ws.Range("A" & r, "G" & r).Borders(xlEdgeTop).LineStyle = xlContinuous
+    ws.Range("B5:G" & r).NumberFormat = "_(* #,##0.00_);_(* (#,##0.00);_(* ""-""??_);_(@_)"
+    ws.Range("A4:G" & r).Borders.LineStyle = xlContinuous
+    
+    r = r + 4
+    Dim startPayablesRow As Long: startPayablesRow = r
+    ws.Range("A" & r).Value = "Trade Payables Aging Schedule": ws.Range("A" & r).Font.Bold = True: ws.Range("A" & r).Font.Size = 12
+    r = r + 2
+    ws.Range("A" & r).Resize(1, UBound(headers) + 1).Value = headers
+    ws.Range("A" & r, "G" & r).Font.Bold = True
+    r = r + 1
+    
+    ws.Range("A" & r).Value = "MSME"
+    ws.Range("B" & r).formula = "=SUMIFS(Input_Payables_Ledger!$F:$F, Input_Payables_Ledger!$H:$H, ""MSME"", Input_Payables_Ledger!$I:$I, ""< 182 Days"")"
+    ws.Range("C" & r).formula = "=SUMIFS(Input_Payables_Ledger!$F:$F, Input_Payables_Ledger!$H:$H, ""MSME"", Input_Payables_Ledger!$I:$I, ""182-365 Days"")"
+    ws.Range("D" & r).formula = "=SUMIFS(Input_Payables_Ledger!$F:$F, Input_Payables_Ledger!$H:$H, ""MSME"", Input_Payables_Ledger!$I:$I, ""1-2 Years"")"
+    ws.Range("E" & r).formula = "=SUMIFS(Input_Payables_Ledger!$F:$F, Input_Payables_Ledger!$H:$H, ""MSME"", Input_Payables_Ledger!$I:$I, ""2-3 Years"")"
+    ws.Range("F" & r).formula = "=SUMIFS(Input_Payables_Ledger!$F:$F, Input_Payables_Ledger!$H:$H, ""MSME"", Input_Payables_Ledger!$I:$I, ""> 3 Years"")"
+    ws.Range("G" & r).formula = "=SUM(B" & r & ":F" & r & ")"
+    r = r + 1
+    
+    ws.Range("A" & r).Value = "Disputed - Others"
+    ws.Range("B" & r).formula = "=SUMIFS(Input_Payables_Ledger!$F:$F, Input_Payables_Ledger!$H:$H, ""Other"", Input_Payables_Ledger!$G:$G, ""Yes"", Input_Payables_Ledger!$I:$I, ""< 182 Days"")"
+    ws.Range("C" & r).formula = "=SUMIFS(Input_Payables_Ledger!$F:$F, Input_Payables_Ledger!$H:$H, ""Other"", Input_Payables_Ledger!$G:$G, ""Yes"", Input_Payables_Ledger!$I:$I, ""182-365 Days"")"
+    ws.Range("D" & r).formula = "=SUMIFS(Input_Payables_Ledger!$F:$F, Input_Payables_Ledger!$H:$H, ""Other"", Input_Payables_Ledger!$G:$G, ""Yes"", Input_Payables_Ledger!$I:$I, ""1-2 Years"")"
+    ws.Range("E" & r).formula = "=SUMIFS(Input_Payables_Ledger!$F:$F, Input_Payables_Ledger!$H:$H, ""Other"", Input_Payables_Ledger!$G:$G, ""Yes"", Input_Payables_Ledger!$I:$I, ""2-3 Years"")"
+    ws.Range("F" & r).formula = "=SUMIFS(Input_Payables_Ledger!$F:$F, Input_Payables_Ledger!$H:$H, ""Other"", Input_Payables_Ledger!$G:$G, ""Yes"", Input_Payables_Ledger!$I:$I, ""> 3 Years"")"
+    ws.Range("G" & r).formula = "=SUM(B" & r & ":F" & r & ")"
+    r = r + 1
+    
+    ws.Range("A" & r).Value = "Undisputed - Others"
+    ws.Range("B" & r).formula = "=SUMIFS(Input_Payables_Ledger!$F:$F, Input_Payables_Ledger!$H:$H, ""Other"", Input_Payables_Ledger!$G:$G, ""No"", Input_Payables_Ledger!$I:$I, ""< 182 Days"")"
+    ws.Range("C" & r).formula = "=SUMIFS(Input_Payables_Ledger!$F:$F, Input_Payables_Ledger!$H:$H, ""Other"", Input_Payables_Ledger!$G:$G, ""No"", Input_Payables_Ledger!$I:$I, ""182-365 Days"")"
+    ws.Range("D" & r).formula = "=SUMIFS(Input_Payables_Ledger!$F:$F, Input_Payables_Ledger!$H:$H, ""Other"", Input_Payables_Ledger!$G:$G, ""No"", Input_Payables_Ledger!$I:$I, ""1-2 Years"")"
+    ws.Range("E" & r).formula = "=SUMIFS(Input_Payables_Ledger!$F:$F, Input_Payables_Ledger!$H:$H, ""Other"", Input_Payables_Ledger!$G:$G, ""No"", Input_Payables_Ledger!$I:$I, ""2-3 Years"")"
+    ws.Range("F" & r).formula = "=SUMIFS(Input_Payables_Ledger!$F:$F, Input_Payables_Ledger!$H:$H, ""Other"", Input_Payables_Ledger!$G:$G, ""No"", Input_Payables_Ledger!$I:$I, ""> 3 Years"")"
+    ws.Range("G" & r).formula = "=SUM(B" & r & ":F" & r & ")"
+    r = r + 1
+    
+    ws.Range("A" & r).Value = "Total": ws.Range("A" & r).Font.Bold = True
+    ws.Range("B" & r).formula = "=SUM(B" & r - 3 & ":B" & r - 1 & ")": ws.Range("B" & r, "G" & r).Font.Bold = True
+    ws.Range("C" & r).formula = "=SUM(C" & r - 3 & ":C" & r - 1 & ")"
+    ws.Range("D" & r).formula = "=SUM(D" & r - 3 & ":D" & r - 1 & ")"
+    ws.Range("E" & r).formula = "=SUM(E" & r - 3 & ":E" & r - 1 & ")"
+    ws.Range("F" & r).formula = "=SUM(F" & r - 3 & ":F" & r - 1 & ")"
+    ws.Range("G" & r).formula = "=SUM(G" & r - 3 & ":G" & r - 1 & ")"
+    ws.Range("A" & r, "G" & r).Borders(xlEdgeTop).LineStyle = xlContinuous
+    
+    ws.Range("B" & startPayablesRow + 3 & ":G" & r).NumberFormat = "_(* #,##0.00_);_(* (#,##0.00);_(* ""-""??_);_(@_)"
+    ws.Range("A" & startPayablesRow + 2 & ":G" & r).Borders.LineStyle = xlContinuous
+    ws.Columns("A:G").AutoFit
+End Sub
+
+Private Sub Generate_Notes_To_Accounts()
+    Dim wsNotes As Worksheet, wsSelect As Worksheet, lastRow As Long, i As Integer, notesRow As Long
+    Set wsNotes = ThisWorkbook.Sheets("Notes_to_Accounts")
+    Set wsSelect = ThisWorkbook.Sheets("Selection_Sheet")
+    wsNotes.Range("A7:L1000").Clear: wsNotes.Range("A7:L1000").ClearFormats
+    
+    AutoNumber_Selected_Notes
+    lastRow = wsSelect.Cells(wsSelect.Rows.Count, "B").End(xlUp).Row
+    notesRow = 8
+    
+    For i = 2 To lastRow
+        If wsSelect.Range("F" & i).Value = "Yes" And Not IsEmpty(wsSelect.Range("G" & i).Value) Then
+            If g_DebugMode Then Debug.Print "Generating Note: " & wsSelect.Range("A" & i).Value & " - " & wsSelect.Range("B" & i).Value
+            Select Case wsSelect.Range("A" & i).Value
+                Case "C.1": Call Create_PPE_Note(wsNotes, notesRow, wsSelect.Range("G" & i).Value)
+                Case "B.2": Call Create_Note_From_Groupings(wsNotes, notesRow, wsSelect.Range("G" & i).Value, "Other Equity", "Other Equity", True)
+                Case "B.3": Call Create_Note_From_Groupings(wsNotes, notesRow, wsSelect.Range("G" & i).Value, "Borrowings", "Long-term Borrowings", True)
+                Case "B.4": Call Create_Note_From_Groupings(wsNotes, notesRow, wsSelect.Range("G" & i).Value, "Trade Payables", "Trade Payables", True)
+                Case "C.5": Call Create_Note_From_Groupings(wsNotes, notesRow, wsSelect.Range("G" & i).Value, "Inventories", "Inventories", False)
+                Case "C.6": Call Create_Note_From_Groupings(wsNotes, notesRow, wsSelect.Range("G" & i).Value, "Trade Receivables", "Trade Receivables", False)
+                Case "C.8": Call Create_Note_From_Groupings(wsNotes, notesRow, wsSelect.Range("G" & i).Value, "Other Assets", "Other Current Assets", False)
+                Case "D.1": Call Create_Note_From_Groupings(wsNotes, notesRow, wsSelect.Range("G" & i).Value, "Revenue from Operations", "Revenue from Operations", True)
+                Case "D.2": Call Create_Note_From_Groupings(wsNotes, notesRow, wsSelect.Range("G" & i).Value, "Other Income", "Other Income", True)
+                Case "D.4": Call Create_Note_From_Groupings(wsNotes, notesRow, wsSelect.Range("G" & i).Value, "Employee Benefits Expense", "Employee Benefits Expense", False)
+                Case "D.5": Call Create_Note_From_Groupings(wsNotes, notesRow, wsSelect.Range("G" & i).Value, "Finance Costs", "Finance Costs", False)
+                Case "D.6": Call Create_Note_From_Groupings(wsNotes, notesRow, wsSelect.Range("G" & i).Value, "Depreciation and Amortization", "Depreciation and Amortization", False)
+                Case "D.7": Call Create_Note_From_Groupings(wsNotes, notesRow, wsSelect.Range("G" & i).Value, "Other Expenses", "Other Expenses", False)
+                Case Else
+                    wsNotes.Range("A" & notesRow).Value = "Note " & wsSelect.Range("G" & i).Value & ": " & wsSelect.Range("B" & i).Value
+                    wsNotes.Range("A" & notesRow).Font.Bold = True
+                    wsNotes.Range("A" & notesRow + 1).Value = "[Detailed template for this note to be built.]"
+                    notesRow = notesRow + 3
+            End Select
+        End If
+    Next i
+End Sub
+
+Private Sub Create_PPE_Note(ByVal ws As Worksheet, ByRef r As Long, ByVal noteNum As String)
+    Dim wsPPE As Worksheet, lastPPERow As Long, i As Long, startRow As Long
+    Set wsPPE = ThisWorkbook.Sheets("Input_PPE_Schedule")
+    lastPPERow = wsPPE.Cells(wsPPE.Rows.Count, "A").End(xlUp).Row
+    
+    If lastPPERow < 2 Then Exit Sub
+    
+    ws.Range("A" & r).Value = "Note " & noteNum & ": Property, Plant and Equipment": ws.Range("A" & r).Font.Bold = True: r = r + 1
+    
+    Dim headers1() As Variant, headers2() As Variant
+    Dim endDate As Date, prevDate As Date
+    endDate = ThisWorkbook.Sheets("Common_Control_Sheet").Range("B5").Value
+    prevDate = DateAdd("yyyy", -1, endDate)
+    
+    headers1 = Array("", "Gross Block", "", "", "", "Accumulated Depreciation", "", "", "", "Net Block", "")
+    headers2 = Array("Particulars", "Opening", "Additions", "Disposals", "Closing", "Opening", "For the Year", "On Disposals", "Closing", "As at " & Format(endDate, "dd-mmm-yy"), "As at " & Format(prevDate, "dd-mmm-yy"))
+    
+    startRow = r
+    ws.Range("A" & r).Resize(1, 11).Value = headers1
+    ws.Range("A" & r + 1).Resize(1, 11).Value = headers2
+    
+    ws.Range("B" & r & ":E" & r).Merge: ws.Range("F" & r & ":I" & r).Merge: ws.Range("J" & r & ":K" & r).Merge
+    ws.Range("B" & r & ":K" & r).HorizontalAlignment = xlCenter
+    ws.Range("A" & r & ":K" & r + 1).Font.Bold = True
+    
+    r = r + 2
+    
+    For i = 2 To lastPPERow
+        ws.Cells(r, "A").Value = wsPPE.Cells(i, "A").Value
+        ws.Cells(r, "B").formula = "='Input_PPE_Schedule'!B" & i
+        ws.Cells(r, "C").formula = "='Input_PPE_Schedule'!C" & i
+        ws.Cells(r, "D").formula = "='Input_PPE_Schedule'!D" & i
+        ws.Cells(r, "E").formula = "=B" & r & "+C" & r & "-D" & r
+        ws.Cells(r, "F").formula = "='Input_PPE_Schedule'!E" & i
+        ws.Cells(r, "G").formula = "='Input_PPE_Schedule'!F" & i
+        ws.Cells(r, "H").formula = "='Input_PPE_Schedule'!G" & i
+        ws.Cells(r, "I").formula = "=F" & r & "+G" & r & "-H" & r
+        ws.Cells(r, "J").formula = "=E" & r & "-I" & r
+        ws.Cells(r, "K").formula = "=B" & r & "-F" & r
+        r = r + 1
+    Next i
+    
+    ws.Cells(r, "A").Value = "Total": ws.Range("A" & r & ":K" & r).Font.Bold = True
+    Dim col As Integer
+    For col = 2 To 11
+        ws.Cells(r, col).formula = "=SUM(" & ws.Cells(startRow + 2, col).Address(False, False) & ":" & ws.Cells(r - 1, col).Address(False, False) & ")"
+    Next col
+    
+    ws.Range("B" & startRow & ":K" & r).NumberFormat = "_(* #,##0.00_);_(* (#,##0.00);_(* ""-""??_);_(@_)"
+    ws.Range("A" & startRow & ":K" & r).Borders.LineStyle = xlContinuous
+    ws.Columns("A:K").AutoFit
+    
+    r = r + 3
+End Sub
+
+Private Sub AutoNumber_Selected_Notes()
+    ' [FIX] Rewritten logic to handle main notes and sub-notes correctly for accounting policies.
+    Dim wsSelect As Worksheet, lastRow As Long, i As Long
+    Dim mainNoteCounter As Long, subNoteCounter As Long
+    Dim policyNoteNumber As String
+    
+    Set wsSelect = ThisWorkbook.Sheets("Selection_Sheet")
+    lastRow = wsSelect.Cells(wsSelect.Rows.Count, "B").End(xlUp).Row
+    wsSelect.Range("G2:G" & lastRow).ClearContents
+    
+    mainNoteCounter = 1
+    policyNoteNumber = ""
+    
+    ' First pass: Assign main note numbers, identify the main policy note number
+    For i = 2 To lastRow
+        If wsSelect.Range("F" & i).Value = "Yes" Then
+            ' Check if it's a main note (e.g., B.1, C.1) but not a sub-policy note (A.2.x)
+            If InStr(1, wsSelect.Range("A" & i).Value, ".") > 0 And InStr(1, wsSelect.Range("A" & i).Value, "A.2.") = 0 Then
+                wsSelect.Range("G" & i).Value = mainNoteCounter
+                ' If this is the main policy note "A.2", store its number
+                If wsSelect.Range("A" & i).Value = "A.2" Then
+                    policyNoteNumber = CStr(mainNoteCounter)
+                End If
+                mainNoteCounter = mainNoteCounter + 1
+            End If
+        End If
+    Next i
+    
+    ' Second pass: If a policy note was found, number the sub-policies
+    If policyNoteNumber <> "" Then
+        subNoteCounter = 1
+        For i = 2 To lastRow
+            ' Check for selected sub-policy notes (A.2.x)
+            If wsSelect.Range("F" & i).Value = "Yes" And InStr(1, wsSelect.Range("A" & i).Value, "A.2.") > 0 Then
+                wsSelect.Range("G" & i).Value = policyNoteNumber & "." & subNoteCounter
+                subNoteCounter = subNoteCounter + 1
+            End If
+        Next i
+    End If
+End Sub
+
+Private Sub Link_Note_Numbers_To_Statements()
+    Dim wsBS As Worksheet, wsPL As Worksheet
+    Set wsBS = ThisWorkbook.Sheets("Balance_Sheet")
+    Set wsPL = ThisWorkbook.Sheets("Statement_of_PL")
+    wsBS.Range("B8:B100").ClearContents: wsPL.Range("B8:B100").ClearContents
+    
+    Dim links As Object, key As Variant
+    Set links = CreateObject("Scripting.Dictionary")
+    links.Add "B11", "C.1": links.Add "B12", "C.3": links.Add "B13", "C.4": links.Add "B15", "C.8"
+    links.Add "B18", "C.5": links.Add "B19", "C.6": links.Add "B22", "C.8"
+    links.Add "B28", "B.1": links.Add "B29", "B.2"
+    links.Add "B33", "B.3": links.Add "B39", "B.4"
+    For Each key In links.Keys: wsBS.Range(key).formula = "=IFERROR(VLOOKUP(""" & links(key) & """, Selection_Sheet!$A:$G, 7, FALSE), ""-"")": Next key
+    
+    links.RemoveAll
+    links.Add "B8", "D.1": links.Add "B9", "D.2"
+    links.Add "B15", "D.4": links.Add "B16", "D.5": links.Add "B17", "D.6": links.Add "B18", "D.7"
+    For Each key In links.Keys: wsPL.Range(key).formula = "=IFERROR(VLOOKUP(""" & links(key) & """, Selection_Sheet!$A:$G, 7, FALSE), ""-"")": Next key
+End Sub
+
+Private Sub Setup_CommonControlSheet()
+    Dim ws As Worksheet, dataArr As Variant, labelsArr As Variant, valuesArr As Variant
+    Set ws = ThisWorkbook.Sheets("Common_Control_Sheet")
+    
+    labelsArr = Array("Entity Name:", "Address:", "CIN No.:", "Financial Year - Start:", "Financial Year - End:", "Currency:", "Units:", "Numbers Format:", "Negative Colour:", "Default Font:", "Default Font Size:")
+    valuesArr = Array("[User Input]", "[User Input]", "[User Input]", CDate("2025-01-01"), CDate("2025-12-31"), "INR", "Millions", "Accounting", "Brackets", "Bookman Old Style", 11)
+    
+    With ws
+        .Range("A1").Resize(UBound(labelsArr) + 1, 1).Value = Application.Transpose(labelsArr)
+        .Range("B1").Resize(UBound(valuesArr) + 1, 1).Value = Application.Transpose(valuesArr)
+        .Range("B4:B5").NumberFormat = "yyyy-mm-dd"
+        
+        .Range("C1:G1").Value = Split("Control List: Major Heads|Control List: Minor Heads|Control List: Grouping|Control List: Related Parties|Control List: Accounting Policies", "|")
+        dataArr = Split("Property, Plant and Equipment|Intangible Assets|Non-current Investments|Long-term Loans and Advances|Other Non-current Assets|Current Investments|Inventories|Trade Receivables|Cash and Cash Equivalents|Short-term Loans and Advances|Other Current Assets|Equity Share Capital|Other Equity|Long-term Borrowings|Deferred Tax Liabilities (Net)|Other Long-term Liabilities|Long-term Provisions|Short-term Borrowings|Trade Payables|Other Current Liabilities|Short-term Provisions|Revenue from Operations|Other Income|Cost of Materials Consumed|Purchases of Stock-in-Trade|Changes in Inventories|Employee Benefits Expense|Finance Costs|Depreciation and Amortization|Other Expenses|Exceptional Items|Extraordinary Items|Taxes on Income", "|")
+        .Range("C2").Resize(UBound(dataArr) + 1, 1).Value = Application.Transpose(dataArr)
+        dataArr = Split("Tangible Assets|Intangible Assets|Financial Assets - Investments|Financial Assets - Loans|Other Non-current Assets|Inventories|Financial Assets - Trade Receivables|Cash and Cash Equivalents|Financial Assets - Other|Equity Share Capital|Other Equity|Financial Liabilities - Borrowings|Deferred Tax Liabilities (Net)|Other Long-term Liabilities|Long-term Provisions|Financial Liabilities - Trade Payables|Financial Liabilities - Other|Short-term Provisions|Other Current Liabilities|Revenue from Operations|Other Income|Cost of Materials Consumed|Purchases of Stock-in-Trade|Changes in Inventories|Employee Benefits Expense|Finance Costs|Depreciation and Amortization|Other Expenses|Exceptional Items|Extraordinary Items|Taxes on Income", "|")
+        .Range("D2").Resize(UBound(dataArr) + 1, 1).Value = Application.Transpose(dataArr)
+        dataArr = Split("Land|Building|Plant and Machinery|Furniture and Fixtures|Vehicles|Office Equipment|Capital Work-in-Progress|Goodwill|Patents, Copyrights, Trademarks|Intangible assets under development|Investment in Equity Instruments|Investment in Preference Shares|Investment in Debentures or Bonds|Investment in Mutual Funds|Investment in Partnership Firms|Loans to Related Parties|Capital Advances|Raw Materials|Work-in-Progress|Finished Goods|Stock-in-Trade|Stores and Spares|Balances with Banks|Cheques, drafts on hand|Cash on hand|Secured - Term Loans from Banks|Unsecured - Loans from Related Parties|Trade Payables - MSME|Trade Payables - Others|Revenue from Sale of Products|Revenue from Sale of Services|Interest Income|Dividend Income|Salaries and Wages|Rent|Commission Expenses|Legal & Professional", "|")
+        .Range("E2").Resize(UBound(dataArr) + 1, 1).Value = Application.Transpose(dataArr)
+        dataArr = Split("Revenue recognition (AS 9)|Property, Plant and Equipment (PPE) (AS 10)|Intangible assets (AS 26)|Impairment of assets (AS 28)|Inventories valuation (AS 2)|Investments (AS 13)|Foreign currency transactions (AS 11)|Employee benefits (AS 15)|Borrowing costs (AS 16)|Provisions, contingent liabilities (AS 29)|Taxes on income (AS 22)|Government grants (AS 12)|Construction contracts (AS 7)|Leases (AS 19)|Segment reporting (AS 17)", "|")
+        .Range("G2").Resize(UBound(dataArr) + 1, 1).Value = Application.Transpose(dataArr)
+        .Range("A:A, C1:G1").Font.Bold = True: .Columns("A:I").AutoFit
+    End With
+End Sub
+
+Private Sub Setup_InputTrialBalanceSheet()
+    Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Input_Trial_Balance")
+    With ws
+        .Range("A1:I1").Value = Split("Ledger Name|Opening Balance|Debit|Credit|Closing Balance|Type (BS/PL)|Major Head|Minor Head|Grouping", "|")
+        .Range("A1:I1").Font.Bold = True
+        With .Range("F2:F20000").Validation
+            .Delete: .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:=xlBetween, Formula1:="BS,PL": .IgnoreBlank = True: .InCellDropdown = True
+        End With
+        .Columns("A:I").AutoFit
+    End With
+End Sub
+
+Private Sub Setup_InputPPEScheduleSheet()
+    Dim ws As Worksheet
+    Set ws = ThisWorkbook.Sheets("Input_PPE_Schedule")
+    With ws
+        .Range("A1:G1").Value = Array("Asset Class", "Opening Gross Block", "Additions", "Disposals (Gross)", "Opening Acc. Depreciation", "Depreciation for Year", "Acc. Depr. on Disposals")
+        .Range("A1:G1").Font.Bold = True
+        .Columns("A:G").AutoFit
+        
+        .Range("A2:G3").Value = Array( _
+            Array("Building", 1000000, 200000, 0, 100000, 50000, 0), _
+            Array("Plant and Machinery", 500000, 150000, 50000, 200000, 75000, 20000) _
+        )
+        .Range("B2:G3").NumberFormat = "#,##0"
+    End With
+End Sub
+
+Private Sub Setup_InputLedgerSheets()
+    Dim ws As Worksheet, reportDate As String
+    reportDate = "Common_Control_Sheet!$B$5"
+    
+    ' [FIX] Standardized the aging bucket formula for consistency.
+    Dim agingFormula As String
+    agingFormula = "=IF(H2<>"""",IF(H2>1095,""> 3 Years"",IF(H2>730,""2-3 Years"",IF(H2>365,""1-2 Years"",IF(H2>182,""182-365 Days"",""< 182 Days"")))),"""")"
+    
+    Set ws = ThisWorkbook.Sheets("Input_Receivables_Ledger")
+    With ws
+        .Range("A1:I1").Value = Array("Customer Name", "Invoice No.", "Invoice Date", "Invoice Amount", "Amount Settled", "Outstanding Amount", "Disputed (Yes/No)", "Days Outstanding", "Aging Bucket")
+        .Range("A1:I1").Font.Bold = True
+        .Range("F2:F1048576").formula = "=D2-E2"
+        .Range("H2:H1048576").formula = "=IF(AND(F2>0, ISNUMBER(C2))," & reportDate & "-C2, """")"
+        .Range("I2:I1048576").formula = agingFormula
+        With .Range("G2:G1048576").Validation
+            .Delete: .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:=xlBetween, Formula1:="Yes,No": .IgnoreBlank = True: .InCellDropdown = True
+        End With
+        .Columns("A:I").AutoFit
+    End With
+    
+    ' [FIX] Reused the exact same aging formula for payables.
+    agingFormula = "=IF(F2>0,IF(" & reportDate & "-C2>1095,""> 3 Years"",IF(" & reportDate & "-C2>730,""2-3 Years"",IF(" & reportDate & "-C2>365,""1-2 Years"",IF(" & reportDate & "-C2>182,""182-365 Days"",""< 182 Days"")))),"""")"
+    
+    Set ws = ThisWorkbook.Sheets("Input_Payables_Ledger")
+    With ws
+        .Range("A1:I1").Value = Array("Vendor Name", "Invoice No.", "Invoice Date", "Invoice Amount", "Amount Settled", "Outstanding Amount", "Disputed (Yes/No)", "Payable Type (MSME/Other)", "Aging Bucket")
+        .Range("A1:I1").Font.Bold = True
+        .Range("F2:F1048576").formula = "=D2-E2"
+        .Range("I2:I1048576").formula = agingFormula
+        With .Range("G2:G1048576").Validation
+            .Delete: .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:=xlBetween, Formula1:="Yes,No": .IgnoreBlank = True: .InCellDropdown = True
+        End With
+        With .Range("H2:H1048576").Validation
+            .Delete: .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:=xlBetween, Formula1:="MSME,Other": .IgnoreBlank = True: .InCellDropdown = True
+        End With
+        .Columns("A:I").AutoFit
+    End With
+End Sub
+
+Private Sub Setup_SelectionSheet()
+    Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Selection_Sheet")
+    Dim allNotesString As String, notesArray As Variant, i As Integer, noteDetail As Variant
+    
+    Dim strPart1 As String, strPart2 As String, strPart3 As String, strPart4 As String
+
+    strPart1 = "A|General notes and policies (mandatory)|~" & _
+        "A.1|Corporate information and basis of preparation|~" & _
+        "A.2|Significant accounting policies|~" & _
+        "A.2.1|Revenue recognition (AS 9)|Revenue from Operations~" & _
+        "A.2.2|Property, Plant and Equipment (PPE) and depreciation (AS 10)|Property, Plant and Equipment~" & _
+        "A.2.3|Intangible assets and amortization (AS 26)|Intangible Assets~" & _
+        "A.2.4|Impairment of assets (AS 28)|~" & _
+        "A.2.5|Inventories valuation and cost formula (AS 2)|Inventories~" & _
+        "A.2.6|Investments classification and valuation (AS 13)|Non-current Investments~" & _
+        "A.2.7|Foreign currency transactions and translation (AS 11)|~" & _
+        "A.2.8|Employee benefits (AS 15)|Employee Benefits Expense~" & _
+        "A.2.9|Borrowing costs and capitalization policy (AS 16)|Finance Costs~" & _
+        "A.2.10|Provisions, contingent liabilities, contingent assets (AS 29)|Long-term Provisions~" & _
+        "A.2.11|Taxes on income (current/deferred; AS 22)|Taxes on Income~" & _
+        "A.2.12|Government grants (AS 12)|~" & _
+        "A.2.13|Construction contracts revenue (AS 7)|~" & _
+        "A.2.14|Leases classification (AS 19)|~" & _
+        "A.2.15|Segment reporting basis (AS 17)|~" & _
+        "A.2.16|Cash and cash equivalents definition (AS 3)|Cash and Cash Equivalents"
+
+    strPart2 = "B|Equity and liabilities notes|~" & _
+        "B.1|Share capital|Equity Share Capital~" & _
+        "B.2|Reserves and surplus / other equity|Other Equity~" & _
+        "B.3|Long-term and short-term borrowings|Long-term Borrowings~" & _
+        "B.4|Trade payables|Trade Payables~" & _
+        "B.5|Other financial liabilities and provisions|Other Current Liabilities~" & _
+        "B.6|Other non-financial liabilities|Other Long-term Liabilities~" & _
+        "B.7|Employee benefit obligations (AS 15)|Employee Benefits Expense~" & _
+        "C|Assets notes|~" & _
+        "C.1|Property, plant and equipment (AS 10 + Schedule III)|Property, Plant and Equipment~" & _
+        "C.2|Capital work-in-progress (CWIP)|~" & _
+        "C.3|Intangible assets and Intangible assets under development|Intangible Assets~" & _
+        "C.4|Investments (AS 13)|Non-current Investments~" & _
+        "C.5|Inventories (AS 2)|Inventories~" & _
+        "C.6|Trade receivables|Trade Receivables~" & _
+        "C.7|Cash and cash equivalents|Cash and Cash Equivalents~" & _
+        "C.8|Loans, advances, and other assets|Long-term Loans and Advances"
+
+    strPart3 = "D|Profit and Loss notes|~" & _
+        "D.1|Revenue from operations (AS 9)|Revenue from Operations~" & _
+        "D.2|Other income|Other Income~" & _
+        "D.3|Cost of materials consumed; Purchases; Changes in inventories|Cost of Materials Consumed~" & _
+        "D.4|Employee benefits expense (AS 15)|Employee Benefits Expense~" & _
+        "D.5|Finance costs (AS 16)|Finance Costs~" & _
+        "D.6|Depreciation and amortization expense|Depreciation and Amortization~" & _
+        "D.7|Other expenses (incl. CSR, Auditor Payments)|Other Expenses~" & _
+        "D.8|Exceptional items and extraordinary items (AS 5)|Exceptional Items~" & _
+        "D.9|Prior period items disclosure (AS 5)|~" & _
+        "D.10|Earnings per share (AS 20)|~" & _
+        "D.11|Income taxes (AS 22)|Taxes on Income~" & _
+        "E|AS-specific and cross-cutting disclosures|~" & _
+        "E.1|AS 3 Cash Flow Statement details|~" & _
+        "E.2|AS 4 Events occurring after the balance sheet date|~" & _
+        "E.3|AS 18 Related party disclosures|~" & _
+        "E.4|AS 19 Leases|~" & _
+        "E.5|Contingent Liabilities and Commitments (AS 29)"
+        
+    strPart4 = "F|Additional Schedule III (2021) Disclosures|~" & _
+        "F.1|Utilization of borrowed funds and share premium|~" & _
+        "F.2|Title deeds of immovable properties not in company’s name|~" & _
+        "F.3|Proceedings for Benami property|~" & _
+        "F.4|Wilful defaulter status|~" & _
+        "F.5|Relationship with struck-off companies|~" & _
+        "F.6|Crypto/virtual currency holdings|~" & _
+        "F.7|Undisclosed income surrendered in tax assessments|~" & _
+        "F.8|Ratios with variance >25% explanations|~" & _
+        "F.9|Aging schedules: Receivables, Payables, CWIP, Intangibles under dev.|~" & _
+        "F.10|Unspent CSR amounts|~" & _
+        "G|Other Statutory Disclosures|~" & _
+        "G.1|Managerial remuneration (Section 197)|~" & _
+        "G.2|MSME Disclosures (Principal and Interest due)|"
+
+    allNotesString = strPart1 & "~" & strPart2 & "~" & strPart3 & "~" & strPart4
+        
+    notesArray = Split(allNotesString, "~")
+    
+    With ws
+        .Range("A1:G1").Value = Split("Note Ref|Note/Schedule Description|Linked Major Head|System Rec. (Y/N)|User Selection (Y/N)|Final (Y/N)|Auto-Number", "|")
+        .Range("A1:G1").Font.Bold = True
+        
+        For i = 0 To UBound(notesArray)
+            If Trim(notesArray(i)) <> "" Then
+                noteDetail = Split(notesArray(i), "|")
+                
+                If UBound(noteDetail) >= 0 Then .Cells(i + 2, 1).Value = noteDetail(0)
+                If UBound(noteDetail) >= 1 Then .Cells(i + 2, 2).Value = noteDetail(1)
+                If UBound(noteDetail) >= 2 Then .Cells(i + 2, 3).Value = noteDetail(2)
+                
+                If InStr(1, CStr(.Cells(i + 2, 1).Value), ".") = 0 Then
+                    .Rows(i + 2).Font.Bold = True
+                End If
+            End If
+        Next i
+
+        Dim lastNoteRow As Long: lastNoteRow = .Cells(.Rows.Count, "B").End(xlUp).Row
+        With .Range("E2:E" & lastNoteRow).Validation
+            .Delete: .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, Operator:=xlBetween, Formula1:="Yes,No": .IgnoreBlank = True: .InCellDropdown = True
+        End With
+        .Range("F2:F" & lastNoteRow).formula = "=IF(E2=""Yes"",""Yes"",IF(AND(E2="""",D2=""Yes""),""Yes"",""No""))"
+        .Columns("C").Hidden = True
+        .Columns("A:G").AutoFit: .Columns("B").ColumnWidth = 60
+    End With
+End Sub
+
+Private Sub Update_System_Recommendations()
+    Dim wsSelect As Worksheet, wsTB As Worksheet
+    Dim lastSelectRow As Long, lastTBRow As Long, i As Long
+    Dim majorHead As String
+    
+    Set wsSelect = ThisWorkbook.Sheets("Selection_Sheet")
+    Set wsTB = ThisWorkbook.Sheets("Input_Trial_Balance")
+    
+    lastSelectRow = wsSelect.Cells(wsSelect.Rows.Count, "C").End(xlUp).Row
+    lastTBRow = wsTB.Cells(wsTB.Rows.Count, "G").End(xlUp).Row
+    
+    wsSelect.Range("D2:D" & lastSelectRow).Value = "No"
+    
+    For i = 2 To lastSelectRow
+        majorHead = wsSelect.Range("C" & i).Value
+        If Not IsEmpty(majorHead) Then
+            If Application.WorksheetFunction.CountIf(wsTB.Range("G2:G" & lastTBRow), majorHead) > 0 Then
+                wsSelect.Range("D" & i).Value = "Yes"
+            End If
+        End If
+    Next i
+End Sub
+
+Private Sub Setup_FinancialStatementSheets()
+    Dim sheetNames As Variant, ws As Worksheet, sheetName As Variant
+    sheetNames = Array("Balance_Sheet", "Statement_of_PL", "Cash_Flow_Statement", "Notes_to_Accounts", "Ratio_Analysis", "Aging_Schedules")
+    For Each sheetName In sheetNames
+        If SheetExists(sheetName) Then
+            Set ws = ThisWorkbook.Sheets(sheetName)
+            If sheetName <> "Ratio_Analysis" And sheetName <> "Aging_Schedules" Then
+                With ws
+                    .Range("A1").formula = "='Common_Control_Sheet'!B1": .Range("A2").formula = "='Common_Control_Sheet'!B2": .Range("A3").formula = "='Common_Control_Sheet'!B3"
+                    Select Case sheetName
+                        Case "Balance_Sheet": .Range("A5").formula = "=""Balance Sheet as at "" & TEXT('Common_Control_Sheet'!B5, ""mmmm dd, yyyy"")"
+                        Case "Statement_of_PL": .Range("A5").formula = "=""Statement of Profit and Loss for the year ended "" & TEXT('Common_control_sheet'!B5, ""mmmm dd, yyyy"")"
+                        Case "Cash_Flow_Statement": .Range("A5").formula = "=""Cash Flow Statement for the year ended "" & TEXT('Common_Control_Sheet'!B5, ""mmmm dd, yyyy"")"
+                        Case "Notes_to_Accounts": .Range("A5").Value = "Notes to Financial Statements"
+                    End Select
+                    .Range("A1:A5").Font.Bold = True: .Columns("A").AutoFit
+                End With
+            End If
+        End If
+    Next sheetName
+End Sub
+
+Private Sub Set_Default_Font()
+    Dim ws As Worksheet, defaultFont As String, defaultFontSize As Single
+    On Error Resume Next
+    defaultFont = ThisWorkbook.Sheets("Common_Control_Sheet").Range("B10").Value: defaultFontSize = ThisWorkbook.Sheets("Common_Control_Sheet").Range("B11").Value
+    On Error GoTo 0
+    If defaultFont = "" Then defaultFont = "Bookman Old Style"
+    If defaultFontSize = 0 Then defaultFontSize = 11
+    Application.ScreenUpdating = False
+    For Each ws In ThisWorkbook.Worksheets: ws.Cells.Font.Name = defaultFont: ws.Cells.Font.Size = defaultFontSize: Next ws
+    Application.ScreenUpdating = True
+End Sub
+
+Private Function SheetExists(ByVal sheetName As String) As Boolean
+    Dim ws As Worksheet
+    SheetExists = False
+    On Error Resume Next
+    Set ws = ThisWorkbook.Sheets(sheetName)
+    If Not ws Is Nothing Then SheetExists = True
+    On Error GoTo 0
+End Function
+
+Private Sub Create_Note_From_Groupings(ByVal ws As Worksheet, ByRef r As Long, ByVal noteNum As String, ByVal noteTitle As String, ByVal majorHead As String, ByVal isCredit As Boolean)
+    Dim wsTB As Worksheet, uniqueGroupings As Object, lastTBRow As Long, i As Integer, cell As Range, groupingName As Variant, startRow As Long
+    Set wsTB = ThisWorkbook.Sheets("Input_Trial_Balance")
+    Set uniqueGroupings = CreateObject("Scripting.Dictionary")
+    uniqueGroupings.CompareMode = vbTextCompare
+    
+    lastTBRow = wsTB.Cells(wsTB.Rows.Count, "G").End(xlUp).Row
+    If lastTBRow < 2 Then Exit Sub
+    
+    For Each cell In wsTB.Range("G2:G" & lastTBRow)
+        If cell.Value = majorHead And Trim(cell.Offset(0, 2).Value) <> "" Then
+            uniqueGroupings(Trim(cell.Offset(0, 2).Value)) = 1
+        End If
+    Next cell
+    
+    If uniqueGroupings.Count = 0 Then Exit Sub
+    
+    ws.Range("A" & r).Value = "Note " & noteNum & ": " & noteTitle: ws.Range("A" & r).Font.Bold = True: r = r + 1
+    startRow = r + 1
+    ws.Range("A" & r & ":C" & r).Value = Array("Particulars", "Current Year", "Previous Year"): ws.Range("A" & r & ":C" & r).Font.Bold = True: ws.Range("A" & r & ":C" & r).Borders(xlEdgeBottom).LineStyle = xlContinuous: r = r + 1
+    
+    For Each groupingName In uniqueGroupings.Keys
+        ws.Range("A" & r).Value = groupingName
+        Dim formula As String
+        formula = "=SUMIFS(Input_Trial_Balance!$E:$E, Input_Trial_Balance!$G:$G, """ & majorHead & """, Input_Trial_Balance!$I:$I, """ & groupingName & """)"
+        If isCredit Then formula = "=-(" & Mid(formula, 2) & ")"
+        ws.Range("B" & r).formula = formula
+        r = r + 1
+    Next groupingName
+    
+    ws.Range("A" & r).Value = "Total " & noteTitle: ws.Range("A" & r, "B" & r).Font.Bold = True
+    ws.Range("B" & r).formula = "=SUM(B" & startRow & ":B" & r - 1 & ")"
+    ws.Range("A" & r & ":C" & r).Borders(xlEdgeTop).LineStyle = xlContinuous
+    ws.Range("B" & startRow & ":C" & r).NumberFormat = "_(* #,##0.00_);_(* (#,##0.00);_(* ""-""??_);_(@_)"
+    r = r + 3
+End Sub
+
