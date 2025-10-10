@@ -13,7 +13,8 @@
 ### 🚀 Get Started Immediately
 
 **Want to download the rectified code?**  
-👉 **Download guide:** [`DOWNLOAD_GUIDE.md`](./DOWNLOAD_GUIDE.md) - **Multiple easy download options!**
+👉 **Simple visual guide:** [`HOW_TO_DOWNLOAD.txt`](./HOW_TO_DOWNLOAD.txt) - **Quick reference!**  
+👉 **Complete guide:** [`DOWNLOAD_GUIDE.md`](./DOWNLOAD_GUIDE.md) - **Detailed instructions!**
 
 **Looking for the .exe file or build status?**  
 👉 **Read this first:** [`Financials Automation/STATUS_REPORT.md`](./Financials%20Automation/STATUS_REPORT.md)
