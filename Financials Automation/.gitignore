@@ -25,3 +25,19 @@ yarn.lock
 src/generated
 
 app.config.timestamp_*.js
+
+# Electron build artifacts
+dist-electron/
+dist/
+*.exe
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+*.snap
+
+# Electron compiled files
+electron/main.js
+electron/preload.js
+electron/main.js.map
+electron/preload.js.map
