@@ -35,6 +35,8 @@ A professional financial statement generation tool with Schedule III compliance 
 
 ## Installation
 
+> **⚠️ Important**: If you encounter a Prisma installation error (`query_engine_bg.postgresql.wasm-base64.js`), see [QUICK_FIX_GUIDE.md](./QUICK_FIX_GUIDE.md) for the solution.
+
 ### Web Version
 ```bash
 # Clone the repository
@@ -42,17 +44,20 @@ git clone <repository-url>
 cd financial-statement-generator
 
 # Install dependencies
-npm install
+pnpm install
+
+# Setup Prisma (Important!)
+pnpm run setup
 
 # Set up environment variables
-cp .env.example .env
+cp config.env.template .env
 # Edit .env with your configuration
 
-# Run database migrations
-npm run db:migrate
+# Verify setup
+pnpm run verify-prisma
 
 # Start development server
-npm run dev
+pnpm run dev
 ```
 
 ### Desktop Version
@@ -60,22 +65,25 @@ npm run dev
 #### Development
 ```bash
 # Install dependencies (if not already done)
-npm install
+pnpm install
+
+# Setup Prisma
+pnpm run setup
 
 # Build Electron app for development
-npm run electron:dev
+pnpm run electron:dev
 ```
 
 #### Production Build
 ```bash
 # Build for Windows
-npm run dist:win
+pnpm run dist:win
 
 # Build for macOS
-npm run dist:mac
+pnpm run dist:mac
 
 # Build for Linux
-npm run dist:linux
+pnpm run dist:linux
 
 # Build for all platforms
 npm run dist
@@ -207,6 +215,64 @@ docker-compose up -d
 2. **Code Signing** - Configure certificates in electron-builder
 3. **Auto-Updates** - Set up GitHub releases or custom server
 4. **Distribution** - Share installer files with users
+
+## Troubleshooting
+
+### Prisma Installation Error
+
+If you see:
+```
+Cannot find module 'query_engine_bg.postgresql.wasm-base64.js'
+ELIFECYCLE Command failed with exit code 1.
+```
+
+**Solution**:
+```bash
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
+pnpm run setup
+```
+
+See [QUICK_FIX_GUIDE.md](./QUICK_FIX_GUIDE.md) for details.
+
+### Database Connection Issues
+
+**Error**: "DATABASE_URL not found"
+```bash
+cp config.env.template .env
+# Edit .env and configure DATABASE_URL
+```
+
+**Error**: "Cannot connect to database"
+- Check PostgreSQL is running
+- Verify DATABASE_URL in .env file
+- Test connection: `pnpm prisma validate`
+
+### Build Errors
+
+**TypeScript errors**:
+```bash
+pnpm run typecheck
+```
+
+**Missing dependencies**:
+```bash
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
+```
+
+**Electron build fails**:
+- Check all asset files exist in `electron/assets/`
+- Verify electron-builder.config.js configuration
+- See `BUILD_FIXES_SUMMARY.md` for known issues
+
+### Getting Help
+
+For more help:
+- Check `BUILD_FIXES_SUMMARY.md` for all known issues and fixes
+- Check `PRISMA_FIX_FINAL.md` for Prisma-specific issues
+- Run `pnpm run verify-prisma` for diagnostics
+- Open a GitHub issue with error details
 
 ## Contributing
 
