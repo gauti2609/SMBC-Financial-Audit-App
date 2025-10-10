@@ -37,6 +37,27 @@ This document summarizes all the critical issues that were preventing the .exe b
 - Updated verification script to check default location
 - This resolves the race condition and allows clean installation
 
+### 2.2. Prisma WASM Engine Error (LATEST) ❌ → ✅
+**Problem**: Installation fails with "Cannot find module query_engine_bg.postgresql.wasm-base64.js"
+- Race condition: `prisma generate` in `postinstall` runs before packages fully extracted
+- WASM engine files not found or incompatible with bundler configuration
+- Windows installations particularly affected by timing issues
+
+**Fix Applied**:
+- **Separated Prisma generation from postinstall**: Removed `prisma generate` from `postinstall` script
+- **Added binary engine configuration**: Set `engineType = "binary"` in `prisma/schema.prisma`
+- **Created setup script**: New `scripts/setup-prisma.js` with built-in safeguards and delays
+- **Updated build process**: Added `predev` and `prebuild` hooks to auto-generate Prisma client
+- **New installation flow**: Users run `pnpm install` then `pnpm run setup` for clean setup
+
+**Benefits**:
+- Eliminates race conditions completely
+- Uses stable binary engines instead of experimental WASM
+- Better error messages and troubleshooting
+- Works consistently across all platforms (Windows, macOS, Linux)
+
+**See**: `PRISMA_FIX_FINAL.md` for complete documentation
+
 ### 3. TypeScript ESLint Configuration ❌ → ✅
 **Problem**: Using deprecated `typescript-eslint` package name
 - Package was renamed to `@typescript-eslint/eslint-plugin`
@@ -81,12 +102,16 @@ rm -rf node_modules pnpm-lock.yaml
 
 # Fresh install with fixed dependencies
 pnpm install
+
+# Setup Prisma client (NEW - IMPORTANT!)
+pnpm run setup
 ```
 
 **Expected Results**:
 - No React version conflicts
-- Prisma client generates successfully
+- TanStack Router generates successfully
 - All TypeScript ESLint packages install correctly
+- Prisma client generates successfully with binary engines
 
 #### 2. Verify Prisma Setup
 ```bash

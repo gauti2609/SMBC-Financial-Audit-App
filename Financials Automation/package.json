@@ -3,9 +3,12 @@
   "main": "electron/main.js",
   "homepage": "./",
   "scripts": {
-    "postinstall": "echo 'Generating TanStack Router...' && tsr generate && echo 'Generating Prisma client...' && prisma generate",
+    "postinstall": "echo 'Generating TanStack Router...' && tsr generate",
+    "setup": "node scripts/setup-prisma.js",
+    "generate": "prisma generate",
     "verify-prisma": "node scripts/verify-prisma",
-    "prebuild": "npm run verify-prisma",
+    "prebuild": "npm run generate && npm run verify-prisma",
+    "predev": "npm run generate",
     "dev": "vinxi dev",
     "build": "vinxi build",
     "start": "vinxi start",
@@ -91,7 +94,7 @@
     "globals": "^16.0.0",
     "prettier": "3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "prisma": "^6.8.2",
+    "prisma": "6.8.2",
     "typescript": "^5.7.2",
     "vite-tsconfig-paths": "^5.1.4",
     "wait-on": "^7.2.0"
