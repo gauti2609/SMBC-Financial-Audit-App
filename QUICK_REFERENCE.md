@@ -4,6 +4,11 @@
 
 ### Most Important Documents (Read in Order)
 
+0. **[DOWNLOAD_GUIDE.md](./DOWNLOAD_GUIDE.md)** 📥 **HOW TO DOWNLOAD**
+   - **Purpose:** Download instructions for all rectified files
+   - **Contains:** 4 easy download methods (no need to download files one-by-one!)
+   - **Read if:** You want to download the rectified code
+
 1. **[STATUS_REPORT.md](./Financials%20Automation/STATUS_REPORT.md)** ⭐⭐⭐
    - **Purpose:** Complete status of issue resolution
    - **Contains:** Location of .exe, updated files, build status
@@ -22,6 +27,20 @@
 ---
 
 ## ❓ Quick Answers
+
+### Q: How do I download the rectified code?
+
+**A: You have 4 easy options - NO need to download each file separately!**
+
+See **[DOWNLOAD_GUIDE.md](./DOWNLOAD_GUIDE.md)** for complete instructions.
+
+**Quick Options:**
+1. ✅ **Easiest:** Download "Financials Automation (8).zip" (already in repository root)
+2. ✅ **Simple:** Click green "Code" button on GitHub → "Download ZIP"
+3. ✅ **Developers:** Clone with Git: `git clone https://github.com/gauti2609/SMBC-Financial-Audit-App.git`
+4. ✅ **Selective:** Download individual files from GitHub (for specific files only)
+
+All rectified files are in the **`Financials Automation/`** folder.
 
 ### Q: Where is the .exe file?
 

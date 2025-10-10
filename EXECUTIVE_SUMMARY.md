@@ -8,6 +8,19 @@
 
 ## ⚡ TL;DR (Too Long; Didn't Read)
 
+### Question: "How do I download the rectified code?"
+
+**Answer: Multiple easy options - see [DOWNLOAD_GUIDE.md](./DOWNLOAD_GUIDE.md)** ✅
+
+**You do NOT need to download each file separately!**
+
+**Quick options:**
+1. ✅ Download "Financials Automation (8).zip" from repository root (~431 KB)
+2. ✅ Click "Code" → "Download ZIP" on GitHub (gets entire repo)
+3. ✅ Clone with Git (for developers)
+
+All rectified files are in the **`Financials Automation/`** folder.
+
 ### Question: "Have you completed the issue resolution and rectification task?"
 
 **Answer: YES** ✅
@@ -216,6 +229,9 @@ This is **standard practice** in software development.
 ---
 
 ## 🔍 Quick Answers to Common Questions
+
+### Q0: How do I download the rectified code?
+**A:** See **[DOWNLOAD_GUIDE.md](./DOWNLOAD_GUIDE.md)** - You have 4 easy options! Download the existing ZIP file (easiest), download entire repo as ZIP, clone with Git, or download individual files. **You do NOT need to download each file separately!**
 
 ### Q1: Is the work complete?
 **A:** YES, for code and documentation. NO, for building the .exe.
