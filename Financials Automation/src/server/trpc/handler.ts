@@ -1,4 +1,4 @@
-import { defineEventHandler, toWebRequest } from "@tanstack/react-start/server";
+import { defineEventHandler, toWebRequest } from "h3";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { appRouter } from "./root";
 
