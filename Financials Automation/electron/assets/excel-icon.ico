@@ -1,0 +1,3 @@
+# Placeholder for Excel file association icon
+# This should be replaced with an actual ICO file for Excel file associations
+# The electron-builder config references this file for .xlsx file associations
