@@ -1,4 +1,4 @@
-import { defineEventHandler, toWebRequest } from "@tanstack/react-start/server";
+import { defineEventHandler, toWebRequest } from "h3";
 
 interface LogEntry {
   level: string;
