@@ -24,6 +24,19 @@ This document summarizes all the critical issues that were preventing the .exe b
 - Updated Prisma CLI to `^6.8.2` to match the client version
 - This ensures proper schema generation and prevents "Unknown field" errors
 
+### 2.1. Prisma Installation Error (NEW) ❌ → ✅
+**Problem**: Installation fails with "ENOENT: wasm-engine-edge.js" error
+- Custom Prisma output path (`output = "../src/generated/prisma"`) caused race condition
+- `prisma generate` runs in postinstall before `@prisma/client` package fully extracted
+- Missing runtime files like `wasm-engine-edge.js`
+
+**Fix Applied**:
+- Removed custom output path from `prisma/schema.prisma` (now uses default `node_modules/.prisma/client`)
+- Updated all imports from `~/generated/prisma` to `@prisma/client`
+- Updated externalization patterns in `app.config.ts` and `vinxi.config.ts`
+- Updated verification script to check default location
+- This resolves the race condition and allows clean installation
+
 ### 3. TypeScript ESLint Configuration ❌ → ✅
 **Problem**: Using deprecated `typescript-eslint` package name
 - Package was renamed to `@typescript-eslint/eslint-plugin`

@@ -4,7 +4,7 @@ This document explains the Prisma setup in this project and the specific configu
 
 ## Overview
 
-Prisma is used as the ORM for database operations in this application. However, Prisma has specific requirements that conflict with modern bundlers like Rollup/Vite, which are used by Vinxi.
+Prisma is used as the ORM for database operations in this application. Prisma generates client code in `node_modules/.prisma/client` that should not be bundled by modern bundlers like Rollup/Vite.
 
 ## The Problem
 
@@ -14,16 +14,31 @@ Prisma generates internal modules (like `.prisma/client` and `.prisma`) that are
 2. They use dynamic imports and runtime code generation
 3. They expect to be loaded from the filesystem, not bundled
 
-The error typically looks like:
+Common errors include:
 ```
 Invalid module ".prisma" is not a valid package name imported from @prisma/client/default.js
 ```
 
+Or during installation:
+```
+ENOENT: no such file or directory, open 'node_modules/@prisma/client/runtime/wasm-engine-edge.js'
+```
+
 ## The Solution
 
-We've implemented a comprehensive externalization strategy across multiple configuration files:
+We use the **standard Prisma client location** (`node_modules/.prisma/client`) and implement externalization patterns across configuration files to prevent bundling issues.
 
-### 1. App Configuration (`app.config.ts`)
+### 1. Prisma Schema (`prisma/schema.prisma`)
+
+The Prisma schema uses the **default output location**:
+```prisma
+generator client {
+  provider = "prisma-client-js"
+  // No custom output path - uses default node_modules/.prisma/client
+}
+```
+
+### 2. App Configuration (`app.config.ts`)
 
 The main Vinxi configuration externalizes Prisma modules in three contexts:
 - Main server nitro configuration
@@ -43,26 +58,26 @@ external: [
 ]
 ```
 
-### 2. Vinxi Configuration (`vinxi.config.ts`)
+### 3. Vinxi Configuration (`vinxi.config.ts`)
 
 Additional bundling rules that complement the main configuration:
 - Comprehensive external dependencies list
 - SSR-specific externalization
 - Optimization exclusions
 
-### 3. Build Process (`package.json`)
+### 4. Build Process (`package.json`)
 
 Updated scripts ensure proper setup:
 - `postinstall`: Generates Prisma client after dependency installation
 - `verify-prisma`: Validates Prisma setup before builds
 - `prebuild`: Runs verification before any build process
 
-### 4. Verification Script (`scripts/verify-prisma`)
+### 5. Verification Script (`scripts/verify-prisma`)
 
 Automated checks for:
 - Prisma schema existence and validity
 - Environment variable configuration
-- Prisma client generation
+- Prisma client generation in default location (`node_modules/.prisma/client`)
 - Import capability testing
 
 ## Usage
@@ -85,6 +100,12 @@ npm run verify-prisma  # Check Prisma setup manually
 
 ## Troubleshooting
 
+### Error: "ENOENT: wasm-engine-edge.js" during installation
+This error occurs when `prisma generate` runs before `@prisma/client` is fully extracted. The fix is to:
+- Use the default Prisma output location (not a custom path)
+- Ensure `prisma/schema.prisma` has no `output` option in the generator block
+- Run `pnpm install` or `npm install` from a clean state
+
 ### Error: "Invalid module .prisma"
 - Ensure all externalization patterns are present in `app.config.ts`
 - Run `npm run verify-prisma` to check setup
@@ -104,10 +125,11 @@ npm run verify-prisma  # Check Prisma setup manually
 
 | File | Purpose |
 |------|---------|
+| `prisma/schema.prisma` | Prisma schema with default client output location |
 | `app.config.ts` | Main Vinxi configuration with Prisma externalization |
 | `vinxi.config.ts` | Additional bundling rules for Prisma |
 | `scripts/verify-prisma` | Automated Prisma setup verification |
-| `prisma/client.ts` | Centralized Prisma client exports |
+| `prisma/client.ts` | Centralized Prisma client re-exports |
 
 ## Environment Variables
 
