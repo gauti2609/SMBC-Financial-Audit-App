@@ -1,0 +1,86 @@
+================================================================================
+PRISMA INSTALLATION ERROR FIX - CHANGES SUMMARY
+================================================================================
+
+PROBLEM:
+  Installation fails with: 
+  "ENOENT: no such file or directory, open '...\node_modules\@prisma\client\runtime\wasm-engine-edge.js'"
+
+ROOT CAUSE:
+  Custom Prisma output path caused race condition during postinstall
+
+SOLUTION:
+  Use Prisma's default output location (node_modules/.prisma/client)
+
+--------------------------------------------------------------------------------
+FILES MODIFIED:
+--------------------------------------------------------------------------------
+
+1. prisma/schema.prisma
+   BEFORE: generator client { provider = "prisma-client-js" output = "../src/generated/prisma" }
+   AFTER:  generator client { provider = "prisma-client-js" }
+   
+2. src/server/db.ts
+   BEFORE: import { PrismaClient } from "~/generated/prisma";
+   AFTER:  import { PrismaClient } from "@prisma/client";
+
+3. prisma/client.ts
+   BEFORE: export { PrismaClient } from '../src/generated/prisma';
+   AFTER:  export { PrismaClient } from '@prisma/client';
+
+4. app.config.ts
+   - Removed "~/generated/prisma" from all externalization patterns
+   - Removed "./src/generated/prisma" from all externalization patterns
+   - Removed "../src/generated/prisma" from all externalization patterns
+   
+5. vinxi.config.ts
+   - Removed "~/generated/prisma" from external patterns
+   - Removed "./src/generated/prisma" from external patterns
+   - Removed "../src/generated/prisma" from external patterns
+
+6. scripts/verify-prisma
+   BEFORE: Check for src/generated/prisma
+   AFTER:  Check for node_modules/.prisma/client
+
+7. docs/PRISMA_SETUP.md
+   - Updated documentation to reflect new setup
+   - Added troubleshooting for installation error
+
+8. BUILD_FIXES_SUMMARY.md
+   - Added section documenting this fix
+
+9. PRISMA_INSTALLATION_FIX.md (NEW)
+   - Detailed explanation of the fix
+
+--------------------------------------------------------------------------------
+VERIFICATION:
+--------------------------------------------------------------------------------
+
+To verify the fix works:
+
+1. Clean install:
+   rm -rf node_modules pnpm-lock.yaml
+   pnpm install
+
+2. Verify Prisma setup:
+   pnpm run verify-prisma
+
+3. Expected output:
+   ✅ Prisma schema found
+   ✅ DATABASE_URL configured
+   ✅ Prisma schema is valid
+   ✅ Prisma client generated successfully
+   ✅ Prisma client files found
+   🎉 Prisma setup verification completed successfully!
+
+--------------------------------------------------------------------------------
+IMPACT:
+--------------------------------------------------------------------------------
+
+✅ Eliminates race condition during installation
+✅ Follows Prisma best practices
+✅ Simplifies configuration
+✅ More reliable across environments
+✅ No breaking changes to application functionality
+
+================================================================================
