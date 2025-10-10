@@ -40,11 +40,22 @@ await new Promise(resolve => setTimeout(resolve, 1000));
 // Generate Prisma client
 try {
   console.log('🔄 Generating Prisma client...');
-  execSync('npx prisma generate', { 
-    cwd: rootDir, 
-    stdio: 'inherit',
-    env: { ...process.env }
-  });
+  // Use the local prisma installation to ensure version match
+  const prismaPath = path.join(rootDir, 'node_modules', '.bin', 'prisma');
+  if (!fs.existsSync(prismaPath)) {
+    // Fallback to npx if local bin doesn't exist
+    execSync('npx --no prisma generate', { 
+      cwd: rootDir, 
+      stdio: 'inherit',
+      env: { ...process.env }
+    });
+  } else {
+    execSync(`"${prismaPath}" generate`, { 
+      cwd: rootDir, 
+      stdio: 'inherit',
+      env: { ...process.env }
+    });
+  }
   console.log('✅ Prisma client generated successfully');
 } catch (error) {
   console.error('❌ Failed to generate Prisma client:', error.message);
