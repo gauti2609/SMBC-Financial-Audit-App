@@ -11,6 +11,11 @@
 
 If you're looking for quick answers to your questions, start with one of these:
 
+0. **[DOWNLOAD_GUIDE.md](./DOWNLOAD_GUIDE.md)** 📥 **DOWNLOAD INSTRUCTIONS**
+   - **Best for:** Anyone who wants to download the rectified code
+   - **Read time:** 5 minutes
+   - **Contains:** 4 easy download methods, no need to download files one-by-one
+
 1. **[EXECUTIVE_SUMMARY.md](./EXECUTIVE_SUMMARY.md)** ⭐⭐⭐
    - **Best for:** Quick overview for managers/stakeholders
    - **Read time:** 5 minutes
@@ -34,6 +39,7 @@ If you're looking for quick answers to your questions, start with one of these:
 
 | Document | Purpose | Audience | Priority |
 |----------|---------|----------|----------|
+| **[DOWNLOAD_GUIDE.md](./DOWNLOAD_GUIDE.md)** | How to download rectified code | Everyone | 📥 |
 | **[EXECUTIVE_SUMMARY.md](./EXECUTIVE_SUMMARY.md)** | High-level status overview | Managers, Stakeholders | ⭐⭐⭐ |
 | **[QUICK_REFERENCE.md](./QUICK_REFERENCE.md)** | Quick answers & navigation | Everyone | ⭐⭐⭐ |
 | **[README.md](./README.md)** | Project overview | New users | ⭐⭐ |

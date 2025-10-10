@@ -21,8 +21,12 @@
 ```
 SMBC-Financial-Audit-App/
 │
+├── 📥 DOWNLOAD_GUIDE.md                            ← HOW TO DOWNLOAD! Read this first
 ├── 📖 README.md                                    ← Overview & navigation
 ├── 🔍 QUICK_REFERENCE.md                          ← Quick answers
+├── 📄 EXECUTIVE_SUMMARY.md                        ← Executive summary
+├── 📁 FILE_STRUCTURE.md                           ← This file
+├── 📦 Financials Automation (8).zip               ← PRE-MADE ZIP! Download this
 │
 └── 📁 Financials Automation/                      ← MAIN APPLICATION FOLDER
     │
