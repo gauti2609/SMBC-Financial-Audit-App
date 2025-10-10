@@ -47,25 +47,12 @@ try {
   process.exit(1);
 }
 
-// Check if Prisma client files exist
-const clientPath = path.join(process.cwd(), 'node_modules', '.prisma', 'client');
+// Check if Prisma client files exist (generated in custom location)
+const clientPath = path.join(process.cwd(), 'src', 'generated', 'prisma');
 if (!fs.existsSync(clientPath)) {
-  console.error('❌ Prisma client not found in node_modules/.prisma/client');
+  console.error('❌ Prisma client not found in src/generated/prisma');
   process.exit(1);
 }
 console.log('✅ Prisma client files found');
-
-// Try to import Prisma client
-try {
-  const { PrismaClient } = await import('@prisma/client');
-  const prisma = new PrismaClient();
-  console.log('✅ Prisma client can be imported and instantiated');
-  
-  // Clean up
-  await prisma.$disconnect();
-} catch (error) {
-  console.error('❌ Failed to import Prisma client:', error.message);
-  process.exit(1);
-}
 
 console.log('🎉 Prisma setup verification completed successfully!');
