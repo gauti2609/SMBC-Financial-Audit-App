@@ -3,6 +3,8 @@
 
 generator client {
   provider = "prisma-client-js"
+  // Use binary engine to avoid WASM-related issues during installation
+  engineType = "binary"
 }
 
 datasource db {
