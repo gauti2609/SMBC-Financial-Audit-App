@@ -2,6 +2,16 @@
 
 A professional financial statement generation tool with Schedule III compliance for Indian companies. Available as both a web application and desktop software.
 
+## 📋 Installation Guide
+
+**NEW USERS**: Please follow the [**INSTALLATION_GUIDE.md**](./INSTALLATION_GUIDE.md) for detailed step-by-step instructions with expected outputs for each step.
+
+The guide is designed for users without coding background and includes:
+- ✅ Step-by-step commands in chronological order
+- ✅ Expected output for success/failure at each step
+- ✅ Troubleshooting solutions for common errors
+- ✅ Progress tracking checklist
+
 ## Features
 
 ### 🏢 Core Functionality
