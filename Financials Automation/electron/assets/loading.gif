@@ -1,0 +1,3 @@
+# Placeholder for installer loading animation
+# This should be replaced with an actual GIF file for the installer loading screen
+# The electron-builder config references this file in the squirrelWindows section
