@@ -1,5 +1,6 @@
-I am giving you my excel Automation VBA code for drafting of Financials will you be able to create a Windows Application that can be run locally on the system and provide output in .xlsx format with all numbers linked.
+I am giving you my VBA code for automation of drafting of Financial Statments in Excel as per Schdeule III and Accounting Standards, create a Windows Application that can be run locally on the system and provide output in .xlsx format with all numbers linked through formulas.
 
+I am also listing down the initial prompt given to Gemini:
 I need to create financials as per Schedule III of the Companies Act on a regular basis. Sample format of Schedule III provided under section 129 of the Act is attached as file Schedule III. This contains all the changes as well that have taken place in Schedule III over the years. I am looking at automating the entire exercise of drafting the financial statements wherein I shall provide the sanitized trial balance data specifying the ledger name, Opening ledger balance, Debit transactions, credit transactions and Closing ledger balances. In addition it shall have the below columns: 
 Column 1: Whether it is a BS item or PL item
 Column 2: Opening balance
@@ -337,7 +338,7 @@ This structured approach allows you to review the foundational logic and data ma
 In addition to this I had also uploaded Schedule III and Sample Trial Balance in Excel, let me know in case you need them. As for the Accounting Standards and Auditing Standards, you need to look into them yourself. Make sure that all the functionalities, checks and Balances and Lists in the code are preserved and replicated with option to add more by uploading through excel. Use Data validation as much as possible even if the script is not using it.
 
 
-VBA Code for Financials_Automation_Tool
+VBA Code for Financials_Automation_Tool created and refined using Gemini 2.5 Pro on Github
 
 Option Explicit
 
@@ -2200,6 +2201,4 @@ NoteError:
 End Sub
 
 This is my VBA Automation code that I am building currently, take inputs from this for creating the application. This was made with the help of Gemini and still under construction, but major functionalities and check and balances have been achieved.
-
-I am also listing down the initial prompt given to Gemini:
 
