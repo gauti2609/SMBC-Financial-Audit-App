@@ -1,0 +1,189 @@
+name: Windows Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '18'
+  PNPM_VERSION: '10.18.2'
+
+jobs:
+  build-and-test:
+    name: Build and Test on Windows
+    runs-on: windows-latest
+    
+    defaults:
+      run:
+        working-directory: 'Financials Automation'
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'Financials Automation/pnpm-lock.yaml'
+      
+      - name: Install pnpm
+        run: npm install -g pnpm@${{ env.PNPM_VERSION }}
+        
+      - name: Verify Environment
+        run: |
+          echo "Node version:"
+          node -v
+          echo "npm version:"
+          npm -v
+          echo "pnpm version:"
+          pnpm -v
+          echo "Git version:"
+          git --version
+          echo "Working directory:"
+          pwd
+          echo "OS Information:"
+          systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
+      
+      - name: Setup Environment Variables
+        run: |
+          echo "Setting up environment variables..."
+          if (!(Test-Path .env)) {
+            Copy-Item config.env.template .env
+            echo "Created .env from template"
+          }
+        shell: pwsh
+        
+      - name: Install Dependencies
+        run: pnpm install
+        timeout-minutes: 10
+        
+      - name: Verify Prisma Setup
+        run: |
+          echo "Checking Prisma client generation..."
+          pnpm run verify-prisma
+        
+      - name: Run TypeScript Type Check
+        run: pnpm run typecheck
+        continue-on-error: true
+        
+      - name: Run Linting
+        run: pnpm run lint
+        continue-on-error: true
+        
+      - name: Build Application
+        run: pnpm run build
+        timeout-minutes: 15
+        
+      - name: Compile Electron Scripts
+        run: pnpm run build:electron
+        
+      - name: Run Diagnostic Tests
+        run: node diagnostic-test.mjs
+        continue-on-error: true
+        
+      - name: Check Build Artifacts
+        run: |
+          echo "Checking for build artifacts..."
+          if (Test-Path .output) {
+            echo "✅ .output directory exists"
+            Get-ChildItem .output -Recurse | Select-Object FullName
+          } else {
+            echo "❌ .output directory not found"
+            exit 1
+          }
+        shell: pwsh
+        
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-artifacts-windows
+          path: |
+            Financials Automation/.output
+            Financials Automation/.vinxi
+          retention-days: 7
+          
+      - name: Upload Build Logs
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: build-logs-windows
+          path: |
+            Financials Automation/*.log
+            Financials Automation/npm-debug.log*
+          retention-days: 7
+          if-no-files-found: ignore
+
+  build-windows-installer:
+    name: Build Windows Installer
+    runs-on: windows-latest
+    needs: build-and-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    defaults:
+      run:
+        working-directory: 'Financials Automation'
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'Financials Automation/pnpm-lock.yaml'
+      
+      - name: Install pnpm
+        run: npm install -g pnpm@${{ env.PNPM_VERSION }}
+        
+      - name: Setup Environment Variables
+        run: |
+          if (!(Test-Path .env)) {
+            Copy-Item config.env.template .env
+          }
+        shell: pwsh
+        
+      - name: Install Dependencies
+        run: pnpm install
+        timeout-minutes: 10
+        
+      - name: Build Application
+        run: pnpm run build
+        timeout-minutes: 15
+        
+      - name: Compile Electron Scripts
+        run: pnpm run build:electron
+        
+      - name: Generate Windows Installer
+        run: pnpm run electron:dist:win
+        timeout-minutes: 20
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Verify Installer
+        run: |
+          echo "Checking for installer files..."
+          if (Test-Path dist-electron) {
+            echo "✅ dist-electron directory exists"
+            Get-ChildItem dist-electron -Recurse -Include *.exe | Select-Object Name, Length, LastWriteTime
+          } else {
+            echo "❌ dist-electron directory not found"
+            exit 1
+          }
+        shell: pwsh
+        
+      - name: Upload Windows Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: |
+            Financials Automation/dist-electron/*.exe
+            Financials Automation/dist-electron/*.yml
+          retention-days: 30
