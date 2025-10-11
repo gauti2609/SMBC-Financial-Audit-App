@@ -25,7 +25,6 @@ export default createApp({
         external: [
           "@prisma/client", 
           ".prisma/client", 
-          ".prisma",
           "@prisma/engines",
           "@prisma/engines-version",
           // Add specific patterns to handle .prisma module resolution
@@ -35,19 +34,10 @@ export default createApp({
         ],
         resolve: {
           preferBuiltins: true,
-          // Add alias to help resolve .prisma paths correctly
-          alias: {
-            '.prisma/client': '@prisma/client/.prisma/client',
-          },
         },
         output: {
           manualChunks: undefined,
         },
-      },
-      externals: {
-        inline: [
-          // Force inline for non-Prisma modules that might conflict
-        ],
       },
       moduleSideEffects: false,
       esbuild: {
@@ -55,17 +45,17 @@ export default createApp({
           external: [
             "@prisma/client",
             ".prisma/client", 
-            ".prisma",
             "@prisma/engines",
           ],
         },
       },
       // Add module resolution rules for Nitro
       alias: {
-        '.prisma/client': '@prisma/client/.prisma/client',
+        '.prisma/client': './node_modules/.prisma/client',
       },
-      // Explicitly tell Nitro not to bundle these modules
+      // Explicitly tell Nitro not to bundle these modules (merged externals)
       externals: {
+        inline: [],
         traceInclude: [],
         trace: false,
       },
@@ -98,7 +88,6 @@ export default createApp({
               external: [
                 "@prisma/client", 
                 ".prisma/client", 
-                ".prisma",
                 "@prisma/engines",
                 "@prisma/engines-version",
                 /^\.prisma\//,
@@ -110,7 +99,6 @@ export default createApp({
             external: [
               "@prisma/client", 
               ".prisma/client", 
-              ".prisma",
               "@prisma/engines",
               "@prisma/engines-version",
             ],
@@ -120,7 +108,6 @@ export default createApp({
             exclude: [
               "@prisma/client",
               ".prisma/client",
-              ".prisma",
               "@prisma/engines",
             ],
           },
@@ -154,7 +141,6 @@ export default createApp({
               external: [
                 "@prisma/client", 
                 ".prisma/client", 
-                ".prisma",
                 "@prisma/engines",
                 "@prisma/engines-version",
                 /^\.prisma\//,
@@ -166,7 +152,6 @@ export default createApp({
             external: [
               "@prisma/client", 
               ".prisma/client", 
-              ".prisma",
               "@prisma/engines",
               "@prisma/engines-version",
             ],
@@ -176,7 +161,6 @@ export default createApp({
             exclude: [
               "@prisma/client",
               ".prisma/client",
-              ".prisma",
               "@prisma/engines",
             ],
           },

@@ -7,7 +7,6 @@ export default defineConfig({
         // Prisma externalization - comprehensive patterns
         '@prisma/client',
         '.prisma/client',
-        '.prisma',
         '@prisma/engines',
         '@prisma/engines-version',
         /^\.prisma\//,
@@ -37,7 +36,6 @@ export default defineConfig({
     external: [
       '@prisma/client',
       '.prisma/client',
-      '.prisma',
       '@prisma/engines',
       '@prisma/engines-version',
       'pg',
@@ -60,7 +58,6 @@ export default defineConfig({
     exclude: [
       '@prisma/client',
       '.prisma/client',
-      '.prisma',
       '@prisma/engines',
       'pg',
       'mysql2',
