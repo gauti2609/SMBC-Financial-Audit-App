@@ -3,9 +3,11 @@ import { join } from 'path';
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import { homedir } from 'os';
+import { startBackendServer, stopBackendServer, getServerPort } from './server';
 
 // Keep a global reference of the window object
 let mainWindow: BrowserWindow | null = null;
+let serverPort: number = 3100;
 
 // Application settings
 const APP_NAME = 'Financial Statement Generator';
@@ -36,7 +38,8 @@ function createWindow(): void {
     mainWindow.loadURL('http://localhost:3000');
     mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadFile(join(__dirname, '../dist/index.html'));
+    // In production, load from the local server that's running
+    mainWindow.loadURL(`http://localhost:${serverPort}`);
   }
 
   // Show window when ready to prevent visual flash
@@ -62,21 +65,40 @@ function createWindow(): void {
 }
 
 // App event handlers
-app.whenReady().then(() => {
-  createWindow();
-  createMenu();
+app.whenReady().then(async () => {
+  try {
+    // Start the backend server first
+    console.log('[Main] Starting backend server...');
+    serverPort = await startBackendServer();
+    console.log(`[Main] Backend server started on port ${serverPort}`);
+    
+    // Then create the window
+    createWindow();
+    createMenu();
 
-  // Ensure default directories exist
-  ensureDefaultDirectories();
+    // Ensure default directories exist
+    ensureDefaultDirectories();
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
-  });
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+      }
+    });
+  } catch (error) {
+    console.error('[Main] Failed to start backend server:', error);
+    dialog.showErrorBox(
+      'Server Startup Failed',
+      'Failed to start the backend server. The application will now exit.\n\n' +
+      'Error: ' + (error instanceof Error ? error.message : String(error))
+    );
+    app.quit();
+  }
 });
 
-app.on('window-all-closed', () => {
+app.on('window-all-closed', async () => {
+  // Stop the backend server
+  await stopBackendServer();
+  
   if (process.platform !== 'darwin') {
     app.quit();
   }

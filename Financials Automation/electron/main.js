@@ -5,8 +5,10 @@ const path_1 = require("path");
 const promises_1 = require("fs/promises");
 const fs_1 = require("fs");
 const os_1 = require("os");
+const server_1 = require("./server");
 // Keep a global reference of the window object
 let mainWindow = null;
+let serverPort = 3100;
 // Application settings
 const APP_NAME = 'Financial Statement Generator';
 const DEFAULT_DOWNLOAD_PATH = (0, path_1.join)((0, os_1.homedir)(), 'Documents', 'Financial Exports');
@@ -35,7 +37,8 @@ function createWindow() {
         mainWindow.webContents.openDevTools();
     }
     else {
-        mainWindow.loadFile((0, path_1.join)(__dirname, '../dist/index.html'));
+        // In production, load from the local server that's running
+        mainWindow.loadURL(`http://localhost:${serverPort}`);
     }
     // Show window when ready to prevent visual flash
     mainWindow.once('ready-to-show', () => {
@@ -56,18 +59,33 @@ function createWindow() {
     });
 }
 // App event handlers
-electron_1.app.whenReady().then(() => {
-    createWindow();
-    createMenu();
-    // Ensure default directories exist
-    ensureDefaultDirectories();
-    electron_1.app.on('activate', () => {
-        if (electron_1.BrowserWindow.getAllWindows().length === 0) {
-            createWindow();
-        }
-    });
+electron_1.app.whenReady().then(async () => {
+    try {
+        // Start the backend server first
+        console.log('[Main] Starting backend server...');
+        serverPort = await (0, server_1.startBackendServer)();
+        console.log(`[Main] Backend server started on port ${serverPort}`);
+        // Then create the window
+        createWindow();
+        createMenu();
+        // Ensure default directories exist
+        ensureDefaultDirectories();
+        electron_1.app.on('activate', () => {
+            if (electron_1.BrowserWindow.getAllWindows().length === 0) {
+                createWindow();
+            }
+        });
+    }
+    catch (error) {
+        console.error('[Main] Failed to start backend server:', error);
+        electron_1.dialog.showErrorBox('Server Startup Failed', 'Failed to start the backend server. The application will now exit.\n\n' +
+            'Error: ' + (error instanceof Error ? error.message : String(error)));
+        electron_1.app.quit();
+    }
 });
-electron_1.app.on('window-all-closed', () => {
+electron_1.app.on('window-all-closed', async () => {
+    // Stop the backend server
+    await (0, server_1.stopBackendServer)();
     if (process.platform !== 'darwin') {
         electron_1.app.quit();
     }

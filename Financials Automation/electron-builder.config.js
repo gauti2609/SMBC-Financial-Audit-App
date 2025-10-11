@@ -11,8 +11,14 @@ module.exports = {
   
   files: [
     'dist/**/*',
+    '.output/**/*',
     'electron/main.js',
     'electron/preload.js',
+    'electron/server.js',
+    'electron/standalone-server.js',
+    'prisma/schema.prisma',
+    'node_modules/.prisma/**/*',
+    'node_modules/@prisma/**/*',
     'node_modules/**/*',
     '!node_modules/**/*.{md,markdown,txt}',
     '!node_modules/**/LICENSE*',
