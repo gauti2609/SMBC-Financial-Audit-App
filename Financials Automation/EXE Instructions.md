@@ -1,5 +1,16 @@
 # EXE Instructions
 
+**⚠️ IMPORTANT: Backend Integration Update**
+
+The Electron app now includes an **integrated backend server** that enables:
+- ✅ User authentication and login functionality
+- ✅ Local database storage (SQLite)
+- ✅ Full API access for all features
+
+**For technical details about the backend integration**, see [ELECTRON_BACKEND_INTEGRATION.md](./ELECTRON_BACKEND_INTEGRATION.md).
+
+---
+
 This document provides step-by-step instructions for building, installing, and setting up the "Financial Statement Generator" application as a `.exe` file for Windows 10/11 systems. These instructions are designed for users with no coding experience and include detailed guidance for every step.
 
 ## Table of Contents
