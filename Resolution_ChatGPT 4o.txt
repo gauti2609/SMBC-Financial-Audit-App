@@ -1,0 +1,74 @@
+The provided build log reveals several issues that need to be addressed to successfully resolve the errors encountered during the build process. Let's break down the problems and provide solutions:
+
+1. Duplicate Key "externals" in app.config.ts
+Problem:
+The warning indicates that the externals key is defined multiple times in the app.config.ts file (lines 47 and 68), which can lead to unexpected behavior.
+
+Solution:
+Open app.config.ts.
+Resolve the duplicate key issue by merging or removing one of the externals definitions. Ensure that the configuration is consolidated into a single externals key.
+2. Dynamic and Static Imports Conflict
+Problem:
+The log indicates that certain files (e.g., db.ts and minio.ts) are being both statically and dynamically imported. This behavior can lead to issues with module bundling, especially in environments like Vite or Webpack.
+
+Solution:
+Identify the conflicting imports in files such as:
+src/server/trpc/procedures/databaseConnection.ts
+src/server/trpc/root.ts
+Others listed in the log.
+Replace dynamic imports (import()) with static imports (import ... from ...) wherever possible, or vice versa, depending on the use case.
+If dynamic imports are required, ensure proper chunking is configured in your build tool (e.g., Vite or Webpack).
+3. Deprecation Warning: Trailing Slash Pattern in exports Field
+Problem:
+The Prisma client emits a warning about a deprecated trailing slash pattern in the exports field of its package.json.
+
+Solution:
+Update Prisma to the latest version using:
+bash
+pnpm update @prisma/client
+If the issue persists, check node_modules/@prisma/client/package.json and update the exports field to remove trailing slashes ("./").
+4. Invalid Module Name .prisma
+Problem:
+The error indicates that an invalid module ".prisma" is being imported, which is not recognized as a valid package name.
+
+Solution:
+Open node_modules/@prisma/client/default.js and locate the .prisma import.
+Verify that the import paths in your project files and Prisma configuration are correct.
+Ensure that the Prisma client is generated correctly:
+bash
+pnpm exec prisma generate
+If the issue persists, consider regenerating the Prisma client and checking for issues in prisma/schema.prisma.
+5. General Build and Dependency Issues
+Problem:
+The build process is encountering multiple warnings and errors due to outdated dependencies and configuration issues.
+
+Solution:
+Update all dependencies to their latest versions:
+bash
+pnpm update
+Check for breaking changes in the updated dependencies and update your code accordingly (refer to the changelogs of your dependencies).
+6. Additional Warnings: Vite Reporter and Router Builds
+Problem:
+Warnings related to Vite, such as:
+
+"Dynamic import will not move module into another chunk."
+Issues with building routers (trpc, debug, client).
+Solution:
+Ensure that Vite is properly configured to handle dynamic imports and router builds.
+Check vite.config.ts and adjust settings for dynamic imports and chunking as needed.
+Test the build process for each router independently to isolate potential issues.
+Final Steps
+After applying the above solutions:
+
+Clean the build and reinstall dependencies:
+
+bash
+pnpm clean
+pnpm install
+Rebuild the project:
+
+bash
+pnpm run build
+Test the application to ensure everything works as expected.
+
+If you encounter further issues, share the updated logs for detailed troubleshooting.

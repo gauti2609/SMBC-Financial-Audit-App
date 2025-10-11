@@ -1,0 +1,46 @@
+Hello! I see you're encountering a build error with your project. The error TypeError [ERR_INVALID_MODULE_SPECIFIER]: Invalid module ".prisma" is not a valid package name suggests there's an issue with how Prisma is being handled during the server-side build process with Vinxi and Nitro.
+
+This is often due to an incompatibility between the bundler and how the @prisma/client package is structured. I'll use my tools to search for a solution to this specific error.Hello! It looks like you're running into a build error with your project. The error TypeError [ERR_INVALID_MODULE_SPECIFIER]: Invalid module ".prisma" is not a valid package name is a strong indication that the build tool, in this case, Nitropack (used by Vinxi), is having trouble bundling the Prisma client.
+
+This is a common issue when using Prisma with modern bundlers. The bundler incorrectly tries to treat Prisma's internal .prisma directory as a package.
+
+Based on the information from my search and the error log, here's how you can likely resolve it:
+
+You need to configure Nitro to correctly resolve the Prisma client. You can do this by adding an alias to your app.config.ts (or vite.config.ts if you are using Vite directly).
+
+Here is a suggested change for your app.config.ts. You should add the nitro configuration to alias the .prisma/client path.
+
+
+app.config.ts
+import { app } from "vinxi";
+
+export default app({
+  // ... other vinxi config
+  server: {
+    // ... other server config
+Reasoning for this change:
+
+nitro.alias: This configuration tells Nitropack how to resolve module paths.
+".prisma/client": "./node_modules/.prisma/client": This line specifically creates an alias. When Nitropack encounters an import for .prisma/client (which is what @prisma/client/default.js is trying to do internally), it will replace it with the actual path to the generated client in your node_modules directory. This ensures the bundler can correctly locate and bundle the Prisma client.
+Also, I noticed this warning in your build log:
+
+Code
+▲ [WARNING] Duplicate key "externals" in object literal [duplicate-object-key]
+
+    app.config.ts:68:6:
+      68 │       externals: {
+         ╵       ~~~~~~~~~
+
+  The original key "externals" is here:
+
+    app.config.ts:47:6:
+      47 │       externals: {
+         ╵       ~~~~~~~~~
+You have a duplicate externals key in your app.config.ts. You should merge the two externals blocks into one to resolve this warning. While it might not be the direct cause of the Prisma error, it's good practice to fix it.
+
+After making the change to app.config.ts, please try the following steps:
+
+Delete the .vinxi and node_modules directories.
+Run pnpm install to reinstall dependencies.
+Run pnpm run build again.
+Let me know if that helps

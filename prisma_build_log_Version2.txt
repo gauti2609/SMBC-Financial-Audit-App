@@ -1,0 +1,233 @@
+C:\Financials Automation_Github\Financials Automation\Financials Automation>pnpm run build
+
+> first-project@ prebuild C:\Financials Automation_Github\Financials Automation\Financials Automation
+> npm run generate && npm run verify-prisma
+
+
+> generate
+> prisma generate
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+
+✔ Generated Prisma Client (v6.8.2, engine=binary) to .\node_modules\@prisma\client in 228ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+
+> verify-prisma
+> node scripts/verify-prisma
+
+🔍 Verifying Prisma setup...
+✅ Prisma schema found
+✅ DATABASE_URL configured
+✅ Prisma schema is valid
+🔄 Generating Prisma client...
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+
+✔ Generated Prisma Client (v6.8.2, engine=binary) to .\node_modules\@prisma\client in 186ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+✅ Prisma client generated successfully
+✅ Prisma client files found
+🎉 Prisma setup verification completed successfully!
+
+> first-project@ build C:\Financials Automation_Github\Financials Automation\Financials Automation
+> vinxi build
+
+vinxi v0.5.3
+▲ [WARNING] Duplicate key "externals" in object literal [duplicate-object-key]
+
+    app.config.ts:68:6:
+      68 │       externals: {
+         ╵       ~~~~~~~~~
+
+  The original key "externals" is here:
+
+    app.config.ts:47:6:
+      47 │       externals: {
+         ╵       ~~~~~~~~~
+
+[dotenv@17.2.3] injecting env (12) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+
+
+⚙  Building your app...
+vinxi v0.5.3
+▲ [WARNING] Duplicate key "externals" in object literal [duplicate-object-key]
+
+    app.config.ts:68:6:
+      68 │       externals: {
+         ╵       ~~~~~~~~~
+
+  The original key "externals" is here:
+
+    app.config.ts:47:6:
+      47 │       externals: {
+         ╵       ~~~~~~~~~
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+
+
+⚙ Building your router trpc...
+
+
+📦 Compiling trpc router...
+vinxi building router trpc in http mode
+vite v6.3.6 building SSR bundle for production...
+✓ 64 modules transformed.
+[plugin vite:reporter]
+(!) C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/db.ts is dynamically imported by C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/databaseConnection.ts but also statically imported by C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/addCWIPScheduleEntry.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/addContingentLiability.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/addDeferredTaxEntry.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/addEmployeeBenefitEntry.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/addIntangibleScheduleEntry.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/addInvestmentEntry.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/addMinorHead.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/addNoteSelection.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/addPPEScheduleEntry.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/addPayableLedgerEntry.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/addReceivableLedgerEntry.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/addRelatedPartyTransaction.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/addShareCapitalEntry.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/addTaxEntry.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/auth.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/calculateTaxExpense.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/companyManagement.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/debugCompliance.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/deleteDeferredTaxEntry.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/deleteNoteSelection.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/deleteTrialBalanceEntry.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/exportFinancialStatements.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/generateCashFlow.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/generateRatioAnalysis.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/getAccountingPolicies.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/getCWIPScheduleEntries.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/getCommonControl.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/getContingentLiabilities.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/getDeferredTaxEntries.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/getEmployeeBenefitEntries.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/getIntangibleScheduleEntries.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/getInvestmentEntries.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/getMinorHeads.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/getPPEScheduleEntries.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/getPayableLedgerEntries.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/getReceivableLedgerEntries.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/getRelatedPartyTransactions.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/getShareCapitalEntries.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/getTaxEntries.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/initializeAccountingPolicies.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/license.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/updateAccountingPolicy.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/updateDeferredTaxEntry.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/updateNoteNumbers.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/updateNoteSelection.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/updateTrialBalanceEntry.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadContingentLiabilitiesFile.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadDebtorsCreditorsList.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadEmployeeBenefitsFile.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadInvestmentFile.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadPPEFile.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadRelatedPartiesFile.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadShareCapitalFile.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadTrialBalanceFromFile.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/validateScheduleIIICompliance.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/root.ts, dynamic import will not move module into another chunk.
+
+[plugin vite:reporter]
+(!) C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/minio.ts is dynamically imported by C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/root.ts but also statically imported by C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/exportFinancialStatements.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadContingentLiabilitiesFile.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadDebtorsCreditorsList.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadEmployeeBenefitsFile.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadInvestmentFile.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadPPEFile.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadRelatedPartiesFile.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadShareCapitalFile.ts, C:/Financials Automation_Github/Financials Automation/Financials Automation/src/server/trpc/procedures/uploadTrialBalanceFromFile.ts, dynamic import will not move module into another chunk.
+
+.vinxi/build/trpc/trpc/.vite/manifest.json    0.15 kB
+.vinxi/build/trpc/trpc/trpc.js              120.37 kB
+✓ built in 2.48s
+√ build done                                                                                                1:35:24 PM
+⚙ Built your router trpc successfully
+vinxi v0.5.3
+▲ [WARNING] Duplicate key "externals" in object literal [duplicate-object-key]
+
+    app.config.ts:68:6:
+      68 │       externals: {
+         ╵       ~~~~~~~~~
+
+  The original key "externals" is here:
+
+    app.config.ts:47:6:
+      47 │       externals: {
+         ╵       ~~~~~~~~~
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+
+⚙ Building your router debug...
+
+
+📦 Compiling debug router...
+vinxi building router debug in http mode
+vite v6.3.6 building SSR bundle for production...
+✓ 2 modules transformed.
+.vinxi/build/debug/api/debug/client-logs/.vite/manifest.json  0.15 kB
+.vinxi/build/debug/api/debug/client-logs/debug.js             1.16 kB
+✓ built in 334ms
+√ build done                                                                                                1:35:26 PM
+⚙ Built your router debug successfully
+vinxi v0.5.3
+▲ [WARNING] Duplicate key "externals" in object literal [duplicate-object-key]
+
+    app.config.ts:68:6:
+      68 │       externals: {
+         ╵       ~~~~~~~~~
+
+  The original key "externals" is here:
+
+    app.config.ts:47:6:
+      47 │       externals: {
+         ╵       ~~~~~~~~~
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+
+
+⚙ Building your router client...
+
+
+📦 Compiling client router...
+vinxi building router client in spa mode
+vite v6.3.6 building for production...
+✓ 2523 modules transformed.
+.vinxi/build/client/manifest.js                                  0.02 kB
+.vinxi/build/client/index.html                                   0.43 kB │ gzip:   0.27 kB
+.vinxi/build/client/.vite/manifest.json                         12.43 kB │ gzip:   1.32 kB
+.vinxi/build/client/assets/index-CCZ85ouK.css                   33.35 kB │ gzip:   5.86 kB
+.vinxi/build/client/assets/XCircleIcon-DdH1Oaab.js               0.53 kB │ gzip:   0.37 kB
+.vinxi/build/client/assets/ExclamationCircleIcon-6VCR0dNc.js     0.53 kB │ gzip:   0.39 kB
+.vinxi/build/client/assets/InformationCircleIcon-CwkjACsI.js     0.61 kB │ gzip:   0.43 kB
+.vinxi/build/client/assets/PencilIcon-BCNeGISp.js                0.62 kB │ gzip:   0.43 kB
+.vinxi/build/client/assets/ComputerDesktopIcon-CtrdxpuU.js       0.72 kB │ gzip:   0.45 kB
+.vinxi/build/client/assets/EyeIcon-Ck6FjLmm.js                   0.75 kB │ gzip:   0.47 kB
+.vinxi/build/client/assets/EyeSlashIcon-rLIbbIb9.js              0.79 kB │ gzip:   0.51 kB
+.vinxi/build/client/assets/TrashIcon-DYj7CIvA.js                 0.87 kB │ gzip:   0.55 kB
+.vinxi/build/client/assets/ShareIcon-CEUDlxt7.js                 1.74 kB │ gzip:   0.75 kB
+.vinxi/build/client/assets/index-RQjmOfP5.js                     3.48 kB │ gzip:   1.36 kB
+.vinxi/build/client/assets/index-BLwectne.js                     5.79 kB │ gzip:   1.66 kB
+.vinxi/build/client/assets/index-DBAcEiDZ.js                     7.50 kB │ gzip:   2.37 kB
+.vinxi/build/client/assets/index-CjSX2dVc.js                     8.95 kB │ gzip:   2.57 kB
+.vinxi/build/client/assets/index-QOzf3goB.js                    10.90 kB │ gzip:   2.62 kB
+.vinxi/build/client/assets/index-B3Yczkcs.js                    12.90 kB │ gzip:   2.82 kB
+.vinxi/build/client/assets/index-3peKG7R3.js                    12.98 kB │ gzip:   2.40 kB
+.vinxi/build/client/assets/index-7HUlvqEA.js                    13.32 kB │ gzip:   3.44 kB
+.vinxi/build/client/assets/index-2D5cTdh5.js                    13.72 kB │ gzip:   3.52 kB
+.vinxi/build/client/assets/index-Df4iM-9n.js                    14.15 kB │ gzip:   3.66 kB
+.vinxi/build/client/assets/debug.index-C6Evzlft.js              14.37 kB │ gzip:   3.55 kB
+.vinxi/build/client/assets/index-DHSLMY1W.js                    14.38 kB │ gzip:   3.21 kB
+.vinxi/build/client/assets/index-IjlpdEEb.js                    15.09 kB │ gzip:   3.52 kB
+.vinxi/build/client/assets/index-DxBzoOXk.js                    15.30 kB │ gzip:   3.60 kB
+.vinxi/build/client/assets/index-1ZedehLV.js                    15.56 kB │ gzip:   4.72 kB
+.vinxi/build/client/assets/debug-screenshot.index-Cn1Cr-OJ.js   15.64 kB │ gzip:   4.67 kB
+.vinxi/build/client/assets/index-1RinoKJ6.js                    15.68 kB │ gzip:   2.95 kB
+.vinxi/build/client/assets/index-C1sAXd5L.js                    16.04 kB │ gzip:   3.01 kB
+.vinxi/build/client/assets/index-CZCa-dDr.js                    16.12 kB │ gzip:   3.61 kB
+.vinxi/build/client/assets/index-BFJEmMuy.js                    16.37 kB │ gzip:   3.04 kB
+.vinxi/build/client/assets/index-I8LOBMac.js                    20.63 kB │ gzip:   4.59 kB
+.vinxi/build/client/assets/index-CaBVYrX8.js                    25.20 kB │ gzip:   4.86 kB
+.vinxi/build/client/assets/zod-BOCNs8So.js                      29.94 kB │ gzip:  10.99 kB
+.vinxi/build/client/assets/index-BzVsPwZ2.js                    32.72 kB │ gzip:   5.70 kB
+.vinxi/build/client/assets/index-BKQXXI2m.js                    34.40 kB │ gzip:   6.18 kB
+.vinxi/build/client/assets/Layout-_GmgDxFO.js                  199.21 kB │ gzip:  61.14 kB
+.vinxi/build/client/assets/index-Bv8X9ua4.js                   392.74 kB │ gzip: 118.28 kB
+✓ built in 10.61s
+√ build done                                                                                                1:35:39 PM
+⚙ Built your router client successfully
+
+
+⚙  Preparing app for node-server...
+√ Generated public .output/public                                                                     vinxi 1:35:39 PM
+i Building Nitro Server (preset: node-server, compatibility date: 2024-12-01)                         vinxi 1:35:39 PM
+(node:52296) [DEP0155] DeprecationWarning: Use of deprecated trailing slash pattern mapping "./" in the "exports" field module resolution of the package at C:\Financials Automation_Github\Financials Automation\Financials Automation\node_modules\@prisma\client\package.json imported from C:\Financials Automation_Github\Financials Automation\Financials Automation\.vinxi\build\trpc\trpc\trpc.js. Mapping specifiers ending in "/" is no longer supported.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[vinxi 1:35:44 PM]  ERROR  TypeError [ERR_INVALID_MODULE_SPECIFIER]: Invalid module ".prisma" is not a valid package name imported from C:\Financials Automation_Github\Financials Automation\Financials Automation\node_modules\@prisma\client\default.js
+
+
+undefined
+
+
+[1:35:44 PM]  ERROR  Invalid module ".prisma" is not a valid package name imported from C:\Financials Automation_Github\Financials Automation\Financials Automation\node_modules\@prisma\client\default.js
+
+    at __node_internal_ (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/exsolve/dist/index.mjs:159:9)
+    at new NodeError (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/exsolve/dist/index.mjs:130:5)
+    at parsePackageName (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/exsolve/dist/index.mjs:1097:11)
+    at packageResolve (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/exsolve/dist/index.mjs:1110:53)
+    at moduleResolve (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/exsolve/dist/index.mjs:1196:18)
+    at _tryModuleResolve (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/exsolve/dist/index.mjs:1348:12)
+    at resolveModuleURL (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/exsolve/dist/index.mjs:1280:20)
+    at tryResolve (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/nitropack/dist/rollup/index.mjs:345:17)
+    at Object.resolveId (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/nitropack/dist/rollup/index.mjs:413:30)
+    at async PluginDriver.hookFirstAndGetPlugin (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/rollup/dist/es/shared/node-entry.js:22308:28)
+    at async resolveId (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/rollup/dist/es/shared/node-entry.js:20785:26)
+    at async ModuleLoader.resolveId (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/rollup/dist/es/shared/node-entry.js:21221:15)
+    at async Object.handler (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/@rollup/plugin-node-resolve/dist/es/index.js:1333:36)
+    at async PluginDriver.hookFirstAndGetPlugin (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/rollup/dist/es/shared/node-entry.js:22308:28)
+    at async resolveId (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/rollup/dist/es/shared/node-entry.js:20785:26)
+    at async ModuleLoader.resolveId (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/rollup/dist/es/shared/node-entry.js:21221:15)
+    at async /C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/@rollup/plugin-commonjs/dist/es/index.js:801:16
+    at async Promise.all (index 0)
+    at async /C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/@rollup/plugin-commonjs/dist/es/index.js:793:32
+    at async rewriteRequireExpressionsAndGetImportBlock (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/@rollup/plugin-commonjs/dist/es/index.js:1371:28)
+    at async transformCommonjs (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/@rollup/plugin-commonjs/dist/es/index.js:1960:23)
+    at async transform (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/rollup/dist/es/shared/node-entry.js:21139:16)
+    at async ModuleLoader.addModuleSource (/C:/Financials%20Automation_Github/Financials%20Automation/Financials%20Automation/node_modules/rollup/dist/es/shared/node-entry.js:21352:36)
+
+
+
+[1:35:44 PM]  ERROR  Invalid module ".prisma" is not a valid package name imported from C:\Financials Automation_Github\Financials Automation\Financials Automation\node_modules\@prisma\client\default.js
+
+ ELIFECYCLE  Command failed with exit code 1.
