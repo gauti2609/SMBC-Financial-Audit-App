@@ -2,9 +2,10 @@
 
 ## 🎯 Project Status
 
-**Last Updated:** October 10, 2025  
+**Last Updated:** January 11, 2025  
 **Build Status:** ✅ Ready for Windows .exe Generation  
-**Code Status:** ✅ All Issues Resolved
+**Code Status:** ✅ All Issues Resolved  
+**CI/CD Status:** ✅ GitHub Actions Automated Testing Enabled
 
 ---
 
@@ -62,6 +63,25 @@ All project documentation is located in the **`Financials Automation/`** directo
 5. **[WINDOWS_DEPLOYMENT_TEST_REPORT.md](./Financials%20Automation/WINDOWS_DEPLOYMENT_TEST_REPORT.md)**
    - Comprehensive test results
    - Feature validation report
+
+### 🆕 GitHub Actions CI/CD Setup
+
+6. **[GITHUB_ACTIONS_QUICK_START.md](./Financials%20Automation/GITHUB_ACTIONS_QUICK_START.md)** 🚀 NEW!
+   - 5-minute automated testing setup
+   - Solve firewall and dependency issues
+   - Get Windows builds automatically
+
+7. **[GITHUB_ACTIONS_SETUP_GUIDE.md](./Financials%20Automation/GITHUB_ACTIONS_SETUP_GUIDE.md)**
+   - Complete CI/CD documentation
+   - Advanced configuration and best practices
+
+8. **[GITHUB_ACTIONS_VISUAL_GUIDE.md](./Financials%20Automation/GITHUB_ACTIONS_VISUAL_GUIDE.md)**
+   - Visual walkthrough with diagrams
+   - Shows exactly what you'll see
+
+9. **[GITHUB_ACTIONS_TROUBLESHOOTING.md](./Financials%20Automation/GITHUB_ACTIONS_TROUBLESHOOTING.md)**
+   - Debug workflow failures
+   - Common issues and solutions
 
 ---
 
@@ -152,6 +172,49 @@ pnpm run electron:dist:win
 ```
 
 For detailed instructions, see [EXE Instructions.md](./Financials%20Automation/EXE%20Instructions.md) or [STATUS_REPORT.md](./Financials%20Automation/STATUS_REPORT.md).
+
+---
+
+## 🔄 Automated Testing with GitHub Actions
+
+### NEW: GitHub Actions CI/CD Setup
+
+We've added **automated Windows 10/11 testing** that solves firewall and dependency installation issues!
+
+**What You Get:**
+- ✅ Automatic testing on every commit
+- ✅ No firewall or network blocks
+- ✅ All dependencies install automatically
+- ✅ Windows installer (.exe) generated automatically
+- ✅ Build artifacts available for download
+
+### Quick Setup
+
+**5-Minute Setup:**
+1. Enable GitHub Actions in repository settings
+2. Push code to `main` or `develop` branch
+3. View results in the **Actions** tab
+4. Download Windows installer from artifacts
+
+**Complete Documentation:**
+- 🚀 [Quick Start (5 min)](./Financials%20Automation/GITHUB_ACTIONS_QUICK_START.md)
+- 📘 [Complete Setup Guide](./Financials%20Automation/GITHUB_ACTIONS_SETUP_GUIDE.md)
+- 🎨 [Visual Walkthrough](./Financials%20Automation/GITHUB_ACTIONS_VISUAL_GUIDE.md)
+- 🔧 [Troubleshooting](./Financials%20Automation/GITHUB_ACTIONS_TROUBLESHOOTING.md)
+- 🎉 [Setup Summary](./Financials%20Automation/GITHUB_ACTIONS_SETUP_COMPLETE.md)
+
+### Why Use GitHub Actions?
+
+**Before (Local Build):**
+- ❌ Firewall blocks dependency downloads
+- ❌ Manual environment setup required
+- ❌ Inconsistent builds across machines
+
+**After (GitHub Actions):**
+- ✅ No firewall issues - runs in GitHub's infrastructure
+- ✅ Automatic clean environment setup
+- ✅ Consistent builds every time
+- ✅ Easy debugging with detailed logs
 
 ---
 
