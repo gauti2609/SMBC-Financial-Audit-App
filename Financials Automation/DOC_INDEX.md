@@ -11,6 +11,23 @@ This project has multiple documentation files. Here's a quick guide to which fil
 - Includes troubleshooting for common errors
 - Progress tracking checklist
 
+## For Developers & Testers
+
+🧪 **Test Environment Setup:** [TEST_ENVIRONMENT_SETUP.md](./TEST_ENVIRONMENT_SETUP.md)
+- Complete guide for setting up test environment
+- Docker-based setup (matches CI/CD)
+- Native setup for Windows/Mac/Linux
+- Step-by-step dependency installation
+- Environment verification steps
+- Comprehensive troubleshooting
+
+⚡ **Quick Commands:** [QUICK_TEST_COMMANDS.md](./QUICK_TEST_COMMANDS.md)
+- Quick reference for test commands
+- Development and build commands
+- Docker commands
+- Common workflows
+- Troubleshooting quick fixes
+
 ## If You Have Installation Errors
 
 🔧 **Quick Fix:** [QUICK_FIX_GUIDE.md](./QUICK_FIX_GUIDE.md)
@@ -54,7 +71,9 @@ This project has multiple documentation files. Here's a quick guide to which fil
 
 | Your Situation | Use This File |
 |----------------|---------------|
-| First time installing | INSTALLATION_GUIDE.md |
+| First time installing (end user) | INSTALLATION_GUIDE.md |
+| Setting up test environment | TEST_ENVIRONMENT_SETUP.md |
+| Need quick command reference | QUICK_TEST_COMMANDS.md |
 | Got an installation error | QUICK_FIX_GUIDE.md |
 | Want to understand the fix | PRISMA_FIX_FINAL.md |
 | Need project overview | README.md |
@@ -67,17 +86,20 @@ This project has multiple documentation files. Here's a quick guide to which fil
 
 ```
 📁 Financials Automation/
-├── 📄 INSTALLATION_GUIDE.md        ⭐ START HERE (New Users)
-├── 📄 QUICK_FIX_GUIDE.md           🔧 If you have errors
-├── 📄 README.md                    📖 Project overview
-├── 📄 PRISMA_FIX_FINAL.md         🔬 Technical details
-├── 📄 ISSUE_RESOLVED_SUMMARY.md   📋 Executive summary
-├── 📄 BEFORE_AFTER_COMPARISON.md  📸 Visual changes
-├── 📄 BUILD_FIXES_SUMMARY.md      💻 All build fixes
-└── 📄 DOC_INDEX.md                📚 This file
+├── 📄 INSTALLATION_GUIDE.md            ⭐ START HERE (End Users)
+├── 📄 TEST_ENVIRONMENT_SETUP.md        🧪 Test Setup (Developers)
+├── 📄 QUICK_TEST_COMMANDS.md           ⚡ Command Reference
+├── 📄 QUICK_FIX_GUIDE.md               🔧 If you have errors
+├── 📄 README.md                        📖 Project overview
+├── 📄 PRISMA_FIX_FINAL.md             🔬 Technical details
+├── 📄 ISSUE_RESOLVED_SUMMARY.md       📋 Executive summary
+├── 📄 BEFORE_AFTER_COMPARISON.md      📸 Visual changes
+├── 📄 BUILD_FIXES_SUMMARY.md          💻 All build fixes
+├── 📄 VERIFICATION_AND_TROUBLESHOOTING.md  🔍 Build verification
+└── 📄 DOC_INDEX.md                    📚 This file
 ```
 
 ---
 
-**Last Updated:** 2025-10-10  
+**Last Updated:** 2025-10-11  
 **For Questions:** Refer to the specific guide above or open a GitHub issue
