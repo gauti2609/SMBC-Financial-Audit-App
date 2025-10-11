@@ -31,6 +31,7 @@ async function startBackendServer() {
     process.env.JWT_SECRET = process.env.JWT_SECRET || 'electron-app-secret-key-change-in-production';
     process.env.ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
     process.env.PORT = serverPort.toString();
+    process.env.ELECTRON_APP = 'true'; // Flag to disable MinIO
     return new Promise((resolve, reject) => {
         try {
             // Start the Vinxi server
