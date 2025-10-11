@@ -20,7 +20,12 @@ const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<AppRouter>();
 export { useTRPC, useTRPCClient };
 
 function getBaseUrl() {
-  if (typeof window !== "undefined") return window.location.origin;
+  if (typeof window !== 'undefined') {
+    // In the browser, we use a relative path which will be handled by the static server.
+    return '';
+  }
+  // On the server (during SSR, though not used in this setup) or from Electron's main process,
+  // we would use the full URL. For client-side tRPC in Electron, this is sufficient.
   return `http://localhost:3000`;
 }
 
@@ -39,11 +44,11 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
           condition: (op) => op.type === "subscription",
           false: httpBatchStreamLink({
             transformer: SuperJSON,
-            url: getBaseUrl() + "/trpc",
+            url: `${getBaseUrl()}/trpc`,
           }),
           true: httpSubscriptionLink({
             transformer: SuperJSON,
-            url: getBaseUrl() + "/trpc",
+            url: `${getBaseUrl()}/trpc`,
           }),
         }),
       ],

@@ -5,8 +5,10 @@ const path_1 = require("path");
 const promises_1 = require("fs/promises");
 const fs_1 = require("fs");
 const os_1 = require("os");
+const { fork } = require('child_process');
 // Keep a global reference of the window object
 let mainWindow = null;
+let nitroServer;
 // Application settings
 const APP_NAME = 'Financial Statement Generator';
 const DEFAULT_DOWNLOAD_PATH = (0, path_1.join)((0, os_1.homedir)(), 'Documents', 'Financial Exports');
@@ -35,7 +37,56 @@ function createWindow() {
         mainWindow.webContents.openDevTools();
     }
     else {
-        mainWindow.loadFile((0, path_1.join)(__dirname, '../dist/index.html'));
+        const http = require('http');
+        const staticDir = (0, path_1.join)(__dirname, '../.output/public');
+        const server = http.createServer((req, res) => {
+            try {
+                const requestUrl = new URL(req.url || '/', 'http://127.0.0.1');
+                let pathname = decodeURIComponent(requestUrl.pathname);
+                if (pathname === '/') pathname = '/index.html';
+                const safePath = (0, path_1.normalize)(pathname).replace(/^(\.{2}(\\|\/|$))+/, '');
+                const filePath = (0, path_1.join)(staticDir, safePath.replace(/^\//, ''));
+                (0, fs_1.stat)(filePath, (err, stats) => {
+                    if (err || !stats.isFile()) {
+                        res.statusCode = 404;
+                        res.end('Not found');
+                        return;
+                    }
+                    const ext = (0, path_1.extname)(filePath).toLowerCase();
+                    const mime = {
+                        '.html': 'text/html',
+                        '.js': 'application/javascript',
+                        '.css': 'text/css',
+                        '.json': 'application/json',
+                        '.ico': 'image/x-icon',
+                        '.svg': 'image/svg+xml',
+                        '.png': 'image/png',
+                        '.jpg': 'image/jpeg',
+                        '.jpeg': 'image/jpeg',
+                        '.woff': 'font/woff',
+                        '.woff2': 'font/woff2',
+                        '.map': 'application/json',
+                    }[ext] || 'application/octet-stream';
+                    res.setHeader('Content-Type', mime);
+                    (0, fs_1.createReadStream)(filePath).pipe(res);
+                });
+            } catch (e) {
+                res.statusCode = 500;
+                res.end('Server error');
+            }
+        });
+        server.listen(0, '127.0.0.1', () => {
+            const address = server.address();
+            const port = typeof address === 'object' && address ? address.port : 0;
+            mainWindow.loadURL(`http://127.0.0.1:${port}/index.html`);
+            mainWindow.webContents.openDevTools();
+        });
+        server.on('error', (err) => {
+            console.error('Static server error:', err);
+            const fallbackPath = (0, path_1.join)(__dirname, '../.output/public/index.html');
+            mainWindow.loadFile(fallbackPath);
+            mainWindow.webContents.openDevTools();
+        });
     }
     // Show window when ready to prevent visual flash
     mainWindow.once('ready-to-show', () => {
@@ -57,6 +108,7 @@ function createWindow() {
 }
 // App event handlers
 electron_1.app.whenReady().then(() => {
+    startNitroServer();
     createWindow();
     createMenu();
     // Ensure default directories exist
@@ -72,6 +124,35 @@ electron_1.app.on('window-all-closed', () => {
         electron_1.app.quit();
     }
 });
+
+electron_1.app.on('quit', () => {
+    if (nitroServer) {
+        nitroServer.kill();
+    }
+});
+
+function startNitroServer() {
+    const serverPath = (0, path_1.join)(__dirname, '../.output/server/index.mjs');
+    console.log(`Starting Nitro server from: ${serverPath}`);
+
+    nitroServer = fork(serverPath, [], {
+        stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+        env: { ...process.env, NODE_ENV: 'production' }
+    });
+
+    nitroServer.stdout.on('data', (data) => {
+        console.log(`[Nitro Server]: ${data}`);
+    });
+
+    nitroServer.stderr.on('data', (data) => {
+        console.error(`[Nitro Server Error]: ${data}`);
+    });
+
+    nitroServer.on('close', (code) => {
+        console.log(`Nitro server exited with code ${code}`);
+    });
+}
+
 // Create application menu
 function createMenu() {
     const template = [
@@ -316,3 +397,4 @@ electron_1.ipcMain.handle('app-name', () => {
 electron_1.ipcMain.handle('get-app-path', (event, name) => {
     return electron_1.app.getPath(name);
 });
+//# sourceMappingURL=main.js.map

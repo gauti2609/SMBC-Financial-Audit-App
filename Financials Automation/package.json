@@ -1,6 +1,9 @@
 {
   "name": "first-project",
-  "main": "electron/main.js",
+  "version": "1.0.0",
+  "description": "Financial Audit Automation Tool",
+  "author": "SMBC",
+  "main": "electron/main.cjs",
   "homepage": "./",
   "scripts": {
     "postinstall": "echo 'Generating TanStack Router...' && tsr generate",
@@ -100,7 +103,7 @@
     "wait-on": "^7.2.0"
   },
   "build": {
-    "extends": "./electron-builder.config.js"
+    "extends": "./electron-builder.config.cjs"
   },
   "private": true,
   "type": "module"

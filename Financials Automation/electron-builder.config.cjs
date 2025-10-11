@@ -10,8 +10,8 @@ module.exports = {
   },
   
   files: [
-    'dist/**/*',
-    'electron/main.js',
+    '.output/**/*',
+    'electron/main.cjs',
     'electron/preload.js',
     'node_modules/**/*',
     '!node_modules/**/*.{md,markdown,txt}',
@@ -40,16 +40,12 @@ module.exports = {
   win: {
     target: [
       {
-        target: 'nsis',
-        arch: ['x64']  // Focus on x64 for Windows 10/11
-      },
-      {
         target: 'portable',
         arch: ['x64']
       }
     ],
     // icon: 'electron/assets/icon.ico', // Temporarily commented - use PNG until ICO is available
-    icon: 'electron/assets/icon.png', // Use existing PNG file
+    // icon: 'electron/assets/icon.png', // Use existing PNG file
     artifactName: '${productName}-${version}-windows-${arch}.${ext}',
     publisherName: 'Financial Statement Generator',
     verifyUpdateCodeSignature: false,
@@ -58,38 +54,6 @@ module.exports = {
     // Windows 10/11 specific optimizations
     signAndEditExecutable: false,
     signDlls: false,
-    
-    // File associations for financial files - commented out until icons are available
-    /*
-    fileAssociations: [
-      {
-        ext: 'xlsx',
-        name: 'Excel Workbook',
-        description: 'Microsoft Excel Workbook',
-        role: 'Editor',
-        icon: 'electron/assets/excel-icon.ico'
-      },
-      {
-        ext: 'csv',
-        name: 'CSV File', 
-        description: 'Comma Separated Values File',
-        role: 'Editor',
-        icon: 'electron/assets/csv-icon.ico'
-      },
-      {
-        ext: 'json',
-        name: 'JSON Data File',
-        description: 'JavaScript Object Notation Data File',
-        role: 'Editor'
-      }
-    ],
-    */
-    
-    // Windows registry entries
-    env: {
-      ELECTRON_IS_DEV: '0',
-      NODE_ENV: 'production'
-    }
   },
 
   // Windows installer (NSIS) configuration - optimized for deployment
@@ -97,9 +61,9 @@ module.exports = {
     oneClick: false,
     allowElevation: true,
     allowToChangeInstallationDirectory: true,
-    installerIcon: 'electron/assets/icon.png',
-    uninstallerIcon: 'electron/assets/icon.png',
-    installerHeaderIcon: 'electron/assets/icon.png',
+    // installerIcon: 'electron/assets/icon.png',
+    // uninstallerIcon: 'electron/assets/icon.png',
+    // installerHeaderIcon: 'electron/assets/icon.png',
     createDesktopShortcut: 'always',
     createStartMenuShortcut: true,
     shortcutName: 'Financial Statement Generator',
@@ -129,24 +93,10 @@ module.exports = {
     // Advanced NSIS options for Windows 10/11
     packElevateHelper: true,
     perMachine: false, // Install per user by default (recommended for Windows 10/11)
-    allowElevation: true,
-    multiUserInstallation: false,
     
     // Windows 10/11 compatibility
     unicode: true,
     warningsAsErrors: false,
-    
-    // Custom NSIS defines for enhanced Windows integration
-    defines: {
-      APP_DESCRIPTION: 'Professional Financial Statement Generation Tool for Schedule III Compliance',
-      COMPANY_NAME: 'Financial Statement Generator',
-      COPYRIGHT: 'Copyright © 2024 Financial Statement Generator',
-      APP_VERSION: '${version}',
-      INSTALL_MODE_PER_ALL_USERS: 'false',
-      // Windows 10/11 specific defines
-      WIN10_COMPATIBILITY: 'true',
-      MODERN_UI: 'true'
-    },
     
     // Uninstaller configuration
     uninstallDisplayName: '${productName}',
@@ -160,7 +110,6 @@ module.exports = {
     // certificatePassword: 'certificate_password',
     
     // Additional Windows integration
-    deleteAppDataOnUninstall: false,
     differentialPackage: true
   },
 
@@ -213,18 +162,6 @@ module.exports = {
       publishAutoUpdate: true
     }
   ],
-
-  // Directories and paths
-  buildResources: 'electron/assets',
-  
-  // Additional Windows-specific metadata
-  win32metadata: {
-    CompanyName: 'Financial Statement Generator',
-    FileDescription: 'Professional Financial Statement Generation Tool',
-    OriginalFilename: 'Financial Statement Generator.exe',
-    ProductName: 'Financial Statement Generator',
-    InternalName: 'financial-statement-generator'
-  },
 
   // macOS configuration (for future cross-platform support)
   mac: {

@@ -11,9 +11,19 @@ import { config } from "vinxi/plugins/config";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 import { consoleForwardPlugin } from "./vite-console-forward-plugin";
 
+// Helper function to define Prisma externals
+const prismaExternals = [
+  "@prisma/client",
+  ".prisma/client",
+  "@prisma/engines",
+  "@prisma/engines-version",
+  /^\.prisma\//,
+  /^@prisma\//,
+];
+
 export default createApp({
   server: {
-    preset: "node-server", // change to 'netlify' or 'bun' or anyof the supported presets for nitro (nitro.unjs.io)
+    preset: "node-server",
     experimental: {
       asyncContext: true,
     },
@@ -21,43 +31,33 @@ export default createApp({
       experimental: {
         wasm: true,
       },
+      // Centralized externals configuration for Nitro
+      externals: {
+        // Trace and bundle these dependencies
+        inline: [],
+        // Exclude these from the bundle
+        external: prismaExternals,
+        trace: false,
+      },
+      // Alias to fix Prisma's internal module resolution
+      alias: {
+        ".prisma/client": "./node_modules/.prisma/client",
+      },
+      // Ensure esbuild also respects the externals
+      esbuild: {
+        options: {
+          external: prismaExternals,
+        },
+      },
+      // Rollup config for fine-tuning
       rollupConfig: {
-        external: [
-          "@prisma/client", 
-          ".prisma/client", 
-          "@prisma/engines",
-          "@prisma/engines-version",
-          // Add specific patterns to handle .prisma module resolution
-          /^\.prisma\/.*/,
-          ".prisma/client/default",
-          ".prisma/client/index",
-        ],
+        external: prismaExternals,
         resolve: {
           preferBuiltins: true,
         },
         output: {
           manualChunks: undefined,
         },
-      },
-      moduleSideEffects: false,
-      esbuild: {
-        options: {
-          external: [
-            "@prisma/client",
-            ".prisma/client", 
-            "@prisma/engines",
-          ],
-        },
-      },
-      // Add module resolution rules for Nitro
-      alias: {
-        '.prisma/client': './node_modules/.prisma/client',
-      },
-      // Explicitly tell Nitro not to bundle these modules (merged externals)
-      externals: {
-        inline: [],
-        traceInclude: [],
-        trace: false,
       },
     },
   },
@@ -74,47 +74,6 @@ export default createApp({
       handler: "./src/server/trpc/handler.ts",
       target: "server",
       plugins: () => [
-        config("allowedHosts", {
-          // @ts-ignore
-          server: {
-            allowedHosts: process.env.BASE_URL
-              ? [process.env.BASE_URL.split("://")[1]]
-              : undefined,
-          },
-        }),
-        config("rollupOptions", {
-          build: {
-            rollupOptions: {
-              external: [
-                "@prisma/client", 
-                ".prisma/client", 
-                "@prisma/engines",
-                "@prisma/engines-version",
-                /^\.prisma\//,
-                /^@prisma\//,
-              ],
-            },
-          },
-          ssr: {
-            external: [
-              "@prisma/client", 
-              ".prisma/client", 
-              "@prisma/engines",
-              "@prisma/engines-version",
-            ],
-            noExternal: [],
-          },
-          optimizeDeps: {
-            exclude: [
-              "@prisma/client",
-              ".prisma/client",
-              "@prisma/engines",
-            ],
-          },
-          define: {
-            global: "globalThis",
-          },
-        }),
         tsConfigPaths({
           projects: ["./tsconfig.json"],
         }),
@@ -127,47 +86,6 @@ export default createApp({
       handler: "./src/server/debug/client-logs-handler.ts",
       target: "server",
       plugins: () => [
-        config("allowedHosts", {
-          // @ts-ignore
-          server: {
-            allowedHosts: process.env.BASE_URL
-              ? [process.env.BASE_URL.split("://")[1]]
-              : undefined,
-          },
-        }),
-        config("rollupOptions", {
-          build: {
-            rollupOptions: {
-              external: [
-                "@prisma/client", 
-                ".prisma/client", 
-                "@prisma/engines",
-                "@prisma/engines-version",
-                /^\.prisma\//,
-                /^@prisma\//,
-              ],
-            },
-          },
-          ssr: {
-            external: [
-              "@prisma/client", 
-              ".prisma/client", 
-              "@prisma/engines",
-              "@prisma/engines-version",
-            ],
-            noExternal: [],
-          },
-          optimizeDeps: {
-            exclude: [
-              "@prisma/client",
-              ".prisma/client",
-              "@prisma/engines",
-            ],
-          },
-          define: {
-            global: "globalThis",
-          },
-        }),
         tsConfigPaths({
           projects: ["./tsconfig.json"],
         }),
@@ -179,14 +97,6 @@ export default createApp({
       handler: "./index.html",
       target: "browser",
       plugins: () => [
-        config("allowedHosts", {
-          // @ts-ignore
-          server: {
-            allowedHosts: process.env.BASE_URL
-              ? [process.env.BASE_URL.split("://")[1]]
-              : undefined,
-          },
-        }),
         tsConfigPaths({
           projects: ["./tsconfig.json"],
         }),
