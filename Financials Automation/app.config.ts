@@ -28,9 +28,17 @@ export default createApp({
           ".prisma",
           "@prisma/engines",
           "@prisma/engines-version",
+          // Add specific patterns to handle .prisma module resolution
+          /^\.prisma\/.*/,
+          ".prisma/client/default",
+          ".prisma/client/index",
         ],
         resolve: {
           preferBuiltins: true,
+          // Add alias to help resolve .prisma paths correctly
+          alias: {
+            '.prisma/client': '@prisma/client/.prisma/client',
+          },
         },
         output: {
           manualChunks: undefined,
@@ -51,6 +59,15 @@ export default createApp({
             "@prisma/engines",
           ],
         },
+      },
+      // Add module resolution rules for Nitro
+      alias: {
+        '.prisma/client': '@prisma/client/.prisma/client',
+      },
+      // Explicitly tell Nitro not to bundle these modules
+      externals: {
+        traceInclude: [],
+        trace: false,
       },
     },
   },
