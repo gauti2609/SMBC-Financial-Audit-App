@@ -1,0 +1,272 @@
+Account	 Net Debit 	 Net Credit 	 Net Figures 	Part	Head	Sub-Head	Notes to Accounts	Major Head
+Accounts Receivable	 46,577,665.27 	 -   	 46,577,665.27 	Balance Sheet	Current Assets	Trade Receivables	Trade Receivables	Assets
+Accumulated Depriciation	 -   	 1,906,638.26 	 -1,906,638.26 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Property, Plant and Equipments	Assets
+Computer	 -   	 40,224.73 	 -40,224.73 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Computer	Assets
+Laptop	 2,663,248.00 	 -   	 2,663,248.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Computer	Assets
+Mobile	 52,566.36 	 -   	 52,566.36 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Computer	Assets
+Monitor	 158,337.65 	 -   	 158,337.65 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Computer	Assets
+Electricity Deposit-Advant	 10,000.00 	 -   	 10,000.00 	Balance Sheet	Current Assets	Other Non Current Assets	Security Deposits	Assets
+Office Maintenance- Advant	 250,379.00 	 -   	 250,379.00 	Balance Sheet	Current Assets	Other Non Current Assets	Security Deposits	Assets
+Power Security Deposit- WHM	 660,000.00 	 -   	 660,000.00 	Balance Sheet	Current Assets	Other Non Current Assets	Security Deposits	Assets
+Security Deposit -WH Bangalore	 1,417,190.00 	 -   	 1,417,190.00 	Balance Sheet	Current Assets	Other Non Current Assets	Security Deposits	Assets
+Security Deposit -WH Muzaffarnagar	 1,080,000.00 	 -   	 1,080,000.00 	Balance Sheet	Current Assets	Other Non Current Assets	Security Deposits	Assets
+Security Deposit -WH Noida	 145,000.00 	 -   	 145,000.00 	Balance Sheet	Current Assets	Other Non Current Assets	Security Deposits	Assets
+Security Deposit-Advant Rent	 736,596.00 	 -   	 736,596.00 	Balance Sheet	Current Assets	Other Non Current Assets	Security Deposits	Assets
+Security Deposit-Noida Spectra	 2,000.00 	 -   	 2,000.00 	Balance Sheet	Current Assets	Other Non Current Assets	Security Deposits	Assets
+Security Deposit-Singapore	 57,000.00 	 -   	 57,000.00 	Balance Sheet	Current Assets	Other Non Current Assets	Security Deposits	Assets
+Developments Charges	 750,000.00 	 -   	 750,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Property, Plant and Equipments	Assets
+Finished Goods	 10,571,351.57 	 -   	 10,571,351.57 	Balance Sheet	Current Assets	Inventories	Finished Goods	Assets
+Furniture and Fixture	 2,295,238.20 	 -   	 2,295,238.20 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Furniture and Fixture	Assets
+Racks	 251,000.00 	 -   	 251,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Furniture and Fixture	Assets
+Turbo Vantilator	 30,000.00 	 -   	 30,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Furniture and Fixture	Assets
+ICICI BANK-3618	 175,613.88 	 -   	 175,613.88 	Balance Sheet	Current Assets	Cash and Cash Equivalents	ICICI Bank	Assets
+ICICI BANK-3947	 260,219.63 	 -   	 260,219.63 	Balance Sheet	Current Assets	Cash and Cash Equivalents	ICICI Bank	Assets
+IndusInd Bank	 909,017.07 	 -   	 909,017.07 	Balance Sheet	Current Assets	Cash and Cash Equivalents	IndusInd Bank	Assets
+Input CGST	 13,448,852.17 	 -   	 13,448,852.17 	Balance Sheet	Current Assets	Other current assets	Balance with GST Authorities	Assets
+Input IGST	 8,397,860.54 	 -   	 8,397,860.54 	Balance Sheet	Current Assets	Other current assets	Balance with GST Authorities	Assets
+Input SGST	 13,448,790.18 	 -   	 13,448,790.18 	Balance Sheet	Current Assets	Other current assets	Balance with GST Authorities	Assets
+Inventory Asset	 30,689,623.66 	 -   	 30,689,623.66 	Balance Sheet	Current Assets	Inventories	Finished Goods	Assets
+Land and Building	 316,000.00 	 -   	 316,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Land and Building	Assets
+Office Eqipments	 37,798.05 	 -   	 37,798.05 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+Air Conditioner	 91,759.60 	 -   	 91,759.60 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+Biometric Machine	 21,170.00 	 -   	 21,170.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+CCTV Camera	 156,505.96 	 -   	 156,505.96 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+Convection Microwave	 22,193.00 	 -   	 22,193.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+Cooler	 12,300.00 	 -   	 12,300.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+Electrical Fittings	 1,391,697.20 	 -   	 1,391,697.20 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+General Fittings	 27,783.00 	 -   	 27,783.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+HDD-4 Tb	 6,500.00 	 -   	 6,500.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+Printer	 59,773.37 	 -   	 59,773.37 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+Refrigerator	 21,610.00 	 -   	 21,610.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+Safety Eqipuments	 379,660.00 	 -   	 379,660.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+Smart- LED TV	 27,962.00 	 -   	 27,962.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+Stablizer	 106,390.00 	 -   	 106,390.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+TP-Link EAP 225AC 1350	 8,050.00 	 -   	 8,050.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+Water Filter	 34,133.20 	 -   	 34,133.20 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Office Equipments	Assets
+Plant & Machinery	 -   	 1,598,315.49 	 -1,598,315.49 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Agitator For Dosing Tank	 252,400.00 	 -   	 252,400.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Air Compressor	 1,200,000.00 	 -   	 1,200,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+APFC Panel	 165,000.00 	 -   	 165,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Areca leaf Plate Scrubbing Machine	 65,000.00 	 -   	 65,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Automatic L Sealer	 1,160,000.00 	 -   	 1,160,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Centicleaner System	 456,000.00 	 -   	 456,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Chimney	 516,850.00 	 -   	 516,850.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Cooling Tower	 50,000.00 	 -   	 50,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Die-10Sq	 1,041,834.04 	 -   	 1,041,834.04 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Die-5 RO	 82,315.92 	 -   	 82,315.92 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Die-6 RO	 1,044,715.82 	 -   	 1,044,715.82 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Die-8 SQ	 844,379.22 	 -   	 844,379.22 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Dosing Pumps	 40,000.00 	 -   	 40,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Electric Motor	 957,875.00 	 -   	 957,875.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Electricity Charges -MZ	 605,176.00 	 -   	 605,176.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Forming hot press & trimming machine	 7,800,000.00 	 -   	 7,800,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Gear Box & Motor Fittings	 855,000.00 	 -   	 855,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Gear Box V 6	 30,000.00 	 -   	 30,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Gear Box V 7	 80,000.00 	 -   	 80,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Gear Box V 8	 52,000.00 	 -   	 52,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Generator	 1,787,700.00 	 -   	 1,787,700.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Globe Valve	 103,590.00 	 -   	 103,590.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Hand Pallet Truck	 225,210.00 	 -   	 225,210.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Hydraulic Machine Leaf Plate High Speed Heavy Machine	 695,712.00 	 -   	 695,712.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Industrial Oven	 282,450.00 	 -   	 282,450.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Installation Expenses	 17,808,833.53 	 -   	 17,808,833.53 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Inverter	 7,600.00 	 -   	 7,600.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Inverter Battery	 18,000.00 	 -   	 18,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+L-Sealer Machine	 87,150.00 	 -   	 87,150.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Lease Rent MZ	 1,701,000.00 	 -   	 1,701,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Mold 16 Oz Bowl	 1,059,050.00 	 -   	 1,059,050.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Mold 6 Inch Plate	 1,059,050.00 	 -   	 1,059,050.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Pulp Pumps	 932,400.00 	 -   	 932,400.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Semi -Automatic Fiber Pulpmolding Thermoforming Machine	 20,700,000.00 	 -   	 20,700,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Shrink Packing Machine	 230,000.00 	 -   	 230,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+SS Tank	 4,949,749.99 	 -   	 4,949,749.99 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+TDR Refineering	 323,500.00 	 -   	 323,500.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Transformer	 1,668,702.00 	 -   	 1,668,702.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Vacuum Pump	 804,960.00 	 -   	 804,960.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Vertical Thermopac Thermic Fluid	 1,650,000.00 	 -   	 1,650,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+VFD Panel	 384,237.00 	 -   	 384,237.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Water Pump	 237,990.00 	 -   	 237,990.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Welding Machine	 17,250.00 	 -   	 17,250.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Plant and Machinery	Assets
+Prepaid Expenses	 1,712,972.55 	 -   	 1,712,972.55 	Balance Sheet	Current Assets	Other current assets	Advance to Suppliers	Assets
+Prepaid Expenses-1	 115,909.96 	 -   	 115,909.96 	Balance Sheet	Current Assets	Other current assets	Prepaid Expenses	Assets
+Prepaid Insurance	 635,942.28 	 -   	 635,942.28 	Balance Sheet	Current Assets	Other current assets	Prepaid Insurance	Assets
+Prepaid Lease Rent	 55,056.75 	 -   	 55,056.75 	Balance Sheet	Current Assets	Other current assets	Prepaid Lease Rent	Assets
+Reverse Charge Tax Input but not due	 485,874.56 	 -   	 485,874.56 	Balance Sheet	Current Assets	Other current assets	Balance with GST Authorities	Assets
+TCS Receivable	 2,599.47 	 -   	 2,599.47 	Balance Sheet	Current Assets	Other current assets	Balance with Income Tax Authorities	Assets
+TCS CGST	 569.96 	 -   	 569.96 	Balance Sheet	Current Assets	Other current assets	Balance with GST Authorities	Assets
+TCS IGST	 2,185.61 	 -   	 2,185.61 	Balance Sheet	Current Assets	Other current assets	Balance with GST Authorities	Assets
+TCS SGST	 569.96 	 -   	 569.96 	Balance Sheet	Current Assets	Other current assets	Balance with GST Authorities	Assets
+TDS Receivable	 391,085.60 	 -   	 391,085.60 	Balance Sheet	Current Assets	Other current assets	Balance with Income Tax Authorities	Assets
+Car	 5,445,365.01 	 -   	 5,445,365.01 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Motor Vechile	Assets
+Moter-2 Wheeler	 122,000.00 	 -   	 122,000.00 	Balance Sheet	Non-Current Assets	Property, Plant and Equipment	Motor Vechile	Assets
+Work In Progress	 157,535.00 	 -   	 157,535.00 	Balance Sheet	Current Assets	Inventories	Work in Progress	Assets
+Accounts Payable	 -   	 78,854,210.93 	 -78,854,210.93 	Balance Sheet	Current Liablities	Trade Payables	Other Creditors	Equity and Liablities
+Accured Interest	 -   	 980,903.00 	 -980,903.00 	Balance Sheet	Current Liablities	Other Current Liabilities	Interest Accured and due on Borrowings	Equity and Liablities
+ALTERIAFUNDII00027	 -   	 40,000,000.00 	 -40,000,000.00 	Balance Sheet	Non-Current Liablities	Long Term Borrowings	14.20 % Debentures	Equity and Liablities
+ALTERIAFUNDII00202	 -   	 13,333,333.00 	 -13,333,333.00 	Balance Sheet	Non-Current Liablities	Long Term Borrowings	14.20 % Debentures	Equity and Liablities
+ALTERIAFUNDII00224	 -   	 14,000,000.00 	 -14,000,000.00 	Balance Sheet	Non-Current Liablities	Long Term Borrowings	14.20 % Debentures	Equity and Liablities
+ALTERIAFUNDIIIA0047	 -   	 14,000,000.00 	 -14,000,000.00 	Balance Sheet	Non-Current Liablities	Long Term Borrowings	14.20 % Debentures	Equity and Liablities
+Deffered Tax Liability	 -   	 1,163,038.00 	 -1,163,038.00 	Balance Sheet	Non-Current Liablities	Deffered Tax Liblities (Net)	Deffered Tax Liablity	Equity and Liablities
+Anil Kumar GM	 -   	 96,437.00 	 -96,437.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Anil Kumar Staff	 -   	 12,250.00 	 -12,250.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Arun Sathpathy	 73,186.00 	 -   	 73,186.00 	Balance Sheet	Current Liablities	Other Current Liabilities	Advance to Employee	Equity and Liablities
+Charu Anand	 7.00 	 -   	 7.00 	Balance Sheet	Current Liablities	Other Current Liabilities	Advance to Employee	Equity and Liablities
+Chetan	 -   	 9,750.00 	 -9,750.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Danish Hameed	 -   	 11,750.00 	 -11,750.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Deepali Mishra	 356.00 	 -   	 356.00 	Balance Sheet	Current Liablities	Other Current Liabilities	Advance to Employee	Equity and Liablities
+Dheeraj Kumar	 -   	 11,750.00 	 -11,750.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Dinesh Kumar	 -   	 15,084.00 	 -15,084.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Kapil Sharma	 -   	 11,000.00 	 -11,000.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Kuldeep Sonawane	 -   	 10,250.00 	 -10,250.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Lavkush Sharma	 -   	 10,860.00 	 -10,860.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Navneet Singh	 -   	 16,088.00 	 -16,088.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Omveer Singh	 -   	 4,000.00 	 -4,000.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Priyanka Aeron	 -   	 150,582.05 	 -150,582.05 	Balance Sheet	Current Liablities	Other Current Liabilities	  Related parties	Equity and Liablities
+Rahul Chauhan	 -   	 6,000.00 	 -6,000.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Rinku	 -   	 11,750.00 	 -11,750.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Samarendra Pandey	 276,194.00 	 -   	 276,194.00 	Balance Sheet	Current Liablities	Short Term Loans And Advances	Advance to Employee	Equity and Liablities
+Sandeep Kishan	 -   	 12,300.00 	 -12,300.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Sandeep Sharma	 -   	 15,200.93 	 -15,200.93 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Sanjeet Kumar Singh	 -   	 6,983.00 	 -6,983.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Shashi Ranjan Singh	 -   	 10,760.00 	 -10,760.00 	Balance Sheet	Current Liablities	Other Current Liabilities	  Others	Equity and Liablities
+Shubham Atri	 6,794.00 	 -   	 6,794.00 	Balance Sheet	Current Liablities	Other Current Liabilities	Advance to Employee	Equity and Liablities
+Vidya Vinod	 60,898.41 	 -   	 60,898.41 	Balance Sheet	Current Liablities	Short Term Loans And Advances	Advance to Employee	Equity and Liablities
+GST Payable	 -   	 113,083.53 	 -113,083.53 	Balance Sheet	Current Liablities	Other Current Liabilities	Statutory dues payable	Equity and Liablities
+Output CGST	 1,185.44 	 -   	 1,185.44 	Balance Sheet	Current Liablities	Other Current Liabilities	Statutory dues payable	Equity and Liablities
+Output IGST	 -   	 13,411.98 	 -13,411.98 	Balance Sheet	Current Liablities	Other Current Liabilities	Statutory dues payable	Equity and Liablities
+Output SGST	 1,185.20 	 -   	 1,185.20 	Balance Sheet	Current Liablities	Other Current Liabilities	Statutory dues payable	Equity and Liablities
+Audit Fees 	 -   	 45,000.00 	 -45,000.00 	Balance Sheet	Current Liablities	Other Current Liabilities	Audit Fees Payable	Assets
+Bonus Payable	 -   	 2,301,252.84 	 -2,301,252.84 	Balance Sheet	Current Liablities	Other Current Liabilities	Employees' outstanding	Equity and Liablities
+Employee EPF Payable	 -   	 188,317.50 	 -188,317.50 	Balance Sheet	Current Liablities	Other Current Liabilities	Statutory dues payable	Equity and Liablities
+Employer EPF Payable	 -   	 188,317.50 	 -188,317.50 	Balance Sheet	Current Liablities	Other Current Liabilities	Statutory dues payable	Equity and Liablities
+ESI Payable	 -   	 2,839.00 	 -2,839.00 	Balance Sheet	Current Liablities	Other Current Liabilities	Statutory dues payable	Equity and Liablities
+Expense Payable	 -   	 73,711.00 	 -73,711.00 	Balance Sheet	Current Liablities	Other Current Liabilities	Expense Payable	Equity and Liablities
+Labour Admin Charges Payable	 -   	 500.00 	 -500.00 	Balance Sheet	Current Liablities	Other Current Liabilities	Statutory dues payable	Equity and Liablities
+Labour Charges Payable	 -   	 886,528.00 	 -886,528.00 	Balance Sheet	Current Liablities	Other Current Liabilities	Labour charges Payable	Assets
+Labour ESI Payable	 -   	 4,210.00 	 -4,210.00 	Balance Sheet	Current Liablities	Other Current Liabilities	Statutory dues payable	Equity and Liablities
+Labour PF Payable	 -   	 17,545.00 	 -17,545.00 	Balance Sheet	Current Liablities	Other Current Liabilities	Statutory dues payable	Equity and Liablities
+Salary Payable	 -   	 5,233,757.00 	 -5,233,757.00 	Balance Sheet	Current Liablities	Other Current Liabilities	Employees' outstanding	Equity and Liablities
+Share Capital	 -   	 100,000.00 	 -100,000.00 	Balance Sheet	Shareholder funds	Share Capital	Equity Share Capital	Equity and Liablities
+Stride Fund	 -   	 50,000,000.00 	 -50,000,000.00 	Balance Sheet	Non-Current Liablities	Long Term Borrowings	13.90 % Debentures	Equity and Liablities
+TDS Payable	 -   	 605,376.65 	 -605,376.65 	Balance Sheet	Current Liablities	Other Current Liabilities	Statutory dues payable	Equity and Liablities
+TDS-92B	 -   	 787,448.00 	 -787,448.00 	Balance Sheet	Current Liablities	Other Current Liabilities	Statutory dues payable	Equity and Liablities
+Unearned Revenue	 -   	 55,667,133.90 	 -55,667,133.90 	Balance Sheet	Current Liablities	Other Current Liabilities	Advance from Customers	Equity and Liablities
+Retained Earnings	 -   	 240,207.48 	 -240,207.48 	Balance Sheet	Shareholder funds	Reserves And Surplus	Opening balance - P&L	Equity and Liablities
+Preferance Share	 -   	 34,000.00 	 -34,000.00 	Balance Sheet	Shareholder funds	Share Capital	Prefrence Share Capital	Equity and Liablities
+Discount	 429,235.19 	 -   	 429,235.19 	Profit and Loss Account	Revenue from Operations	Revenue from operations	Revenue from operations	Revenue from Operations
+Duty Draw back	 -   	 2,399,730.00 	 -2,399,730.00 	Profit and Loss Account	Other Income	Other Income	Export Incentives	Other Income
+Other Charges	 -   	 78.07 	 -78.07 	Profit and Loss Account	Revenue from Operations	Revenue from operations	Revenue from operations	Revenue from Operations
+Sales	 -   	 241,543,455.87 	 -241,543,455.87 	Profit and Loss Account	Revenue from Operations	Revenue from operations	Revenue from operations	Revenue from Operations
+Access Card Charges	 1,250.00 	 -   	 1,250.00 	Profit and Loss Account	Expenses	Other Expenses	Office Running & Maintainance Epenses	Expenses
+Ad Shooting Exp	 5,114,185.00 	 -   	 5,114,185.00 	Profit and Loss Account	Expenses	Other Expenses	Advertisement Expenses	Expenses
+Advertisement Exp	 1,727,573.26 	 -   	 1,727,573.26 	Profit and Loss Account	Expenses	Other Expenses	Advertisement Expenses	Expenses
+Service fees-Airpay	 995.95 	 -   	 995.95 	Profit and Loss Account	Expenses	Other Expenses	General Expenses	Expenses
+Commission-Amala Earth	 69,502.20 	 -   	 69,502.20 	Profit and Loss Account	Expenses	Other Expenses	Commission Expenses	Expenses
+Amazon Advertising	 14,016,830.02 	 -   	 14,016,830.02 	Profit and Loss Account	Expenses	Other Expenses	Online selling expenses	Expenses
+Amazon FBA Transportation	 8,756,737.13 	 -   	 8,756,737.13 	Profit and Loss Account	Expenses	Other Expenses	Online selling expenses	Expenses
+Amazon Selling Fees	 5,915,472.55 	 -   	 5,915,472.55 	Profit and Loss Account	Expenses	Other Expenses	Online selling expenses	Expenses
+Transport Charges-Amazon	 352,500.00 	 -   	 352,500.00 	Profit and Loss Account	Expenses	Other Expenses	Online selling expenses	Expenses
+Bank Fees and Charges	 351,018.76 	 -   	 351,018.76 	Profit and Loss Account	Expenses	Other Expenses	Bank and Forex Charges	Expenses
+Bonus	 350,926.34 	 -   	 350,926.34 	Profit and Loss Account	Expenses	Employee Benefit Expenses	Bonus	Expenses
+Borrowing cost	 1,700,000.00 	 -   	 1,700,000.00 	Profit and Loss Account	Expenses	Finance Cost	Borrowing Cost	Expenses
+Business Promotion	 323,157.32 	 -   	 323,157.32 	Profit and Loss Account	Expenses	Other Expenses	Advertisement Expenses	Expenses
+Car Parking Charges	 46,755.00 	 -   	 46,755.00 	Profit and Loss Account	Expenses	Other Expenses	Office Running & Maintainance Epenses	Expenses
+Cleaning Exp	 83,781.00 	 -   	 83,781.00 	Profit and Loss Account	Expenses	Other Expenses	Office Running & Maintainance Epenses	Expenses
+Commission Exp	 107,300.00 	 -   	 107,300.00 	Profit and Loss Account	Expenses	Other Expenses	Commission Expenses	Expenses
+Computer Exp	 58,881.93 	 -   	 58,881.93 	Profit and Loss Account	Expenses	Other Expenses	Repair and Maintenance	Expenses
+Consultancy Exp	 456,500.00 	 -   	 456,500.00 	Profit and Loss Account	Expenses	Other Expenses	Legal and Professional Expenses	Expenses
+Cost of Goods Sold	 125,288,301.20 	 -   	 125,288,301.20 	Profit and Loss Account	Expenses	Purchase of Stock in Trade	Purchases	Expenses
+Courier Charges	 511,340.00 	 -   	 511,340.00 	Profit and Loss Account	Expenses	Other Expenses	Courier Charges	Expenses
+CSR Expenditure	 17,896.00 	 -   	 17,896.00 	Profit and Loss Account	Expenses	Other Expenses	CSR Expenditure	Expenses
+Custom Expenses	 5,017,420.71 	 -   	 5,017,420.71 	Profit and Loss Account	Expenses	Other Expenses	Custom Expenses	Expenses
+Diesel & Petrol Exp- HO	 181,450.00 	 -   	 181,450.00 	Profit and Loss Account	Expenses	Other Expenses	Power and Fuel Expenses	Expenses
+Diesel & Petrol Exp- WHB	 12,150.00 	 -   	 12,150.00 	Profit and Loss Account	Expenses	Other Expenses	Power and Fuel Expenses	Expenses
+Diesel & Petrol Exp- WHM	 78,750.00 	 -   	 78,750.00 	Profit and Loss Account	Expenses	Other Expenses	Power and Fuel Expenses	Expenses
+E-Pay Later Expense	 13,308.27 	 -   	 13,308.27 	Profit and Loss Account	Expenses	Other Expenses	General Expenses	Expenses
+Electricity -Noida	 249,594.41 	 -   	 249,594.41 	Profit and Loss Account	Expenses	Other Expenses	Power and Fuel Expenses	Expenses
+Electricity -WHB	 416,843.00 	 -   	 416,843.00 	Profit and Loss Account	Expenses	Other Expenses	Power and Fuel Expenses	Expenses
+Electricity- WHM	 2,623,194.88 	 -   	 2,623,194.88 	Profit and Loss Account	Expenses	Other Expenses	Power and Fuel Expenses	Expenses
+Employees Insurance	 626,222.61 	 -   	 626,222.61 	Profit and Loss Account	Expenses	Employee Benefit Expenses	Employees Insurance	Expenses
+Exchange Gain or Loss	 -   	 780,124.14 	 -780,124.14 	Profit and Loss Account	Other Income	Other Income	Other Income	Other Income
+Facebook- Advertising	 30,344.53 	 -   	 30,344.53 	Profit and Loss Account	Expenses	Other Expenses	Advertisement Expenses	Expenses
+FCL Ocean Freight	 143,549.89 	 -   	 143,549.89 	Profit and Loss Account	Expenses	Cost Of Materials Consumed	Freight Inward	Expenses
+Ad Services Fees	 309,460.27 	 -   	 309,460.27 	Profit and Loss Account	Expenses	Other Expenses	Online selling expenses	Expenses
+Collection Fee	 18,659.54 	 -   	 18,659.54 	Profit and Loss Account	Expenses	Other Expenses	Online selling expenses	Expenses
+Commission	 39,364.22 	 -   	 39,364.22 	Profit and Loss Account	Expenses	Other Expenses	Online selling expenses	Expenses
+Fixed Fee	 25,125.00 	 -   	 25,125.00 	Profit and Loss Account	Expenses	Other Expenses	Online selling expenses	Expenses
+Misc.	 39,609.01 	 -   	 39,609.01 	Profit and Loss Account	Expenses	Other Expenses	Online selling expenses	Expenses
+Shipping Fee	 138,618.65 	 -   	 138,618.65 	Profit and Loss Account	Expenses	Other Expenses	Online selling expenses	Expenses
+Transport Charges-Flipkart	 6,500.00 	 -   	 6,500.00 	Profit and Loss Account	Expenses	Other Expenses	Freight Outward	Expenses
+Freight Inward-WH Bangalore	 2,008,882.00 	 -   	 2,008,882.00 	Profit and Loss Account	Expenses	Cost Of Materials Consumed	Freight Inward	Expenses
+Freight Inward-WH Muzaffarnagar	 756,145.80 	 -   	 756,145.80 	Profit and Loss Account	Expenses	Cost Of Materials Consumed	Freight Inward	Expenses
+Freight Inward-WH Noida	 440,524.00 	 -   	 440,524.00 	Profit and Loss Account	Expenses	Cost Of Materials Consumed	Freight Inward	Expenses
+Freight Outward-WH Bangalore	 3,926,836.42 	 -   	 3,926,836.42 	Profit and Loss Account	Expenses	Other Expenses	Freight Outward	Expenses
+Freight Outward-WH Muzaffarnagar	 657,590.00 	 -   	 657,590.00 	Profit and Loss Account	Expenses	Other Expenses	Freight Outward	Expenses
+Freight Outward-WH Noida	 695,812.00 	 -   	 695,812.00 	Profit and Loss Account	Expenses	Other Expenses	Freight Outward	Expenses
+Inauguration Exp	 263,287.00 	 -   	 263,287.00 	Profit and Loss Account	Expenses	Other Expenses	Inauguration Exp	Expenses
+Interest Exp	 13,632,855.00 	 -   	 13,632,855.00 	Profit and Loss Account	Expenses	Finance Cost	Interest Expenses	Expenses
+Interest on Income Tax	 343,602.78 	 -   	 343,602.78 	Profit and Loss Account	Expenses	Other Expenses	Interest on Statutory dues	Expenses
+Interest On TDS	 21,593.00 	 -   	 21,593.00 	Profit and Loss Account	Expenses	Other Expenses	Interest on Statutory dues	Expenses
+Internal Line Distribution Charges	 31,200.00 	 -   	 31,200.00 	Profit and Loss Account	Expenses	Other Expenses	Office Running & Maintainance Epenses	Expenses
+IT and Internet Expenses	 129,511.93 	 -   	 129,511.93 	Profit and Loss Account	Expenses	Other Expenses	IT & Telecommunicaiton Expenses	Expenses
+Commision-Jio Mart	 1,720.47 	 -   	 1,720.47 	Profit and Loss Account	Expenses	Other Expenses	Commission Expenses	Expenses
+Fixed Fees-Jio Mart	 2,440.08 	 -   	 2,440.08 	Profit and Loss Account	Expenses	Other Expenses	Online selling expenses	Expenses
+JIO MART -Shipping Fee	 -   	 185.00 	 -185.00 	Profit and Loss Account	Expenses	Other Expenses	Online selling expenses	Expenses
+Logistics Expense-Jio Mart	 12,014.00 	 -   	 12,014.00 	Profit and Loss Account	Expenses	Other Expenses	Online selling expenses	Expenses
+Labour Administration Charges	 13,530.00 	 -   	 13,530.00 	Profit and Loss Account	Current Liablities	Other Current Liabilities	Labour Charges	Expenses
+Labour Charges - WH Muzaffarnagar	 4,800,500.00 	 -   	 4,800,500.00 	Profit and Loss Account	Current Liablities	Other Current Liabilities	Labour Charges	Expenses
+Labour Charges- WH Noida	 228,123.00 	 -   	 228,123.00 	Profit and Loss Account	Current Liablities	Other Current Liabilities	Labour Charges	Expenses
+Labour Charges-WHB	 3,423,738.00 	 -   	 3,423,738.00 	Profit and Loss Account	Current Liablities	Other Current Liabilities	Labour Charges	Expenses
+Labour Employee PF Expense	 199,291.50 	 -   	 199,291.50 	Profit and Loss Account	Current Liablities	Other Current Liabilities	Labour Charges	Expenses
+Labour Employer PF Expense	 199,291.50 	 -   	 199,291.50 	Profit and Loss Account	Current Liablities	Other Current Liabilities	Labour Charges	Expenses
+Labour ESI Expense	 108,791.00 	 -   	 108,791.00 	Profit and Loss Account	Current Liablities	Other Current Liabilities	Labour Charges	Expenses
+Lease rent virtual offices	 65,956.81 	 -   	 65,956.81 	Profit and Loss Account	Expenses	Other Expenses	Lease Expenses - Building, Warehouse	Expenses
+Lease Rent WH Bangalore New	 786,500.00 	 -   	 786,500.00 	Profit and Loss Account	Expenses	Other Expenses	Lease Expenses - Building, Warehouse	Expenses
+Lease Rent- Generator	 120,000.00 	 -   	 120,000.00 	Profit and Loss Account	Expenses	Other Expenses	Lease Expenses - P/M	Expenses
+Lease Rent- WH Muzaffarnagar	 1,782,000.00 	 -   	 1,782,000.00 	Profit and Loss Account	Expenses	Other Expenses	Lease Expenses - Building, Warehouse	Expenses
+Lease Rent-Noida	 4,538,692.76 	 -   	 4,538,692.76 	Profit and Loss Account	Expenses	Other Expenses	Lease Expenses - Building, Warehouse	Expenses
+Lease Rent-WH Bangalore	 2,507,000.00 	 -   	 2,507,000.00 	Profit and Loss Account	Expenses	Other Expenses	Lease Expenses - Building, Warehouse	Expenses
+Lease Rent-WH Noida	 1,015,000.00 	 -   	 1,015,000.00 	Profit and Loss Account	Expenses	Other Expenses	Lease Expenses - Building, Warehouse	Expenses
+Legal & Prefessional Fees	 5,703,361.80 	 -   	 5,703,361.80 	Profit and Loss Account	Expenses	Other Expenses	Legal and Professional Expenses	Expenses
+Maintenance Charges-Advant	 1,502,274.00 	 -   	 1,502,274.00 	Profit and Loss Account	Expenses	Other Expenses	Office Running & Maintainance Epenses	Expenses
+Material Insurance	 5,445.26 	 -   	 5,445.26 	Profit and Loss Account	Expenses	Other Expenses	General Expenses	Expenses
+Material Purchase	 1,626,465.00 	 -   	 1,626,465.00 	Profit and Loss Account	Expenses	Purchase of Stock in Trade	Purchases	Expenses
+Misc..Exp	 17,170.50 	 -   	 17,170.50 	Profit and Loss Account	Expenses	Other Expenses	General Expenses	Expenses
+Office Exp	 12,892.00 	 -   	 12,892.00 	Profit and Loss Account	Expenses	Other Expenses	Office Running & Maintainance Epenses	Expenses
+Other Expenses	 7.60 	 -   	 7.60 	Profit and Loss Account	Expenses	Other Expenses	General Expenses	Expenses
+Penalty and Interest	 21,720.00 	 -   	 21,720.00 	Profit and Loss Account	Expenses	Other Expenses	Penalty and Interest	Expenses
+Printing and Stationery	 54,732.83 	 -   	 54,732.83 	Profit and Loss Account	Expenses	Other Expenses	Printing and Stationery	Expenses
+Provident Fund Interest	 14,754.00 	 -   	 14,754.00 	Profit and Loss Account	Expenses	Other Expenses	Interest on Statutory dues	Expenses
+Purchase Discounts	 -   	 141,444.30 	 -141,444.30 	Profit and Loss Account	Expenses	Purchase of Stock in Trade	Purchases	Expenses
+Raw Materials And Consumables	 17,389,381.99 	 -   	 17,389,381.99 	Profit and Loss Account	Expenses	Cost Of Materials Consumed	Consumables	Expenses
+Recruitment Charges	 37,500.00 	 -   	 37,500.00 	Profit and Loss Account	Expenses	Other Expenses	Recruitment Charges	Expenses
+Repair & Maintenance - Computer	 27,879.00 	 -   	 27,879.00 	Profit and Loss Account	Expenses	Other Expenses	Repair and Maintenance	Expenses
+Repair & Maintenance HO	 23,204.29 	 -   	 23,204.29 	Profit and Loss Account	Expenses	Other Expenses	Repair and Maintenance	Expenses
+Repair & Maintenance WH Bangalore	 65,897.00 	 -   	 65,897.00 	Profit and Loss Account	Expenses	Other Expenses	Repair and Maintenance	Expenses
+Repair & Maintenance WH Muzafarnagar	 1,722,163.89 	 -   	 1,722,163.89 	Profit and Loss Account	Expenses	Other Expenses	Repair and Maintenance	Expenses
+Repair & Maintenance WH Noida	 63,930.00 	 -   	 63,930.00 	Profit and Loss Account	Expenses	Other Expenses	Repair and Maintenance	Expenses
+Vehicle Repair & Maintenance	 13,547.53 	 -   	 13,547.53 	Profit and Loss Account	Expenses	Other Expenses	Repair and Maintenance	Expenses
+Round Off	 1.00 	 -   	 1.00 	Profit and Loss Account	Expenses	Other Expenses	General Expenses	Expenses
+Salary	 72,363,131.00 	 -   	 72,363,131.00 	Profit and Loss Account	Expenses	Employee Benefit Expenses	Salary	Expenses
+Employee PF Expense	 2,366,056.00 	 -   	 2,366,056.00 	Profit and Loss Account	Expenses	Employee Benefit Expenses	Salary	Expenses
+Employer PF- Expenses	 2,366,056.00 	 -   	 2,366,056.00 	Profit and Loss Account	Expenses	Employee Benefit Expenses	Salary	Expenses
+ESI Expense	 25,622.00 	 -   	 25,622.00 	Profit and Loss Account	Expenses	Employee Benefit Expenses	Salary	Expenses
+Stipend	 553,844.75 	 -   	 553,844.75 	Profit and Loss Account	Expenses	Other Expenses	General Expenses	Expenses
+Security Services -WHM	 160,601.00 	 -   	 160,601.00 	Profit and Loss Account	Expenses	Other Expenses	General Expenses	Expenses
+Service Commission	 307,689.36 	 -   	 307,689.36 	Profit and Loss Account	Expenses	Purchase of Stock in Trade	Purchases	Expenses
+Software Exp	 418,334.56 	 -   	 418,334.56 	Profit and Loss Account	Expenses	Other Expenses	Software Expenses	Expenses
+Staff Welfare	 1,363,118.49 	 -   	 1,363,118.49 	Profit and Loss Account	Expenses	Employee Benefit Expenses	Staff Welfare Expenses	Expenses
+Subscription Fees	 44,457.00 	 -   	 44,457.00 	Profit and Loss Account	Expenses	Other Expenses	General Expenses	Expenses
+Tax Paid Expense	 195,474.20 	 -   	 195,474.20 	Profit and Loss Account	Expenses	Other Expenses	General Expenses	Expenses
+Telephone Expense	 41,858.39 	 -   	 41,858.39 	Profit and Loss Account	Expenses	Other Expenses	IT & Telecommunicaiton Expenses	Expenses
+TPL Warehouse Expenses	 785,067.00 	 -   	 785,067.00 	Profit and Loss Account	Expenses	Other Expenses	TPL Warehouse Expenses	Expenses
+Transport Charges- Top India Logistics	 48,800.00 	 -   	 48,800.00 	Profit and Loss Account	Expenses	Other Expenses	Freight Outward	Expenses
+Travel Expense -HO	 2,097,710.03 	 -   	 2,097,710.03 	Profit and Loss Account	Expenses	Other Expenses	Tour and Travelling Expesnes	Expenses
+Travel Expense -WHB	 20,918.00 	 -   	 20,918.00 	Profit and Loss Account	Expenses	Other Expenses	Tour and Travelling Expesnes	Expenses
+Travel Expense -WHM	 10,500.00 	 -   	 10,500.00 	Profit and Loss Account	Expenses	Other Expenses	Tour and Travelling Expesnes	Expenses
+Travel Expense WH Noida	 820,844.00 	 -   	 820,844.00 	Profit and Loss Account	Expenses	Other Expenses	Tour and Travelling Expesnes	Expenses
+Vehicle Insurance	 8,224.95 	 -   	 8,224.95 	Profit and Loss Account	Expenses	Other Expenses	Office Running & Maintainance Epenses	Expenses
+Water Charges	 73,995.00 	 -   	 73,995.00 	Profit and Loss Account	Expenses	Other Expenses	Water Charges	Expenses
+Website Development	 458,500.00 	 -   	 458,500.00 	Profit and Loss Account	Expenses	Other Expenses	IT & Telecommunicaiton Expenses	Expenses
+Opening Stock 	 16,550,775.00 	 -   	 16,550,775.00 	Profit and Loss Account	Expenses	Change In Invetories	Inventory - Opening	Expenses
+Closing Stock	 -   	 41,418,510.00 	 -41,418,510.00 	Profit and Loss Account	Expenses	Change In Invetories	Inventory - Closing	Expenses
