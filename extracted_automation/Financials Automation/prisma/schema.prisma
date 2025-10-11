@@ -1,0 +1,453 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Management - Authentication and Authorization
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  firstName     String?
+  lastName      String?
+  role          UserRole  @default(USER)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  companies     Company[]
+  sessions      Session[]
+  
+  @@index([email])
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+// Session Management for JWT tokens
+model Session {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token       String   @unique
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  
+  @@index([userId])
+  @@index([token])
+}
+
+// License Management for Network Deployment
+model License {
+  id                String    @id @default(cuid())
+  licenseKey        String    @unique
+  companyName       String
+  contactEmail      String
+  issuedAt          DateTime  @default(now())
+  expiresAt         DateTime?
+  isActive          Boolean   @default(true)
+  maxUsers          Int       @default(5)
+  maxCompanies      Int       @default(10)
+  networkPath       String?   // Centralized database URL
+  allowedIPs        String[]  // JSON array of allowed IP addresses
+  features          Json?     // JSON object for feature flags
+  
+  // Usage tracking
+  activeUsers       Int       @default(0)
+  activeCompanies   Int       @default(0)
+  lastUsedAt        DateTime?
+  
+  @@index([licenseKey])
+  @@index([isActive])
+}
+
+// Company Management - Multi-company support
+model Company {
+  id                String    @id @default(cuid())
+  name              String    @unique
+  displayName       String
+  description       String?
+  isActive          Boolean   @default(true)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // User ownership
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Relations to all financial data
+  commonControls              CommonControl[]
+  trialBalanceEntries         TrialBalanceEntry[]
+  shareCapitalEntries         ShareCapitalEntry[]
+  ppeScheduleEntries          PPEScheduleEntry[]
+  cwipScheduleEntries         CWIPScheduleEntry[]
+  intangibleScheduleEntries   IntangibleScheduleEntry[]
+  investmentEntries           InvestmentEntry[]
+  employeeBenefitEntries      EmployeeBenefitEntry[]
+  taxEntries                  TaxEntry[]
+  relatedPartyTransactions    RelatedPartyTransaction[]
+  contingentLiabilities       ContingentLiability[]
+  receivableLedgerEntries     ReceivableLedgerEntry[]
+  payableLedgerEntries        PayableLedgerEntry[]
+  noteSelections              NoteSelection[]
+  generatedStatements         GeneratedStatement[]
+  ratioAnalyses               RatioAnalysis[]
+  deferredTaxEntries          DeferredTaxEntry[]
+  accountingPolicyContents    AccountingPolicyContent[]
+  
+  @@index([userId])
+}
+
+// Common Control Sheet - Entity and configuration data
+model CommonControl {
+  id                String    @id @default(cuid())
+  companyId         String?
+  company           Company?  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  entityName        String?
+  address           String?
+  cinNumber         String?
+  financialYearStart DateTime?
+  financialYearEnd   DateTime?
+  currency          String    @default("INR")
+  units             String    @default("Millions")
+  numbersFormat     String    @default("Accounting")
+  negativeColor     String    @default("Brackets")
+  defaultFont       String    @default("Bookman Old Style")
+  defaultFontSize   Int       @default(11)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@index([companyId])
+}
+
+// Control Lists for Major Heads, Minor Heads, Groupings
+model MajorHead {
+  id                String              @id @default(cuid())
+  name              String              @unique
+  createdAt         DateTime            @default(now())
+  trialBalanceEntries TrialBalanceEntry[]
+}
+
+model MinorHead {
+  id                String              @id @default(cuid())
+  name              String              @unique
+  createdAt         DateTime            @default(now())
+  trialBalanceEntries TrialBalanceEntry[]
+}
+
+model Grouping {
+  id                String              @id @default(cuid())
+  name              String              @unique
+  createdAt         DateTime            @default(now())
+  trialBalanceEntries TrialBalanceEntry[]
+}
+
+// Trial Balance - Core financial data
+model TrialBalanceEntry {
+  id                  String      @id @default(cuid())
+  companyId           String
+  company             Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  ledgerName          String
+  openingBalanceCY    Decimal     @default(0)
+  debitCY             Decimal     @default(0)
+  creditCY            Decimal     @default(0)
+  closingBalanceCY    Decimal     @default(0)
+  closingBalancePY    Decimal     @default(0)
+  type                String      // "BS" or "PL"
+  majorHeadId         String?
+  majorHead           MajorHead?  @relation(fields: [majorHeadId], references: [id])
+  minorHeadId         String?
+  minorHead           MinorHead?  @relation(fields: [minorHeadId], references: [id])
+  groupingId          String?
+  grouping            Grouping?   @relation(fields: [groupingId], references: [id])
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  
+  @@index([companyId])
+  @@index([majorHeadId])
+  @@index([minorHeadId])
+  @@index([groupingId])
+  @@index([type])
+}
+
+// Share Capital Schedule
+model ShareCapitalEntry {
+  id                    String   @id @default(cuid())
+  companyId             String?
+  company               Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  classOfShare          String   @default("Equity Shares")
+  numberOfShares        BigInt   @default(0)
+  faceValue             Decimal  @default(10)
+  amountCY              Decimal  @default(0)
+  amountPY              Decimal  @default(0)
+  shareholderName       String?
+  holdingPercentageCY   Decimal?
+  numberOfSharesPY      BigInt?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  @@index([companyId])
+}
+
+// PPE Schedule
+model PPEScheduleEntry {
+  id                      String   @id @default(cuid())
+  companyId               String?
+  company                 Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  assetClass              String
+  openingGrossBlock       Decimal  @default(0)
+  additions               Decimal  @default(0)
+  disposalsGross          Decimal  @default(0)
+  openingAccDepreciation  Decimal  @default(0)
+  depreciationForYear     Decimal  @default(0)
+  accDeprOnDisposals      Decimal  @default(0)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  
+  @@index([companyId])
+}
+
+// CWIP Schedule
+model CWIPScheduleEntry {
+  id                String   @id @default(cuid())
+  companyId         String
+  company           Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  particulars       String
+  amountCY          Decimal  @default(0)
+  amountPY          Decimal  @default(0)
+  agingBucket       String?  // "< 1 Year", "1-2 Years", etc.
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([companyId])
+}
+
+// Intangible Assets Schedule
+model IntangibleScheduleEntry {
+  id                      String   @id @default(cuid())
+  companyId               String
+  company                 Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  assetClass              String
+  openingGrossBlock       Decimal  @default(0)
+  additions               Decimal  @default(0)
+  disposalsGross          Decimal  @default(0)
+  openingAccAmortization  Decimal  @default(0)
+  amortizationForYear     Decimal  @default(0)
+  accAmortOnDisposals     Decimal  @default(0)
+  agingBucket             String?  // For assets under development
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  
+  @@index([companyId])
+}
+
+// Investments Schedule
+model InvestmentEntry {
+  id                String   @id @default(cuid())
+  companyId         String
+  company           Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  particulars       String
+  classification    String   // "Current" or "Non-Current"
+  costCY            Decimal  @default(0)
+  costPY            Decimal  @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([companyId])
+}
+
+// Employee Benefits
+model EmployeeBenefitEntry {
+  id                String   @id @default(cuid())
+  companyId         String
+  company           Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  particulars       String
+  currentYear       Decimal  @default(0)
+  previousYear      Decimal  @default(0)
+  category          String   // "Defined Contribution", "Defined Benefit"
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([companyId])
+}
+
+// Tax Schedule
+model TaxEntry {
+  id                String   @id @default(cuid())
+  companyId         String
+  company           Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  particulars       String
+  currentYear       Decimal  @default(0)
+  previousYear      Decimal  @default(0)
+  taxRate           Decimal?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([companyId])
+}
+
+// Related Party Transactions
+model RelatedPartyTransaction {
+  id                    String   @id @default(cuid())
+  companyId             String?
+  company               Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  relatedPartyName      String
+  relationship          String
+  transactionType       String
+  amountCY              Decimal  @default(0)
+  amountPY              Decimal  @default(0)
+  balanceOutstandingCY  Decimal  @default(0)
+  balanceOutstandingPY  Decimal  @default(0)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  @@index([companyId])
+}
+
+// Contingent Liabilities
+model ContingentLiability {
+  id           String   @id @default(cuid())
+  companyId    String
+  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  particulars  String
+  type         String   // "Contingent Liability" or "Commitment"
+  amountCY     Decimal  @default(0)
+  amountPY     Decimal  @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@index([companyId])
+}
+
+// Receivables Ledger
+model ReceivableLedgerEntry {
+  id                String    @id @default(cuid())
+  companyId         String
+  company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customerName      String
+  invoiceNumber     String?
+  invoiceDate       DateTime?
+  invoiceAmount     Decimal   @default(0)
+  amountSettled     Decimal   @default(0)
+  outstandingAmount Decimal   @default(0)
+  disputed          Boolean   @default(false)
+  daysOutstanding   Int?
+  agingBucket       String?   // "< 182 Days", "182-365 Days", etc.
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@index([companyId])
+}
+
+// Payables Ledger
+model PayableLedgerEntry {
+  id                String    @id @default(cuid())
+  companyId         String
+  company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  vendorName        String
+  invoiceNumber     String?
+  invoiceDate       DateTime?
+  invoiceAmount     Decimal   @default(0)
+  amountSettled     Decimal   @default(0)
+  outstandingAmount Decimal   @default(0)
+  disputed          Boolean   @default(false)
+  payableType       String    // "MSME" or "Other"
+  agingBucket       String?   // "< 182 Days", "182-365 Days", etc.
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@index([companyId])
+}
+
+// Note Selection Sheet
+model NoteSelection {
+  id                  String   @id @default(cuid())
+  companyId           String?
+  company             Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  noteRef             String
+  description         String
+  linkedMajorHead     String?
+  systemRecommended   Boolean  @default(false)
+  userSelected        Boolean  @default(false)
+  finalSelected       Boolean  @default(false)
+  autoNumber          String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  @@unique([companyId, noteRef], name: "companyId_noteRef")
+  @@index([companyId])
+}
+
+// Generated Financial Statements (for caching/storage)
+model GeneratedStatement {
+  id            String   @id @default(cuid())
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  statementType String   // "Balance_Sheet", "Statement_of_PL", "Cash_Flow_Statement", "Notes_to_Accounts"
+  content       Json     // Store the generated statement data as JSON
+  generatedAt   DateTime @default(now())
+  
+  @@index([companyId])
+}
+
+// Ratio Analysis
+model RatioAnalysis {
+  id                  String   @id @default(cuid())
+  companyId           String
+  company             Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  ratioName           String
+  formula             String
+  currentYearResult   Decimal  @default(0)
+  previousYearResult  Decimal  @default(0)
+  variancePercentage  Decimal  @default(0)
+  explanation         String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  @@index([companyId])
+}
+
+// Deferred Tax Calculation
+model DeferredTaxEntry {
+  id                    String   @id @default(cuid())
+  companyId             String
+  company               Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  particulars           String
+  bookValue             Decimal  @default(0)
+  taxValue              Decimal  @default(0)
+  temporaryDifference   Decimal  @default(0)
+  taxRate               Decimal  @default(0)
+  deferredTaxAsset      Decimal  @default(0)
+  deferredTaxLiability  Decimal  @default(0)
+  category              String   // "Asset", "Liability", "Income", "Expense"
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  @@index([companyId])
+}
+
+// Accounting Policy Content
+model AccountingPolicyContent {
+  id          String   @id @default(cuid())
+  companyId   String?
+  company     Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  noteRef     String
+  title       String
+  content     String   @db.Text
+  isDefault   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([companyId])
+}
