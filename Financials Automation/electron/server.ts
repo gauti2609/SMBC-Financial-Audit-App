@@ -122,28 +122,3 @@ export function stopBackendServer(): Promise<void> {
 export function getServerPort(): number {
   return serverPort;
 }
-
-
-/**
- * Stop the backend server
- */
-export function stopBackendServer(): Promise<void> {
-  return new Promise((resolve) => {
-    if (serverInstance) {
-      serverInstance.close(() => {
-        console.log('[Server] Backend server stopped');
-        serverInstance = null;
-        resolve();
-      });
-    } else {
-      resolve();
-    }
-  });
-}
-
-/**
- * Get the current server port
- */
-export function getServerPort(): number {
-  return serverPort;
-}
