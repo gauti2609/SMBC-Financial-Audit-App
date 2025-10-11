@@ -33,6 +33,12 @@ All project documentation is located in the **`Financials Automation/`** directo
 
 ### Quick Access
 
+- **[TEST_ENVIRONMENT_SETUP.md](./Financials%20Automation/TEST_ENVIRONMENT_SETUP.md)** 🧪 **FOR DEVELOPERS/TESTERS!**
+  - Complete guide to set up test environment
+  - Docker-based and native setup instructions
+  - Matches CI/CD configuration
+  - Step-by-step dependency installation
+
 - **[DOWNLOAD_GUIDE.md](./DOWNLOAD_GUIDE.md)** 📥 **START HERE TO DOWNLOAD!**
   - How to download the rectified code (4 easy methods)
   - No need to download files one-by-one

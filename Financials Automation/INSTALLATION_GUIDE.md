@@ -2,6 +2,8 @@
 
 > **For users without coding background** - This guide provides clear instructions with expected outputs at each step.
 
+> **For developers and testers** - If you need to set up a test environment to run all tests and match the CI/CD configuration, see [TEST_ENVIRONMENT_SETUP.md](./TEST_ENVIRONMENT_SETUP.md).
+
 ## Prerequisites
 
 Before starting, ensure you have:
@@ -427,14 +429,18 @@ Solution: __________________________________________
 
 If you're stuck after following this guide:
 
-1. **Check which step failed** using the checklist above
-2. **Copy the exact error message** you received
-3. **Note your system information:**
+1. **For Test Environment Setup:** See [TEST_ENVIRONMENT_SETUP.md](./TEST_ENVIRONMENT_SETUP.md) for detailed Docker and native setup instructions
+
+2. **Check which step failed** using the checklist above
+
+3. **Copy the exact error message** you received
+
+4. **Note your system information:**
    - Windows version: __________
    - Node.js version: __________
    - Step where error occurred: __________
 
-4. **Create a GitHub issue** with:
+5. **Create a GitHub issue** with:
    - Title: "Installation Error at Step X"
    - Description: Include error message and system info
 
