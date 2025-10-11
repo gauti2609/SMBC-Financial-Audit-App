@@ -58,6 +58,12 @@ This project has multiple documentation files. Here's a quick guide to which fil
 - Success verification
 - Next steps
 
+⚡ **Quick Reference Card:** [GITHUB_ACTIONS_QUICK_REFERENCE.md](./GITHUB_ACTIONS_QUICK_REFERENCE.md)
+- One-page cheat sheet
+- All essential commands
+- Quick troubleshooting
+- Status indicators
+
 🚀 **Quick Start:** [GITHUB_ACTIONS_QUICK_START.md](./GITHUB_ACTIONS_QUICK_START.md)
 - 5-minute setup guide
 - Get automated Windows testing running fast
@@ -93,6 +99,7 @@ This project has multiple documentation files. Here's a quick guide to which fil
 | Building for production | BUILD_FIXES_SUMMARY.md |
 | Troubleshooting any issue | INSTALLATION_GUIDE.md (Step 8+) |
 | Setting up GitHub Actions | GITHUB_ACTIONS_QUICK_START.md |
+| Need quick CI/CD reference | GITHUB_ACTIONS_QUICK_REFERENCE.md |
 | Need CI/CD help | GITHUB_ACTIONS_SETUP_GUIDE.md |
 | Want visual walkthrough | GITHUB_ACTIONS_VISUAL_GUIDE.md |
 | Workflow not working | GITHUB_ACTIONS_TROUBLESHOOTING.md |
@@ -112,6 +119,7 @@ This project has multiple documentation files. Here's a quick guide to which fil
 ├── 📄 BEFORE_AFTER_COMPARISON.md        📸 Visual changes
 ├── 📄 BUILD_FIXES_SUMMARY.md            💻 All build fixes
 ├── 📄 GITHUB_ACTIONS_SETUP_COMPLETE.md  🎉 CI/CD setup summary
+├── 📄 GITHUB_ACTIONS_QUICK_REFERENCE.md ⚡ CI/CD cheat sheet
 ├── 📄 GITHUB_ACTIONS_QUICK_START.md     🚀 5-min CI/CD setup
 ├── 📄 GITHUB_ACTIONS_SETUP_GUIDE.md     📘 Complete CI/CD guide
 ├── 📄 GITHUB_ACTIONS_VISUAL_GUIDE.md    🎨 Visual walkthrough
