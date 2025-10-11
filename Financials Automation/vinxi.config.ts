@@ -4,7 +4,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       external: [
-        // Prisma externalization
+        // Prisma externalization - comprehensive patterns
         '@prisma/client',
         '.prisma/client',
         '.prisma',
@@ -12,6 +12,9 @@ export default defineConfig({
         '@prisma/engines-version',
         /^\.prisma\//,
         /^@prisma\//,
+        /^\.prisma\/.*/,
+        '.prisma/client/default',
+        '.prisma/client/index',
         // Database drivers
         'pg',
         'pg-native',
@@ -24,6 +27,10 @@ export default defineConfig({
         'jsonwebtoken',
         'minio',
       ],
+      output: {
+        // Ensure Prisma modules are not inlined
+        manualChunks: undefined,
+      },
     },
   },
   ssr: {
