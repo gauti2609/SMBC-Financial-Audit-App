@@ -53,9 +53,12 @@ export default createApp({
       alias: {
         '.prisma/client': './node_modules/.prisma/client',
       },
-      // Explicitly tell Nitro not to bundle these modules (merged externals)
+      // Configure Nitro to inline (bundle) Prisma client to resolve module specifier errors
       externals: {
-        inline: [],
+        inline: [
+          '@prisma/client',
+          '.prisma/client',
+        ],
         traceInclude: [],
         trace: false,
       },
