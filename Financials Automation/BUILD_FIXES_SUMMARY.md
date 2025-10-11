@@ -48,6 +48,22 @@ This document summarizes all the critical issues that were preventing the .exe b
 - **Added binary engine configuration**: Set `engineType = "binary"` in `prisma/schema.prisma`
 - **Created setup script**: New `scripts/setup-prisma.js` with built-in safeguards and delays
 - **Updated build process**: Added `predev` and `prebuild` hooks to auto-generate Prisma client
+
+### 2.3. Prisma Build Module Resolution Error (NEW) ❌ → ✅
+**Problem**: Build fails with "Invalid module .prisma is not a valid package name"
+- Error occurs during Nitro/Rollup bundling phase in production build
+- `@prisma/client/default.js` contains `require('.prisma/client/default')`
+- Bundler misinterprets `.prisma` as package name instead of relative path
+- Accompanied by DEP0155 deprecation warning for trailing slash patterns
+
+**Fix Applied**:
+- **Added comprehensive externalization patterns**: Added `/^\.prisma\/.*/` regex to catch all .prisma paths
+- **Added explicit path patterns**: Added `.prisma/client/default` and `.prisma/client/index` to external list
+- **Added resolver alias**: Configured `'.prisma/client': '@prisma/client/.prisma/client'` in both app.config.ts and Nitro config
+- **Disabled module tracing**: Set `externals.trace: false` to prevent bundler from analyzing Prisma internals
+- **Updated both configurations**: Applied changes to both `app.config.ts` and `vinxi.config.ts` for consistency
+- See [PRISMA_BUILD_FIX.md](./PRISMA_BUILD_FIX.md) for detailed technical explanation
+
 - **New installation flow**: Users run `pnpm install` then `pnpm run setup` for clean setup
 
 **Benefits**:
@@ -168,6 +184,16 @@ pnpm install
 ```bash
 pnpm prisma generate --schema=./prisma/schema.prisma
 ```
+
+#### Issue: "Invalid module .prisma" during build
+**Solution**: This is now fixed in the configuration files. If you still encounter this error:
+```bash
+# Clean build and rebuild
+rm -rf .vinxi .output node_modules
+pnpm install
+pnpm run build
+```
+See [PRISMA_BUILD_FIX.md](./PRISMA_BUILD_FIX.md) for details.
 
 #### Issue: TypeScript compilation errors
 **Solution**:
