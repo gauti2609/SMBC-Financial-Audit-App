@@ -28,10 +28,11 @@
     "electron:dist:mac": "npm run build && electron-builder --mac",
     "electron:dist:linux": "npm run build && electron-builder --linux",
     "build:electron": "tsc --project tsconfig.electron.json",
-    "dist": "npm run prebuild:electron && npm run electron:dist",
-    "dist:win": "npm run prebuild:electron && npm run electron:dist:win",
-    "dist:mac": "npm run prebuild:electron && npm run electron:dist:mac",
-    "dist:linux": "npm run prebuild:electron && npm run electron:dist:linux"
+    "prepare:electron": "node scripts/build-electron-sqlite.js",
+    "dist": "npm run prepare:electron && npm run electron:dist",
+    "dist:win": "npm run prepare:electron && npm run electron:dist:win",
+    "dist:mac": "npm run prepare:electron && npm run electron:dist:mac",
+    "dist:linux": "npm run prepare:electron && npm run electron:dist:linux"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.2.12",
