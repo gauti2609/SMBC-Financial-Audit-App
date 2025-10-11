@@ -50,6 +50,26 @@ This project has multiple documentation files. Here's a quick guide to which fil
 - Development workflow
 - Deployment guidelines
 
+## For GitHub Actions / CI/CD Setup
+
+🚀 **Quick Start:** [GITHUB_ACTIONS_QUICK_START.md](./GITHUB_ACTIONS_QUICK_START.md)
+- 5-minute setup guide
+- Get automated Windows testing running fast
+- No firewall or network issues
+- All dependencies installed automatically
+
+📘 **Complete Guide:** [GITHUB_ACTIONS_SETUP_GUIDE.md](./GITHUB_ACTIONS_SETUP_GUIDE.md)
+- Comprehensive GitHub Actions documentation
+- Step-by-step setup instructions
+- Advanced configuration options
+- Best practices and FAQ
+
+🔧 **Troubleshooting:** [GITHUB_ACTIONS_TROUBLESHOOTING.md](./GITHUB_ACTIONS_TROUBLESHOOTING.md)
+- Diagnose and fix workflow issues
+- Common error solutions
+- Debug commands and techniques
+- Quick diagnostic checklist
+
 ## Quick Reference
 
 | Your Situation | Use This File |
@@ -60,6 +80,9 @@ This project has multiple documentation files. Here's a quick guide to which fil
 | Need project overview | README.md |
 | Building for production | BUILD_FIXES_SUMMARY.md |
 | Troubleshooting any issue | INSTALLATION_GUIDE.md (Step 8+) |
+| Setting up GitHub Actions | GITHUB_ACTIONS_QUICK_START.md |
+| Need CI/CD help | GITHUB_ACTIONS_SETUP_GUIDE.md |
+| Workflow not working | GITHUB_ACTIONS_TROUBLESHOOTING.md |
 
 ---
 
@@ -67,14 +90,17 @@ This project has multiple documentation files. Here's a quick guide to which fil
 
 ```
 📁 Financials Automation/
-├── 📄 INSTALLATION_GUIDE.md        ⭐ START HERE (New Users)
-├── 📄 QUICK_FIX_GUIDE.md           🔧 If you have errors
-├── 📄 README.md                    📖 Project overview
-├── 📄 PRISMA_FIX_FINAL.md         🔬 Technical details
-├── 📄 ISSUE_RESOLVED_SUMMARY.md   📋 Executive summary
-├── 📄 BEFORE_AFTER_COMPARISON.md  📸 Visual changes
-├── 📄 BUILD_FIXES_SUMMARY.md      💻 All build fixes
-└── 📄 DOC_INDEX.md                📚 This file
+├── 📄 INSTALLATION_GUIDE.md              ⭐ START HERE (New Users)
+├── 📄 QUICK_FIX_GUIDE.md                 🔧 If you have errors
+├── 📄 README.md                          📖 Project overview
+├── 📄 PRISMA_FIX_FINAL.md               🔬 Technical details
+├── 📄 ISSUE_RESOLVED_SUMMARY.md         📋 Executive summary
+├── 📄 BEFORE_AFTER_COMPARISON.md        📸 Visual changes
+├── 📄 BUILD_FIXES_SUMMARY.md            💻 All build fixes
+├── 📄 GITHUB_ACTIONS_QUICK_START.md     🚀 5-min CI/CD setup
+├── 📄 GITHUB_ACTIONS_SETUP_GUIDE.md     📘 Complete CI/CD guide
+├── 📄 GITHUB_ACTIONS_TROUBLESHOOTING.md 🔧 CI/CD debugging
+└── 📄 DOC_INDEX.md                      📚 This file
 ```
 
 ---
