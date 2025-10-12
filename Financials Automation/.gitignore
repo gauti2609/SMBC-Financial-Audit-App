@@ -25,3 +25,12 @@ yarn.lock
 src/generated
 
 app.config.timestamp_*.js
+
+# Build artifacts (exe installers)
+# These are large files that should be distributed via GitHub Releases
+dist-electron/
+*.exe
+*.msi
+*.dmg
+*.AppImage
+*.deb

@@ -35,6 +35,21 @@ A professional financial statement generation tool with Schedule III compliance 
 
 ## Installation
 
+### 🎯 Desktop Version (Windows .exe Installer)
+
+**Looking for the Windows installer?** See [README_EXE_LOCATION.md](./README_EXE_LOCATION.md)
+
+**Quick Links:**
+- 📥 [Download from GitHub Releases](https://github.com/gauti2609/SMBC/releases)
+- 📖 [Complete Installation Guide](./EXE%20Instructions.md)
+- 🔧 [How to Get Installer](../HOW_TO_GET_INSTALLER.md)
+
+The Windows .exe installer is:
+- Built automatically via GitHub Actions
+- Available in GitHub Releases (not in the repository)
+- ~200-400MB in size
+- Includes full installer and portable version
+
 ### Web Version
 ```bash
 # Clone the repository
