@@ -131,24 +131,32 @@ model CommonControl {
   @@index([companyId])
 }
 
-// Control Lists for Major Heads, Minor Heads, Groupings
+// Control Lists for Major Heads, Minor Heads, Groupings with Hierarchical Structure
 model MajorHead {
   id                String              @id @default(cuid())
   name              String              @unique
+  statementType     String              // "BS" (Balance Sheet) or "PL" (Profit & Loss)
+  category          String              // For BS: "Asset" or "Liability", For PL: "Income" or "Expense"
   createdAt         DateTime            @default(now())
+  minorHeads        MinorHead[]         // One Major Head can have many Minor Heads
   trialBalanceEntries TrialBalanceEntry[]
 }
 
 model MinorHead {
   id                String              @id @default(cuid())
   name              String              @unique
+  majorHeadId       String              // Maps to parent Major Head
+  majorHead         MajorHead           @relation(fields: [majorHeadId], references: [id], onDelete: Cascade)
   createdAt         DateTime            @default(now())
+  groupings         Grouping[]          // One Minor Head can have many Groupings
   trialBalanceEntries TrialBalanceEntry[]
 }
 
 model Grouping {
   id                String              @id @default(cuid())
   name              String              @unique
+  minorHeadId       String              // Maps to parent Minor Head
+  minorHead         MinorHead           @relation(fields: [minorHeadId], references: [id], onDelete: Cascade)
   createdAt         DateTime            @default(now())
   trialBalanceEntries TrialBalanceEntry[]
 }

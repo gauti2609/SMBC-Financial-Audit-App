@@ -32,8 +32,12 @@ import {
 
 // Import new procedures
 import { getCommonControl } from "./procedures/getCommonControl";
+import { getMajorHeads } from "./procedures/getMajorHeads";
 import { getMinorHeads } from "./procedures/getMinorHeads";
+import { getGroupings } from "./procedures/getGroupings";
+import { addMajorHead } from "./procedures/addMajorHead";
 import { addMinorHead } from "./procedures/addMinorHead";
+import { addGrouping } from "./procedures/addGrouping";
 import { getRelatedPartyTransactions } from "./procedures/getRelatedPartyTransactions";
 import { addRelatedPartyTransaction } from "./procedures/addRelatedPartyTransaction";
 import { generateCashFlow } from "./procedures/generateCashFlow";
@@ -282,62 +286,73 @@ export const appRouter = createTRPCRouter({
       });
     }),
 
-  // Master Lists
-  getMajorHeads: baseProcedure.query(async () => {
-    return await db.majorHead.findMany({
-      orderBy: { name: 'asc' },
-    });
-  }),
-
+  // Master Lists with Hierarchical Structure
+  getMajorHeads,
   getMinorHeads,
+  getGroupings,
 
-  getGroupings: baseProcedure.query(async () => {
-    return await db.grouping.findMany({
-      orderBy: { name: 'asc' },
-    });
-  }),
-
-  addMajorHead: baseProcedure
-    .input(z.object({ name: z.string() }))
-    .mutation(async ({ input }) => {
-      return await db.majorHead.create({
-        data: { name: input.name },
-      });
-    }),
+  addMajorHead,
+  addMinorHead,
+  addGrouping,
 
   updateMajorHead: baseProcedure
-    .input(z.object({ id: z.string(), name: z.string() }))
+    .input(z.object({ 
+      id: z.string(), 
+      name: z.string(),
+      statementType: z.enum(["BS", "PL"]).optional(),
+      category: z.string().optional()
+    }))
     .mutation(async ({ input }) => {
+      const { id, ...data } = input;
       return await db.majorHead.update({
-        where: { id: input.id },
-        data: { name: input.name },
+        where: { id },
+        data,
       });
     }),
 
   deleteMajorHead: baseProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
+      // Note: This will cascade delete related Minor Heads and Groupings
       return await db.majorHead.delete({
         where: { id: input.id },
       });
     }),
 
-  addMinorHead,
-
-  addGrouping: baseProcedure
-    .input(z.object({ name: z.string() }))
+  updateMinorHead: baseProcedure
+    .input(z.object({ 
+      id: z.string(), 
+      name: z.string(),
+      majorHeadId: z.string().optional()
+    }))
     .mutation(async ({ input }) => {
-      return await db.grouping.create({
-        data: { name: input.name },
+      const { id, ...data } = input;
+      return await db.minorHead.update({
+        where: { id },
+        data,
+      });
+    }),
+
+  deleteMinorHead: baseProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      // Note: This will cascade delete related Groupings
+      return await db.minorHead.delete({
+        where: { id: input.id },
       });
     }),
 
   updateGrouping: baseProcedure
-    .input(z.object({ id: z.string(), name: z.string() }))
+    .input(z.object({ 
+      id: z.string(), 
+      name: z.string(),
+      minorHeadId: z.string().optional()
+    }))
     .mutation(async ({ input }) => {
+      const { id, ...data } = input;
       return await db.grouping.update({
-        where: { id: input.id },
-        data: { name: input.name },
+        where: { id },
+        data,
       });
     }),
 
