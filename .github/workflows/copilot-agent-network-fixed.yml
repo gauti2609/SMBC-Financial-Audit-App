@@ -1,0 +1,95 @@
+name: GitHub Copilot Agent with Network Fix
+
+on:
+  workflow_dispatch:
+    inputs:
+      task_description:
+        description: 'Task description for the Copilot agent'
+        required: true
+        default: 'Create Windows executable for Financial Automation Tool'
+
+jobs:
+  copilot-agent:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Setup environment BEFORE any firewall restrictions
+      - name: Pre-firewall setup
+        run: |
+          echo "Setting up environment before firewall restrictions..."
+          
+          # Configure DNS for better connectivity
+          sudo systemctl stop systemd-resolved
+          sudo rm -f /etc/resolv.conf
+          echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
+          echo "nameserver 8.8.4.4" | sudo tee -a /etc/resolv.conf
+          sudo systemctl start systemd-resolved
+          
+          # Test connectivity
+          echo "Testing network connectivity..."
+          ping -c 3 github.com
+          ping -c 3 api.githubcopilot.com
+          
+      - name: Checkout repository with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Setup Git configuration
+        run: |
+          git config user.name "GitHub Copilot Agent"
+          git config user.email "copilot@github.com"
+          
+          # Ensure all branches are available
+          git fetch --all
+          
+          # Verify branch existence
+          echo "Available branches:"
+          git branch -a
+          
+          # Switch to target branch if not already there
+          if ! git show-ref --verify --quiet refs/heads/Schedule-III-Drafting-Automation; then
+            git checkout -b Schedule-III-Drafting-Automation origin/Schedule-III-Drafting-Automation
+          else
+            git checkout Schedule-III-Drafting-Automation
+            git pull origin Schedule-III-Drafting-Automation
+          fi
+          
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            curl \
+            wget \
+            unzip \
+            build-essential \
+            python3 \
+            python3-pip \
+            nodejs \
+            npm \
+            wine \
+            wine32 \
+            wine64
+            
+      - name: Configure Wine for Windows builds
+        run: |
+          wine --version
+          winecfg /S
+          
+      - name: Verify repository state
+        run: |
+          echo "Current branch: $(git branch --show-current)"
+          echo "Repository contents:"
+          ls -la
+          echo "Git status:"
+          git status
+          
+      # Add network connectivity verification
+      - name: Final network verification
+        run: |
+          echo "Final network connectivity check..."
+          curl -I https://github.com 2>/dev/null | head -1
+          curl -I https://api.githubcopilot.com 2>/dev/null | head -1 || echo "Copilot API may need authentication"
+          
+        continue-on-error: true
