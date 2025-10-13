@@ -22,26 +22,15 @@ jobs:
         run: npm install -g pnpm
         working-directory: Financials Automation
 
-      - name: Create .env file
+      - name: Create .env file from secrets
         run: |
-          echo "NODE_ENV=production" > .env
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-          echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
-          echo "APP_NAME=Financial Statement Generator" >> .env
-          echo "LOG_LEVEL=info" >> .env
-          echo "DB_CONNECTION_POOL_MIN=2" >> .env
-          echo "DB_CONNECTION_POOL_MAX=10" >> .env
-          echo "SESSION_TIMEOUT_MINUTES=1440" >> .env
-          echo "MAX_FILE_SIZE_MB=50" >> .env
-          echo "ENABLE_AUTO_BACKUP=true" >> .env
-          echo "BACKUP_RETENTION_DAYS=30" >> .env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> Financials Automation/.env
+          echo "API_KEY=${{ secrets.API_KEY }}" >> Financials Automation/.env
+          # Add additional secrets as needed
+      - name: Approve pnpm build scripts
+        run: pnpm approve-builds
         working-directory: Financials Automation
-
-      - name: Print .env for debug
-        run: cat .env
-        working-directory: Financials Automation
-        
+         
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
         working-directory: Financials Automation
