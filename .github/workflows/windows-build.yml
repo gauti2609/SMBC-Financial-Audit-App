@@ -12,32 +12,41 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+        working-directory: Financials Automation
+        
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-
+        working-directory: Financials Automation
+        
       - name: Install pnpm
         run: npm install -g pnpm
+        working-directory: Financials Automation
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
+        working-directory: Financials Automation
 
       - name: Generate Prisma client
         run: pnpm exec prisma generate
+        working-directory: Financials Automation
 
       - name: Build web application
         run: pnpm run build
+        working-directory: Financials Automation
 
       - name: Compile Electron scripts
         run: pnpm run build:electron
+        working-directory: Financials Automation
 
       - name: Build Windows installer
         run: npx electron-builder --win --config Financials Automation/electron-builder.config.cjs
+        working-directory: Financials Automation
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
           name: Financial-Statement-Generator-Installer
           path: Financials Automation/dist-electron/*.exe
+        working-directory: Financials Automation
