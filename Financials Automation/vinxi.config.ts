@@ -15,6 +15,8 @@ export default defineConfig({
         '~/generated/prisma',
         './src/generated/prisma',
         '../src/generated/prisma',
+        /^\.\.\/generated\/prisma/,
+        /^\.\/generated\/prisma/,
         // Database drivers
         'pg',
         'pg-native',
@@ -39,6 +41,8 @@ export default defineConfig({
       '~/generated/prisma',
       './src/generated/prisma',
       '../src/generated/prisma',
+      /^\.\.\/generated\/prisma/,
+      /^\.\/generated\/prisma/,
       'pg',
       'pg-native',
       'mysql',
