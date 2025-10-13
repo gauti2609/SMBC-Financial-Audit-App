@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { baseProcedure } from "../main";
 import { TRPCError } from "@trpc/server";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "~/generated/prisma";
 
 const databaseConfigSchema = z.object({
   host: z.string().min(1, "Host is required"),
