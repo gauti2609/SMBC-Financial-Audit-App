@@ -37,6 +37,10 @@ jobs:
           echo "ENABLE_AUTO_BACKUP=true" >> .env
           echo "BACKUP_RETENTION_DAYS=30" >> .env
         working-directory: Financials Automation
+
+      - name: Print .env for debug
+        run: cat .env
+        working-directory: Financials Automation
         
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
