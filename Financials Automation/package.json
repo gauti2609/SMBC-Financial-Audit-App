@@ -27,12 +27,11 @@
     "electron:dist:win": "npm run build && electron-builder --win",
     "electron:dist:mac": "npm run build && electron-builder --mac",
     "electron:dist:linux": "npm run build && electron-builder --linux",
-    "build:electron": "tsc electron/main.ts --outDir electron --target es2020 && tsc electron/preload.ts --outDir electron --target es2020",
-    "prebuild:electron": "npm run build:electron",
-    "dist": "npm run prebuild:electron && npm run electron:dist",
-    "dist:win": "npm run prebuild:electron && npm run electron:dist:win",
-    "dist:mac": "npm run prebuild:electron && npm run electron:dist:mac",
-    "dist:linux": "npm run prebuild:electron && npm run electron:dist:linux"
+    "build:electron": "tsc electron/main.ts --outDir electron --target es2020 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck && tsc electron/preload.ts --outDir electron --target es2020 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck",
+    "dist": "npm run build:electron && npm run electron:dist",
+    "dist:win": "npm run build:electron && npm run electron:dist:win",
+    "dist:mac": "npm run build:electron && npm run electron:dist:mac",
+    "dist:linux": "npm run build:electron && npm run electron:dist:linux"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.2.12",
