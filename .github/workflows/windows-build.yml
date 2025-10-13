@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - Schedule-III-Drafting-Automation
+      - main
+      - copilot/**
 
 jobs:
   build-windows:
@@ -20,16 +22,22 @@ jobs:
                 
       - name: Install pnpm
         run: npm install -g pnpm
-        working-directory: Financials Automation
 
       - name: Create .env file from secrets
-        run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> Financials Automation/.env
-          echo "API_KEY=${{ secrets.API_KEY }}" >> Financials Automation/.env
-          # Add additional secrets as needed
-      - name: Approve pnpm build scripts
-        run: pnpm approve-builds
         working-directory: Financials Automation
+        run: |
+          echo NODE_ENV=production >> .env
+          echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
+          echo ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }} >> .env
+          echo APP_NAME=Financial Statement Generator >> .env
+          echo LOG_LEVEL=info >> .env
+          echo DB_CONNECTION_POOL_MIN=2 >> .env
+          echo DB_CONNECTION_POOL_MAX=10 >> .env
+          echo SESSION_TIMEOUT_MINUTES=1440 >> .env
+          echo MAX_FILE_SIZE_MB=50 >> .env
+          echo ENABLE_AUTO_BACKUP=true >> .env
+          echo BACKUP_RETENTION_DAYS=30 >> .env
          
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
