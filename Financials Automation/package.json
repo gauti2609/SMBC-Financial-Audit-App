@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Financial Statement Generator - Automated financial statement preparation tool",
   "author": "SMBC",
-  "main": "electron/main.js",
+  "main": "electron/main.cjs",
   "homepage": "./",
   "scripts": {
     "postinstall": "echo 'Generating TanStack Router...' && tsr generate && echo 'Generating Prisma client...' && prisma generate",
@@ -27,7 +27,7 @@
     "electron:dist:win": "npm run build && electron-builder --win",
     "electron:dist:mac": "npm run build && electron-builder --mac",
     "electron:dist:linux": "npm run build && electron-builder --linux",
-    "build:electron": "tsc electron/main.ts --outDir electron --target es2020 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck && tsc electron/preload.ts --outDir electron --target es2020 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck",
+    "build:electron": "tsc electron/main.ts --outDir electron --target es2020 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --types node && tsc electron/preload.ts --outDir electron --target es2020 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --types node && mv electron/main.js electron/main.cjs && mv electron/preload.js electron/preload.cjs",
     "dist": "npm run build:electron && npm run electron:dist",
     "dist:win": "npm run build:electron && npm run electron:dist:win",
     "dist:mac": "npm run build:electron && npm run electron:dist:mac",

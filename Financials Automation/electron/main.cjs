@@ -21,7 +21,7 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
-            preload: (0, path_1.join)(__dirname, 'preload.js'),
+            preload: (0, path_1.join)(__dirname, 'preload.cjs'),
             webSecurity: true,
         },
         icon: (0, path_1.join)(__dirname, '../assets/icon.png'), // App icon
