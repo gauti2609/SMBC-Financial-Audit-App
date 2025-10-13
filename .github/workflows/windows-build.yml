@@ -20,13 +20,14 @@ jobs:
                 
       - name: Install pnpm
         run: npm install -g pnpm
-        working-directory: Financials Automation
 
       - name: Create .env file from secrets
         run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> Financials Automation/.env
-          echo "API_KEY=${{ secrets.API_KEY }}" >> Financials Automation/.env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+          echo "API_KEY=${{ secrets.API_KEY }}" >> .env
           # Add additional secrets as needed
+        working-directory: Financials Automation
+      
       - name: Approve pnpm build scripts
         run: pnpm approve-builds
         working-directory: Financials Automation

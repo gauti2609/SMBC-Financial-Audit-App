@@ -8,7 +8,16 @@ module.exports = {
     'dist/**/*',
     'electron/main.js',
     'electron/preload.js',
-    'node_modules/**/*'
+    'node_modules/**/*',
+    'prisma/**/*',
+    'generated/**/*'
+  ],
+  asarUnpack: [
+    'node_modules/@prisma/**/*',
+    'node_modules/.prisma/**/*',
+    'node_modules/prisma/**/*',
+    'prisma/**/*',
+    'generated/**/*'
   ],
   win: {
     target: 'nsis',
