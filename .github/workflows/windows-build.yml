@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - Schedule-III-Drafting-Automation
+      - main
+      - copilot/**
 
 jobs:
   build-windows:
@@ -20,16 +22,31 @@ jobs:
                 
       - name: Install pnpm
         run: npm install -g pnpm
-        working-directory: Financials Automation
 
-      - name: Create .env file from secrets
-        run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> Financials Automation/.env
-          echo "API_KEY=${{ secrets.API_KEY }}" >> Financials Automation/.env
-          # Add additional secrets as needed
-      - name: Approve pnpm build scripts
-        run: pnpm approve-builds
+      - name: Create .env file from template
         working-directory: Financials Automation
+        run: |
+          if (Test-Path config.env.template) {
+            Copy-Item config.env.template .env
+            Write-Host ".env file created from template"
+          } else {
+            Write-Host "Creating minimal .env file"
+            @"
+          NODE_ENV=production
+          DATABASE_URL=postgresql://postgres:postgres@localhost:5432/financialsdb
+          JWT_SECRET=default-jwt-secret-please-change-in-production
+          ADMIN_PASSWORD=Admin@123
+          APP_NAME=Financial Statement Generator
+          LOG_LEVEL=info
+          DB_CONNECTION_POOL_MIN=2
+          DB_CONNECTION_POOL_MAX=10
+          SESSION_TIMEOUT_MINUTES=1440
+          MAX_FILE_SIZE_MB=50
+          ENABLE_AUTO_BACKUP=true
+          BACKUP_RETENTION_DAYS=30
+          "@ | Out-File -FilePath .env -Encoding utf8
+          }
+        shell: pwsh
          
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
