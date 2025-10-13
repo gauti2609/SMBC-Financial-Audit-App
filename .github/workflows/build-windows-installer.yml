@@ -34,6 +34,13 @@ jobs:
         with:
           version: 8
       
+      - name: Create .env file for build
+        shell: bash
+        run: |
+          echo "DATABASE_URL=postgresql://user:password@localhost:5432/builddb" > .env
+          echo "NODE_ENV=production" >> .env
+          echo "JWT_SECRET=build-secret-key" >> .env
+      
       - name: Get pnpm store directory
         shell: bash
         run: |
