@@ -21,6 +21,10 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
         working-directory: Financials Automation
+
+      - name: Approve pnpm build scripts
+        run: pnpm approve-builds
+        working-directory: Financials Automation
          
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
