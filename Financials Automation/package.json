@@ -100,7 +100,7 @@
     "wait-on": "^7.2.0"
   },
   "build": {
-    "extends": "./electron-builder.config.js"
+    "extends": "./electron-builder.config.cjs"
   },
   "private": true,
   "type": "module"
