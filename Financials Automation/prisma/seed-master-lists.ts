@@ -3,7 +3,7 @@
  * Based on VBA_Module1.bas standard lists for Schedule III compliance
  */
 
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../src/generated/prisma/index.js';
 
 const prisma = new PrismaClient();
 

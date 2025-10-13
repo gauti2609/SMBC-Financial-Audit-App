@@ -66,9 +66,18 @@ if (fs.existsSync(customClientPath)) {
   process.exit(1);
 }
 
-// Try to import Prisma client
+// Try to import Prisma client from custom location
 try {
-  const { PrismaClient } = await import('@prisma/client');
+  // Import from the custom output location specified in schema.prisma
+  const customClientModule = path.join(process.cwd(), 'src', 'generated', 'prisma', 'index.js');
+  
+  if (!fs.existsSync(customClientModule)) {
+    console.error('❌ Prisma client module not found at:', customClientModule);
+    process.exit(1);
+  }
+  
+  // Dynamic import from file path
+  const { PrismaClient } = await import(customClientModule);
   const prisma = new PrismaClient();
   console.log('✅ Prisma client can be imported and instantiated');
   
@@ -76,6 +85,7 @@ try {
   await prisma.$disconnect();
 } catch (error) {
   console.error('❌ Failed to import Prisma client:', error.message);
+  console.error('Make sure Prisma client is generated to src/generated/prisma');
   process.exit(1);
 }
 
