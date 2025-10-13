@@ -23,6 +23,7 @@ yarn.lock
 /playwright/.cache/
 
 src/generated
+generated
 
 app.config.timestamp_*.js
 
