@@ -12,14 +12,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        working-directory: Financials Automation
-        
+                
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-        working-directory: Financials Automation
-        
+                
       - name: Install pnpm
         run: npm install -g pnpm
         working-directory: Financials Automation
@@ -49,4 +47,4 @@ jobs:
         with:
           name: Financial-Statement-Generator-Installer
           path: Financials Automation/dist-electron/*.exe
-        working-directory: Financials Automation
+        
