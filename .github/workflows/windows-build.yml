@@ -1,0 +1,43 @@
+name: Windows Electron Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - Schedule-III-Drafting-Automation
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm exec prisma generate
+
+      - name: Build web application
+        run: pnpm run build
+
+      - name: Compile Electron scripts
+        run: pnpm run build:electron
+
+      - name: Build Windows installer
+        run: npx electron-builder --win --config Financials Automation/electron-builder.config.cjs
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Financial-Statement-Generator-Installer
+          path: Financials Automation/dist-electron/*.exe
