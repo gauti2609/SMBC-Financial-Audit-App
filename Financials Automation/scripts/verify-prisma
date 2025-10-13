@@ -48,12 +48,23 @@ try {
 }
 
 // Check if Prisma client files exist
-const clientPath = path.join(process.cwd(), 'node_modules', '.prisma', 'client');
-if (!fs.existsSync(clientPath)) {
-  console.error('❌ Prisma client not found in node_modules/.prisma/client');
+// Check custom output location first (from schema.prisma)
+const customClientPath = path.join(process.cwd(), 'src', 'generated', 'prisma');
+const defaultClientPath = path.join(process.cwd(), 'node_modules', '.prisma', 'client');
+
+let clientPath = null;
+if (fs.existsSync(customClientPath)) {
+  clientPath = customClientPath;
+  console.log('✅ Prisma client files found in custom location (src/generated/prisma)');
+} else if (fs.existsSync(defaultClientPath)) {
+  clientPath = defaultClientPath;
+  console.log('✅ Prisma client files found in default location (node_modules/.prisma/client)');
+} else {
+  console.error('❌ Prisma client not found in either:');
+  console.error('   - src/generated/prisma (custom location)');
+  console.error('   - node_modules/.prisma/client (default location)');
   process.exit(1);
 }
-console.log('✅ Prisma client files found');
 
 // Try to import Prisma client
 try {
