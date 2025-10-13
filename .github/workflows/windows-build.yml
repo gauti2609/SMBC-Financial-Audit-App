@@ -23,21 +23,30 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
-      - name: Create .env file from secrets
+      - name: Create .env file from template
         working-directory: Financials Automation
         run: |
-          echo NODE_ENV=production >> .env
-          echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
-          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
-          echo ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }} >> .env
-          echo APP_NAME=Financial Statement Generator >> .env
-          echo LOG_LEVEL=info >> .env
-          echo DB_CONNECTION_POOL_MIN=2 >> .env
-          echo DB_CONNECTION_POOL_MAX=10 >> .env
-          echo SESSION_TIMEOUT_MINUTES=1440 >> .env
-          echo MAX_FILE_SIZE_MB=50 >> .env
-          echo ENABLE_AUTO_BACKUP=true >> .env
-          echo BACKUP_RETENTION_DAYS=30 >> .env
+          if (Test-Path config.env.template) {
+            Copy-Item config.env.template .env
+            Write-Host ".env file created from template"
+          } else {
+            Write-Host "Creating minimal .env file"
+            @"
+          NODE_ENV=production
+          DATABASE_URL=postgresql://postgres:postgres@localhost:5432/financialsdb
+          JWT_SECRET=default-jwt-secret-please-change-in-production
+          ADMIN_PASSWORD=Admin@123
+          APP_NAME=Financial Statement Generator
+          LOG_LEVEL=info
+          DB_CONNECTION_POOL_MIN=2
+          DB_CONNECTION_POOL_MAX=10
+          SESSION_TIMEOUT_MINUTES=1440
+          MAX_FILE_SIZE_MB=50
+          ENABLE_AUTO_BACKUP=true
+          BACKUP_RETENTION_DAYS=30
+          "@ | Out-File -FilePath .env -Encoding utf8
+          }
+        shell: pwsh
          
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
