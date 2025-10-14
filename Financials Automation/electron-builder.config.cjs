@@ -5,10 +5,11 @@ module.exports = {
     output: 'dist-electron'
   },
   files: [
-    'dist/**/*',
+    '.output/**/*',
     'electron/main.cjs',
     'electron/preload.cjs',
-    'node_modules/**/*'
+    'node_modules/**/*',
+    'src/generated/prisma/**/*'
   ],
   win: {
     target: 'nsis',
