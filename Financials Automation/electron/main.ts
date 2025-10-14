@@ -22,7 +22,7 @@ function createWindow(): void {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: join(__dirname, 'preload.js'),
+      preload: join(__dirname, 'preload.cjs'),
       webSecurity: true,
     },
     icon: join(__dirname, '../assets/icon.png'), // App icon
