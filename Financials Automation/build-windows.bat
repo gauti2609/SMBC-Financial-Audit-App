@@ -160,12 +160,23 @@ echo Files created:
 echo   - Financial Statement Generator-Setup-1.0.0.exe (Main Installer)
 echo   - Financial Statement Generator-1.0.0-Portable.exe (Portable Version)
 echo.
-echo Next steps:
-echo   1. Test the installer on your machine
-echo   2. Set up PostgreSQL database (if not already done)
-echo   3. Configure database connection in the application
-echo   4. Import Sample TB.xlsx to test functionality
+echo IMPORTANT - Setup Instructions:
+echo ===============================
+echo After installing on the target machine, users MUST:
 echo.
-echo For detailed instructions, see COMPLETE_BUILD_SOLUTION.md
+echo   1. Create database 'financialsdb' in PostgreSQL
+echo   2. Create config.env file in: %%APPDATA%%\Financial Statement Generator
+echo   3. Add this line to config.env:
+echo      DATABASE_URL=postgresql://postgres:PASSWORD@localhost:5432/financialsdb
+echo.
+echo The installer will:
+echo   - Show these instructions in a message box after installation
+echo   - Create a desktop shortcut to detailed setup instructions
+echo   - Include INSTALLATION_SETUP_GUIDE.md with comprehensive steps
+echo.
+echo For detailed build documentation, see:
+echo   - INSTALLATION_SETUP_GUIDE.md (for end users)
+echo   - ENV_VAR_FIX_SUMMARY.md (technical details)
+echo   - COMPLETE_BUILD_SOLUTION.md (build process)
 echo.
 pause
