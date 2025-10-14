@@ -18,6 +18,14 @@ module.exports = {
       filter: ['**/*']
     },
     {
+      from: 'config.env.template',
+      to: 'config.env.template'
+    },
+    {
+      from: 'INSTALLATION_SETUP_GUIDE.md',
+      to: 'INSTALLATION_SETUP_GUIDE.md'
+    },
+    {
       from: '../QUICK_START.md',
       to: 'QUICK_START.md'
     },

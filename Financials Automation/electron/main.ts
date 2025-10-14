@@ -1,7 +1,7 @@
 import { app, BrowserWindow, dialog, ipcMain, Menu, shell } from 'electron';
 import { join } from 'path';
 import { readFile, writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { homedir } from 'os';
 import { spawn, ChildProcess } from 'child_process';
 
@@ -13,6 +13,78 @@ let serverProcess: ChildProcess | null = null;
 const APP_NAME = 'Financial Statement Generator';
 const DEFAULT_DOWNLOAD_PATH = join(homedir(), 'Documents', 'Financial Exports');
 const DEFAULT_UPLOAD_PATH = join(homedir(), 'Documents');
+
+// Load environment variables from config files
+function loadEnvironmentVariables(): void {
+  const envPaths: string[] = [];
+  
+  if (app.isPackaged) {
+    // In production, check multiple locations for environment files
+    // 1. Application data folder (user-specific config)
+    const userDataEnv = join(app.getPath('userData'), 'config.env');
+    envPaths.push(userDataEnv);
+    
+    // 2. Installation directory (alongside executable)
+    const installDirEnv = join(process.resourcesPath, 'config.env');
+    envPaths.push(installDirEnv);
+    
+    // 3. Resources directory (bundled with installer)
+    const resourcesEnv = join(process.resourcesPath, '.env');
+    envPaths.push(resourcesEnv);
+  } else {
+    // In development
+    const devEnv = join(__dirname, '..', '.env');
+    envPaths.push(devEnv);
+  }
+  
+  // Try to load from each path
+  for (const envPath of envPaths) {
+    if (existsSync(envPath)) {
+      console.log(`Loading environment from: ${envPath}`);
+      try {
+        const envContent = readFileSync(envPath, 'utf-8');
+        const envLines = envContent.split('\n');
+        
+        for (const line of envLines) {
+          const trimmedLine = line.trim();
+          // Skip empty lines and comments
+          if (!trimmedLine || trimmedLine.startsWith('#')) {
+            continue;
+          }
+          
+          const [key, ...valueParts] = trimmedLine.split('=');
+          const value = valueParts.join('=').trim();
+          
+          if (key && value) {
+            // Only set if not already set (system env vars take precedence)
+            if (!process.env[key.trim()]) {
+              process.env[key.trim()] = value;
+              console.log(`Loaded env variable: ${key.trim()}`);
+            } else {
+              console.log(`Env variable already set: ${key.trim()} (using system value)`);
+            }
+          }
+        }
+        
+        console.log(`Successfully loaded environment from: ${envPath}`);
+        break; // Stop after first successful load
+      } catch (error) {
+        console.error(`Failed to load environment from ${envPath}:`, error);
+      }
+    } else {
+      console.log(`Environment file not found: ${envPath}`);
+    }
+  }
+  
+  // Log final DATABASE_URL status (masked)
+  if (process.env.DATABASE_URL) {
+    const dbUrl = process.env.DATABASE_URL;
+    const masked = dbUrl.substring(0, 15) + '***' + dbUrl.substring(dbUrl.length - 10);
+    console.log(`DATABASE_URL configured: ${masked}`);
+  } else {
+    console.warn('WARNING: DATABASE_URL not configured!');
+  }
+}
 
 // Start the backend server
 async function startServer(): Promise<number> {
@@ -55,6 +127,26 @@ async function startServer(): Promise<number> {
         console.error('  - app.asar.unpacked:', join(__dirname.replace('app.asar', 'app.asar.unpacked'), '.output', 'server', 'index.mjs'));
         console.error('  - resources:', join(process.resourcesPath, '.output', 'server', 'index.mjs'));
       }
+      reject(error);
+      return;
+    }
+    
+    // Check if DATABASE_URL is configured
+    if (!process.env.DATABASE_URL) {
+      const error = new Error(
+        'DATABASE_URL environment variable is not configured.\n\n' +
+        'Please configure the database connection using one of these methods:\n\n' +
+        '1. Create a config.env file in the application data folder:\n' +
+        `   Location: ${join(app.getPath('userData'), 'config.env')}\n` +
+        '   Content: DATABASE_URL=postgresql://username:password@host:port/database\n\n' +
+        '2. Set a system environment variable:\n' +
+        '   PowerShell (Admin): [System.Environment]::SetEnvironmentVariable(\'DATABASE_URL\', \'postgresql://username:password@host:port/database\', \'User\')\n' +
+        '   Then restart your computer.\n\n' +
+        '3. Copy config.env.template from installation folder and rename to config.env\n' +
+        `   Installation folder: ${process.resourcesPath}\n\n` +
+        'See QUICK_START.md and POSTGRESQL_SETUP_GUIDE.md in the installation folder for detailed instructions.'
+      );
+      console.error(error.message);
       reject(error);
       return;
     }
@@ -218,6 +310,9 @@ async function createWindow(): Promise<void> {
 
 // App event handlers
 app.whenReady().then(() => {
+  // Load environment variables before doing anything else
+  loadEnvironmentVariables();
+  
   createWindow();
   createMenu();
 
