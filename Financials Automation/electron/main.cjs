@@ -5,14 +5,63 @@ const path_1 = require("path");
 const promises_1 = require("fs/promises");
 const fs_1 = require("fs");
 const os_1 = require("os");
+const child_process_1 = require("child_process");
 // Keep a global reference of the window object
 let mainWindow = null;
+let serverProcess = null;
 // Application settings
 const APP_NAME = 'Financial Statement Generator';
 const DEFAULT_DOWNLOAD_PATH = (0, path_1.join)((0, os_1.homedir)(), 'Documents', 'Financial Exports');
 const DEFAULT_UPLOAD_PATH = (0, path_1.join)((0, os_1.homedir)(), 'Documents');
+// Start the backend server
+async function startServer() {
+    return new Promise((resolve, reject) => {
+        const serverPath = (0, path_1.join)(__dirname, '../.output/server/index.mjs');
+        const port = 3000; // Default port
+        console.log('Starting server from:', serverPath);
+        serverProcess = (0, child_process_1.spawn)('node', [serverPath], {
+            env: {
+                ...process.env,
+                PORT: String(port),
+                NODE_ENV: 'production',
+            },
+            stdio: ['ignore', 'pipe', 'pipe'],
+        });
+        serverProcess.stdout?.on('data', (data) => {
+            const output = data.toString();
+            console.log('[Server]:', output);
+            // Check if server has started
+            if (output.includes('Listening') || output.includes('listening') || output.includes(String(port))) {
+                resolve(port);
+            }
+        });
+        serverProcess.stderr?.on('data', (data) => {
+            console.error('[Server Error]:', data.toString());
+        });
+        serverProcess.on('error', (error) => {
+            console.error('Failed to start server:', error);
+            reject(error);
+        });
+        serverProcess.on('exit', (code) => {
+            console.log('Server process exited with code:', code);
+            serverProcess = null;
+        });
+        // Timeout after 10 seconds
+        setTimeout(() => {
+            resolve(port); // Resolve anyway, the server might have started
+        }, 10000);
+    });
+}
+// Stop the backend server
+function stopServer() {
+    if (serverProcess) {
+        console.log('Stopping server...');
+        serverProcess.kill();
+        serverProcess = null;
+    }
+}
 // Create the main application window
-function createWindow() {
+async function createWindow() {
     mainWindow = new electron_1.BrowserWindow({
         width: 1400,
         height: 900,
@@ -35,7 +84,23 @@ function createWindow() {
         mainWindow.webContents.openDevTools();
     }
     else {
-        mainWindow.loadFile((0, path_1.join)(__dirname, '../.output/public/index.html'));
+        // Start the backend server first
+        try {
+            const port = await startServer();
+            // Load from the local server instead of file://
+            mainWindow.loadURL(`http://localhost:${port}`);
+        }
+        catch (error) {
+            console.error('Failed to start server:', error);
+            // Fallback to showing an error
+            await electron_1.dialog.showMessageBox({
+                type: 'error',
+                title: 'Server Error',
+                message: 'Failed to start the application server',
+                detail: String(error),
+            });
+            electron_1.app.quit();
+        }
     }
     // Show window when ready to prevent visual flash
     mainWindow.once('ready-to-show', () => {
@@ -69,8 +134,12 @@ electron_1.app.whenReady().then(() => {
 });
 electron_1.app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
+        stopServer();
         electron_1.app.quit();
     }
+});
+electron_1.app.on('before-quit', () => {
+    stopServer();
 });
 // Create application menu
 function createMenu() {

@@ -3,17 +3,75 @@ import { join } from 'path';
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import { homedir } from 'os';
+import { spawn, ChildProcess } from 'child_process';
 
 // Keep a global reference of the window object
 let mainWindow: BrowserWindow | null = null;
+let serverProcess: ChildProcess | null = null;
 
 // Application settings
 const APP_NAME = 'Financial Statement Generator';
 const DEFAULT_DOWNLOAD_PATH = join(homedir(), 'Documents', 'Financial Exports');
 const DEFAULT_UPLOAD_PATH = join(homedir(), 'Documents');
 
+// Start the backend server
+async function startServer(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const serverPath = join(__dirname, '../.output/server/index.mjs');
+    const port = 3000; // Default port
+    
+    console.log('Starting server from:', serverPath);
+    
+    serverProcess = spawn('node', [serverPath], {
+      env: {
+        ...process.env,
+        PORT: String(port),
+        NODE_ENV: 'production',
+      },
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+
+    serverProcess.stdout?.on('data', (data) => {
+      const output = data.toString();
+      console.log('[Server]:', output);
+      // Check if server has started
+      if (output.includes('Listening') || output.includes('listening') || output.includes(String(port))) {
+        resolve(port);
+      }
+    });
+
+    serverProcess.stderr?.on('data', (data) => {
+      console.error('[Server Error]:', data.toString());
+    });
+
+    serverProcess.on('error', (error) => {
+      console.error('Failed to start server:', error);
+      reject(error);
+    });
+
+    serverProcess.on('exit', (code) => {
+      console.log('Server process exited with code:', code);
+      serverProcess = null;
+    });
+
+    // Timeout after 10 seconds
+    setTimeout(() => {
+      resolve(port); // Resolve anyway, the server might have started
+    }, 10000);
+  });
+}
+
+// Stop the backend server
+function stopServer(): void {
+  if (serverProcess) {
+    console.log('Stopping server...');
+    serverProcess.kill();
+    serverProcess = null;
+  }
+}
+
 // Create the main application window
-function createWindow(): void {
+async function createWindow(): Promise<void> {
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
@@ -36,7 +94,22 @@ function createWindow(): void {
     mainWindow.loadURL('http://localhost:3000');
     mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadFile(join(__dirname, '../.output/public/index.html'));
+    // Start the backend server first
+    try {
+      const port = await startServer();
+      // Load from the local server instead of file://
+      mainWindow.loadURL(`http://localhost:${port}`);
+    } catch (error) {
+      console.error('Failed to start server:', error);
+      // Fallback to showing an error
+      await dialog.showMessageBox({
+        type: 'error',
+        title: 'Server Error',
+        message: 'Failed to start the application server',
+        detail: String(error),
+      });
+      app.quit();
+    }
   }
 
   // Show window when ready to prevent visual flash
@@ -78,8 +151,13 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    stopServer();
     app.quit();
   }
+});
+
+app.on('before-quit', () => {
+  stopServer();
 });
 
 // Create application menu

@@ -235,6 +235,10 @@ export default createApp({
               : undefined,
           },
         }),
+        config("base", {
+          // Use relative paths for Electron compatibility
+          base: "./",
+        }),
         tsConfigPaths({
           projects: ["./tsconfig.json"],
         }),
