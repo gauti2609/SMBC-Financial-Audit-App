@@ -21,6 +21,9 @@ export default createApp({
       experimental: {
         wasm: true,
       },
+      alias: {
+        "~/generated/prisma": "./src/generated/prisma",
+      },
       rollupConfig: {
         external: [
           "@prisma/client", 
