@@ -35,7 +35,7 @@ function createWindow() {
         mainWindow.webContents.openDevTools();
     }
     else {
-        mainWindow.loadFile((0, path_1.join)(__dirname, '../dist/index.html'));
+        mainWindow.loadFile((0, path_1.join)(__dirname, '../.output/public/index.html'));
     }
     // Show window when ready to prevent visual flash
     mainWindow.once('ready-to-show', () => {

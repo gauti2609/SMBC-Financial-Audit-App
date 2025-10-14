@@ -6,9 +6,9 @@
   "main": "electron/main.cjs",
   "homepage": "./",
   "scripts": {
-    "postinstall": "echo 'Generating TanStack Router...' && tsr generate && echo 'Generating Prisma client...' && prisma generate",
+    "postinstall": "echo 'Generating TanStack Router...' && tsr generate && echo 'Generating Prisma client...' && prisma generate && echo 'Setting up Prisma symlink...' && node scripts/setup-prisma-symlink.js",
     "verify-prisma": "node scripts/verify-prisma",
-    "prebuild": "npm run verify-prisma",
+    "prebuild": "npm run verify-prisma && node scripts/setup-prisma-symlink.js",
     "dev": "vinxi dev",
     "build": "vinxi build",
     "start": "vinxi start",

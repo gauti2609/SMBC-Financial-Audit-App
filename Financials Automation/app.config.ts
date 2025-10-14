@@ -21,6 +21,9 @@ export default createApp({
       experimental: {
         wasm: true,
       },
+      alias: {
+        "~/generated/prisma": "./src/generated/prisma",
+      },
       rollupConfig: {
         external: [
           "@prisma/client", 
@@ -33,6 +36,7 @@ export default createApp({
           "../src/generated/prisma",
           /^\.\.\/generated\/prisma/,
           /^\.\/generated\/prisma/,
+          /prisma/,  // Catch-all for any prisma imports
         ],
         resolve: {
           preferBuiltins: true,
@@ -45,8 +49,19 @@ export default createApp({
         inline: [
           // Force inline for non-Prisma modules that might conflict
         ],
+        external: [
+          "~/generated/prisma",
+          "@prisma/client",
+        ],
       },
       moduleSideEffects: false,
+      // Copy the generated Prisma client to output
+      serverAssets: [
+        {
+          baseName: "prisma",
+          dir: "./src/generated/prisma"
+        }
+      ],
       esbuild: {
         options: {
           external: [
