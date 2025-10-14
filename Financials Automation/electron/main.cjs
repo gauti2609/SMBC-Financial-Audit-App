@@ -1,17 +1,19 @@
-import { app, BrowserWindow, dialog, ipcMain, Menu, shell } from 'electron';
-import { join } from 'path';
-import { readFile, writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
-import { homedir } from 'os';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const electron_1 = require("electron");
+const path_1 = require("path");
+const promises_1 = require("fs/promises");
+const fs_1 = require("fs");
+const os_1 = require("os");
 // Keep a global reference of the window object
 let mainWindow = null;
 // Application settings
 const APP_NAME = 'Financial Statement Generator';
-const DEFAULT_DOWNLOAD_PATH = join(homedir(), 'Documents', 'Financial Exports');
-const DEFAULT_UPLOAD_PATH = join(homedir(), 'Documents');
+const DEFAULT_DOWNLOAD_PATH = (0, path_1.join)((0, os_1.homedir)(), 'Documents', 'Financial Exports');
+const DEFAULT_UPLOAD_PATH = (0, path_1.join)((0, os_1.homedir)(), 'Documents');
 // Create the main application window
 function createWindow() {
-    mainWindow = new BrowserWindow({
+    mainWindow = new electron_1.BrowserWindow({
         width: 1400,
         height: 900,
         minWidth: 1200,
@@ -19,10 +21,10 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
-            preload: join(__dirname, 'preload.js'),
+            preload: (0, path_1.join)(__dirname, 'preload.cjs'),
             webSecurity: true,
         },
-        icon: join(__dirname, '../assets/icon.png'), // App icon
+        icon: (0, path_1.join)(__dirname, '../assets/icon.png'), // App icon
         title: APP_NAME,
         show: false, // Don't show until ready
         titleBarStyle: 'default',
@@ -33,14 +35,14 @@ function createWindow() {
         mainWindow.webContents.openDevTools();
     }
     else {
-        mainWindow.loadFile(join(__dirname, '../dist/index.html'));
+        mainWindow.loadFile((0, path_1.join)(__dirname, '../dist/index.html'));
     }
     // Show window when ready to prevent visual flash
     mainWindow.once('ready-to-show', () => {
         mainWindow?.show();
         // Focus on the window
         if (process.platform === 'darwin') {
-            app.dock.show();
+            electron_1.app.dock.show();
         }
     });
     // Handle window closed
@@ -49,25 +51,25 @@ function createWindow() {
     });
     // Handle external links
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-        shell.openExternal(url);
+        electron_1.shell.openExternal(url);
         return { action: 'deny' };
     });
 }
 // App event handlers
-app.whenReady().then(() => {
+electron_1.app.whenReady().then(() => {
     createWindow();
     createMenu();
     // Ensure default directories exist
     ensureDefaultDirectories();
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
+    electron_1.app.on('activate', () => {
+        if (electron_1.BrowserWindow.getAllWindows().length === 0) {
             createWindow();
         }
     });
 });
-app.on('window-all-closed', () => {
+electron_1.app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        app.quit();
+        electron_1.app.quit();
     }
 });
 // Create application menu
@@ -137,19 +139,19 @@ function createMenu() {
                 },
                 {
                     label: 'Documentation',
-                    click: () => shell.openExternal('https://docs.financialstatementgenerator.com'),
+                    click: () => electron_1.shell.openExternal('https://docs.financialstatementgenerator.com'),
                 },
             ],
         },
     ];
-    const menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
+    const menu = electron_1.Menu.buildFromTemplate(template);
+    electron_1.Menu.setApplicationMenu(menu);
 }
 // Ensure default directories exist
 async function ensureDefaultDirectories() {
     try {
-        if (!existsSync(DEFAULT_DOWNLOAD_PATH)) {
-            await mkdir(DEFAULT_DOWNLOAD_PATH, { recursive: true });
+        if (!(0, fs_1.existsSync)(DEFAULT_DOWNLOAD_PATH)) {
+            await (0, promises_1.mkdir)(DEFAULT_DOWNLOAD_PATH, { recursive: true });
         }
     }
     catch (error) {
@@ -160,7 +162,7 @@ async function ensureDefaultDirectories() {
 async function selectDownloadFolder() {
     if (!mainWindow)
         return;
-    const result = await dialog.showOpenDialog(mainWindow, {
+    const result = await electron_1.dialog.showOpenDialog(mainWindow, {
         properties: ['openDirectory'],
         defaultPath: DEFAULT_DOWNLOAD_PATH,
         title: 'Select Download Folder',
@@ -177,7 +179,7 @@ async function selectDownloadFolder() {
 async function selectUploadFolder() {
     if (!mainWindow)
         return;
-    const result = await dialog.showOpenDialog(mainWindow, {
+    const result = await electron_1.dialog.showOpenDialog(mainWindow, {
         properties: ['openDirectory'],
         defaultPath: DEFAULT_UPLOAD_PATH,
         title: 'Select Upload Folder',
@@ -194,14 +196,14 @@ async function selectUploadFolder() {
 // User preferences management
 async function storeUserPreference(key, value) {
     try {
-        const prefsPath = join(app.getPath('userData'), 'preferences.json');
+        const prefsPath = (0, path_1.join)(electron_1.app.getPath('userData'), 'preferences.json');
         let preferences = {};
-        if (existsSync(prefsPath)) {
-            const data = await readFile(prefsPath, 'utf-8');
+        if ((0, fs_1.existsSync)(prefsPath)) {
+            const data = await (0, promises_1.readFile)(prefsPath, 'utf-8');
             preferences = JSON.parse(data);
         }
         preferences[key] = value;
-        await writeFile(prefsPath, JSON.stringify(preferences, null, 2));
+        await (0, promises_1.writeFile)(prefsPath, JSON.stringify(preferences, null, 2));
     }
     catch (error) {
         console.error('Failed to store user preference:', error);
@@ -209,9 +211,9 @@ async function storeUserPreference(key, value) {
 }
 async function getUserPreferences() {
     try {
-        const prefsPath = join(app.getPath('userData'), 'preferences.json');
-        if (existsSync(prefsPath)) {
-            const data = await readFile(prefsPath, 'utf-8');
+        const prefsPath = (0, path_1.join)(electron_1.app.getPath('userData'), 'preferences.json');
+        if ((0, fs_1.existsSync)(prefsPath)) {
+            const data = await (0, promises_1.readFile)(prefsPath, 'utf-8');
             return JSON.parse(data);
         }
     }
@@ -229,7 +231,7 @@ function openExportSettings() {
     }
 }
 function showAbout() {
-    dialog.showMessageBox(mainWindow, {
+    electron_1.dialog.showMessageBox(mainWindow, {
         type: 'info',
         title: 'About',
         message: APP_NAME,
@@ -238,13 +240,13 @@ function showAbout() {
     });
 }
 // IPC handlers for renderer process communication
-ipcMain.handle('get-user-preferences', async () => {
+electron_1.ipcMain.handle('get-user-preferences', async () => {
     return await getUserPreferences();
 });
-ipcMain.handle('select-file-path', async (event, options) => {
+electron_1.ipcMain.handle('select-file-path', async (event, options) => {
     if (!mainWindow)
         return null;
-    const result = await dialog.showOpenDialog(mainWindow, {
+    const result = await electron_1.dialog.showOpenDialog(mainWindow, {
         title: options.title || 'Select File',
         defaultPath: options.defaultPath,
         filters: options.filters || [
@@ -256,10 +258,10 @@ ipcMain.handle('select-file-path', async (event, options) => {
     });
     return result.canceled ? null : result.filePaths;
 });
-ipcMain.handle('save-file-dialog', async (event, options) => {
+electron_1.ipcMain.handle('save-file-dialog', async (event, options) => {
     if (!mainWindow)
         return null;
-    const result = await dialog.showSaveDialog(mainWindow, {
+    const result = await electron_1.dialog.showSaveDialog(mainWindow, {
         title: options.title || 'Save File',
         defaultPath: options.defaultPath,
         filters: options.filters || [
@@ -269,9 +271,9 @@ ipcMain.handle('save-file-dialog', async (event, options) => {
     });
     return result.canceled ? null : result.filePath;
 });
-ipcMain.handle('read-local-file', async (event, filePath) => {
+electron_1.ipcMain.handle('read-local-file', async (event, filePath) => {
     try {
-        const data = await readFile(filePath);
+        const data = await (0, promises_1.readFile)(filePath);
         return {
             success: true,
             data: data.toString('base64'),
@@ -285,10 +287,10 @@ ipcMain.handle('read-local-file', async (event, filePath) => {
         };
     }
 });
-ipcMain.handle('write-local-file', async (event, filePath, data, encoding = 'base64') => {
+electron_1.ipcMain.handle('write-local-file', async (event, filePath, data, encoding = 'base64') => {
     try {
         const buffer = encoding === 'base64' ? Buffer.from(data, 'base64') : Buffer.from(data, 'utf8');
-        await writeFile(filePath, buffer);
+        await (0, promises_1.writeFile)(filePath, buffer);
         return { success: true };
     }
     catch (error) {
@@ -298,19 +300,19 @@ ipcMain.handle('write-local-file', async (event, filePath, data, encoding = 'bas
         };
     }
 });
-ipcMain.handle('show-item-in-folder', async (event, filePath) => {
-    shell.showItemInFolder(filePath);
+electron_1.ipcMain.handle('show-item-in-folder', async (event, filePath) => {
+    electron_1.shell.showItemInFolder(filePath);
 });
-ipcMain.handle('open-external', async (event, url) => {
-    await shell.openExternal(url);
+electron_1.ipcMain.handle('open-external', async (event, url) => {
+    await electron_1.shell.openExternal(url);
 });
 // Handle app-specific events
-ipcMain.handle('app-version', () => {
-    return app.getVersion();
+electron_1.ipcMain.handle('app-version', () => {
+    return electron_1.app.getVersion();
 });
-ipcMain.handle('app-name', () => {
+electron_1.ipcMain.handle('app-name', () => {
     return APP_NAME;
 });
-ipcMain.handle('get-app-path', (event, name) => {
-    return app.getPath(name);
+electron_1.ipcMain.handle('get-app-path', (event, name) => {
+    return electron_1.app.getPath(name);
 });

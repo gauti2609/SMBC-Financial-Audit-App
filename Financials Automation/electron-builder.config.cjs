@@ -6,18 +6,9 @@ module.exports = {
   },
   files: [
     'dist/**/*',
-    'electron/main.js',
-    'electron/preload.js',
-    'node_modules/**/*',
-    'prisma/**/*',
-    'generated/**/*'
-  ],
-  asarUnpack: [
-    'node_modules/@prisma/**/*',
-    'node_modules/.prisma/**/*',
-    'node_modules/prisma/**/*',
-    'prisma/**/*',
-    'generated/**/*'
+    'electron/main.cjs',
+    'electron/preload.cjs',
+    'node_modules/**/*'
   ],
   win: {
     target: 'nsis',

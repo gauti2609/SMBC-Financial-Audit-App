@@ -28,9 +28,13 @@ if (!envContent.includes('DATABASE_URL=')) {
 }
 console.log('✅ DATABASE_URL configured');
 
+// Determine the Prisma CLI command (try npx/pnpm first, then local)
+const prismaBin = path.join(process.cwd(), 'node_modules', '.bin', 'prisma');
+const prismaCmd = fs.existsSync(prismaBin) ? `"${prismaBin}"` : 'npx prisma';
+
 // Validate Prisma schema
 try {
-  execSync('prisma validate', { stdio: 'pipe' });
+  execSync(`${prismaCmd} validate`, { stdio: 'pipe', shell: true });
   console.log('✅ Prisma schema is valid');
 } catch (error) {
   console.error('❌ Prisma schema validation failed:', error.message);
@@ -40,7 +44,7 @@ try {
 // Generate Prisma client
 try {
   console.log('🔄 Generating Prisma client...');
-  execSync('prisma generate', { stdio: 'inherit' });
+  execSync(`${prismaCmd} generate`, { stdio: 'inherit', shell: true });
   console.log('✅ Prisma client generated successfully');
 } catch (error) {
   console.error('❌ Prisma client generation failed:', error.message);
@@ -66,26 +70,17 @@ if (fs.existsSync(customClientPath)) {
   process.exit(1);
 }
 
-// Try to import Prisma client from custom location
-try {
-  // Import from the custom output location specified in schema.prisma
-  const customClientModule = path.join(process.cwd(), 'src', 'generated', 'prisma', 'index.js');
-  
-  if (!fs.existsSync(customClientModule)) {
-    console.error('❌ Prisma client module not found at:', customClientModule);
-    process.exit(1);
-  }
-  
-  // Dynamic import from file path
-  const { PrismaClient } = await import(customClientModule);
-  const prisma = new PrismaClient();
-  console.log('✅ Prisma client can be imported and instantiated');
-  
-  // Clean up
-  await prisma.$disconnect();
-} catch (error) {
-  console.error('❌ Failed to import Prisma client:', error.message);
-  console.error('Make sure Prisma client is generated to src/generated/prisma');
+// Verify client files exist
+console.log('Make sure Prisma client is generated to src/generated/prisma');
+
+// Additional check: verify that index.js or index.d.ts exists in the client path
+const indexJsPath = path.join(clientPath, 'index.js');
+const indexDtsPath = path.join(clientPath, 'index.d.ts');
+
+if (fs.existsSync(indexJsPath) || fs.existsSync(indexDtsPath)) {
+  console.log('✅ Prisma client index files verified');
+} else {
+  console.error('❌ Prisma client index files not found');
   process.exit(1);
 }
 

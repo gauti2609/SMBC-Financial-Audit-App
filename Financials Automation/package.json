@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Financial Statement Generator - Automated financial statement preparation tool",
   "author": "SMBC",
-  "main": "electron/main.js",
+  "main": "electron/main.cjs",
   "homepage": "./",
   "scripts": {
     "postinstall": "echo 'Generating TanStack Router...' && tsr generate && echo 'Generating Prisma client...' && prisma generate",
@@ -27,12 +27,11 @@
     "electron:dist:win": "npm run build && electron-builder --win",
     "electron:dist:mac": "npm run build && electron-builder --mac",
     "electron:dist:linux": "npm run build && electron-builder --linux",
-    "build:electron": "tsc electron/main.ts --outDir electron --target es2020 --module es2020 --moduleResolution node && tsc electron/preload.ts --outDir electron --target es2020 --module es2020 --moduleResolution node",
-    "prebuild:electron": "npm run build:electron",
-    "dist": "npm run prebuild:electron && npm run electron:dist",
-    "dist:win": "npm run prebuild:electron && npm run electron:dist:win",
-    "dist:mac": "npm run prebuild:electron && npm run electron:dist:mac",
-    "dist:linux": "npm run prebuild:electron && npm run electron:dist:linux"
+    "build:electron": "tsc electron/main.ts --outDir electron --target es2020 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --types node && tsc electron/preload.ts --outDir electron --target es2020 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --types node && mv electron/main.js electron/main.cjs && mv electron/preload.js electron/preload.cjs",
+    "dist": "npm run build:electron && npm run electron:dist",
+    "dist:win": "npm run build:electron && npm run electron:dist:win",
+    "dist:mac": "npm run build:electron && npm run electron:dist:mac",
+    "dist:linux": "npm run build:electron && npm run electron:dist:linux"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.2.12",
@@ -42,7 +41,7 @@
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^5.1.1",
     "@openrouter/ai-sdk-provider": "^0.7.3",
-    "@prisma/client": "^6.8.2",
+    "@prisma/client": "^6.17.1",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/react-query": "^5.66.0",
