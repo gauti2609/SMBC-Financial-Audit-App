@@ -5,14 +5,28 @@ module.exports = {
     output: 'dist-electron'
   },
   files: [
-    '.output/**/*',
     'electron/main.cjs',
     'electron/preload.cjs',
     'node_modules/**/*',
-    'src/generated/prisma/**/*'
+    'src/generated/prisma/**/*',
+    '!.output/**/*'  // Exclude .output from asar, we'll use extraResources instead
+  ],
+  extraResources: [
+    {
+      from: '.output',
+      to: '.output',
+      filter: ['**/*']
+    },
+    {
+      from: '../QUICK_START.md',
+      to: 'QUICK_START.md'
+    },
+    {
+      from: '../POSTGRESQL_SETUP_GUIDE.md',
+      to: 'POSTGRESQL_SETUP_GUIDE.md'
+    }
   ],
   asarUnpack: [
-    '.output/**/*',
     'node_modules/@prisma/**/*',
     'node_modules/.prisma/**/*',
     'src/generated/prisma/**/*'
