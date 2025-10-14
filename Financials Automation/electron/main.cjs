@@ -277,6 +277,9 @@ async function createWindow() {
         return { action: 'deny' };
     });
 }
+// Set the app name to match the product name (used for userData path)
+// This must be set before app.whenReady() to ensure userData path is correct
+electron_1.app.setName(APP_NAME);
 // App event handlers
 electron_1.app.whenReady().then(() => {
     // Load environment variables before doing anything else
