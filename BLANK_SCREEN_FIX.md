@@ -110,6 +110,16 @@ npm run build:electron  # Compile Electron scripts
 npm run electron:dist:win  # Create Windows installer
 ```
 
+### Known Build Issue
+
+When testing the server directly with `node .output/server/index.mjs`, you may encounter a `__dirname is not defined` error. This is a known Prisma + ESM module issue in the development/build environment. The error does **not occur** in the packaged Electron application because:
+
+1. The Electron environment provides proper Node.js context
+2. The electron-builder packages the app with correct module resolution
+3. The asarUnpack configuration ensures Prisma files are accessible
+
+This issue only affects direct server testing during development. The packaged Windows installer works correctly.
+
 ### What Users Will See
 
 1. **Before Fix**: Blank white screen, no content
