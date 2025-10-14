@@ -308,6 +308,10 @@ async function createWindow(): Promise<void> {
   });
 }
 
+// Set the app name to match the product name (used for userData path)
+// This must be set before app.whenReady() to ensure userData path is correct
+app.setName(APP_NAME);
+
 // App event handlers
 app.whenReady().then(() => {
   // Load environment variables before doing anything else
