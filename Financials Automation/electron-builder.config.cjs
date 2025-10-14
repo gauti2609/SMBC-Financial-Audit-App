@@ -11,6 +11,12 @@ module.exports = {
     'node_modules/**/*',
     'src/generated/prisma/**/*'
   ],
+  asarUnpack: [
+    '.output/**/*',
+    'node_modules/@prisma/**/*',
+    'node_modules/.prisma/**/*',
+    'src/generated/prisma/**/*'
+  ],
   win: {
     target: 'nsis',
     artifactName: '${productName}-Setup-${version}.exe',
