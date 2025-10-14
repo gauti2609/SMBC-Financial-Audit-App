@@ -3,17 +3,137 @@ import { join } from 'path';
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import { homedir } from 'os';
+import { spawn, ChildProcess } from 'child_process';
 
 // Keep a global reference of the window object
 let mainWindow: BrowserWindow | null = null;
+let serverProcess: ChildProcess | null = null;
 
 // Application settings
 const APP_NAME = 'Financial Statement Generator';
 const DEFAULT_DOWNLOAD_PATH = join(homedir(), 'Documents', 'Financial Exports');
 const DEFAULT_UPLOAD_PATH = join(homedir(), 'Documents');
 
+// Start the backend server
+async function startServer(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    // In packaged app, resources are in app.asar.unpacked or resources folder
+    // We need to check multiple potential locations
+    let serverPath: string;
+    let basePath: string;
+    
+    if (app.isPackaged) {
+      // In production, check multiple possible locations
+      // First try: app.asar.unpacked (this is where asarUnpack puts files)
+      basePath = __dirname.replace('app.asar', 'app.asar.unpacked');
+      serverPath = join(basePath, '.output', 'server', 'index.mjs');
+      
+      console.log('Running in packaged mode');
+      console.log('__dirname:', __dirname);
+      console.log('Base path:', basePath);
+      console.log('Server path:', serverPath);
+      
+      // If not found, try resources path
+      if (!existsSync(serverPath)) {
+        console.log('Server not found in app.asar.unpacked, trying resources path...');
+        serverPath = join(process.resourcesPath, '.output', 'server', 'index.mjs');
+        console.log('Alternative server path:', serverPath);
+      }
+    } else {
+      // In development
+      basePath = join(__dirname, '..');
+      serverPath = join(basePath, '.output', 'server', 'index.mjs');
+      console.log('Running in dev mode, server path:', serverPath);
+    }
+    
+    // Check if server file exists
+    if (!existsSync(serverPath)) {
+      const error = new Error(`Server file not found at: ${serverPath}`);
+      console.error(error.message);
+      console.error('Attempted paths:');
+      if (app.isPackaged) {
+        console.error('  - app.asar.unpacked:', join(__dirname.replace('app.asar', 'app.asar.unpacked'), '.output', 'server', 'index.mjs'));
+        console.error('  - resources:', join(process.resourcesPath, '.output', 'server', 'index.mjs'));
+      }
+      reject(error);
+      return;
+    }
+    
+    const port = 3000; // Default port
+    
+    console.log('Starting server from:', serverPath);
+    
+    // Set environment variables for the server
+    const serverEnv = {
+      ...process.env,
+      PORT: String(port),
+      NODE_ENV: 'production',
+      // Pass the database URL if configured
+      DATABASE_URL: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/financialsdb',
+    };
+    
+    serverProcess = spawn('node', [serverPath], {
+      env: serverEnv,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      cwd: basePath,
+    });
+
+    let serverStarted = false;
+
+    serverProcess.stdout?.on('data', (data) => {
+      const output = data.toString();
+      console.log('[Server]:', output);
+      // Check if server has started
+      if (!serverStarted && (output.includes('Listening') || output.includes('listening') || output.includes(String(port)))) {
+        serverStarted = true;
+        resolve(port);
+      }
+    });
+
+    serverProcess.stderr?.on('data', (data) => {
+      const errorOutput = data.toString();
+      console.error('[Server Error]:', errorOutput);
+      
+      // If we see a critical error before server starts, reject
+      if (!serverStarted && errorOutput.includes('Error')) {
+        reject(new Error(errorOutput));
+      }
+    });
+
+    serverProcess.on('error', (error) => {
+      console.error('Failed to start server process:', error);
+      reject(error);
+    });
+
+    serverProcess.on('exit', (code) => {
+      console.log('Server process exited with code:', code);
+      if (code !== 0 && code !== null && !serverStarted) {
+        reject(new Error(`Server exited with code ${code}`));
+      }
+      serverProcess = null;
+    });
+
+    // Timeout after 15 seconds
+    setTimeout(() => {
+      if (!serverStarted) {
+        console.warn('Server start timeout - assuming it started');
+        resolve(port); // Resolve anyway, the server might have started
+      }
+    }, 15000);
+  });
+}
+
+// Stop the backend server
+function stopServer(): void {
+  if (serverProcess) {
+    console.log('Stopping server...');
+    serverProcess.kill();
+    serverProcess = null;
+  }
+}
+
 // Create the main application window
-function createWindow(): void {
+async function createWindow(): Promise<void> {
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
@@ -36,7 +156,35 @@ function createWindow(): void {
     mainWindow.loadURL('http://localhost:3000');
     mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadFile(join(__dirname, '../.output/public/index.html'));
+    // Start the backend server first
+    try {
+      console.log('Attempting to start backend server...');
+      const port = await startServer();
+      console.log(`Server started on port ${port}, loading frontend...`);
+      
+      // Load from the local server instead of file://
+      await mainWindow.loadURL(`http://localhost:${port}`);
+      console.log('Frontend loaded successfully');
+    } catch (error) {
+      console.error('Failed to start application:', error);
+      
+      // Show detailed error to user
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      await dialog.showMessageBox({
+        type: 'error',
+        title: 'Application Startup Error',
+        message: 'Failed to start the Financial Statement Generator',
+        detail: `Error: ${errorMessage}\n\nPlease check:\n1. PostgreSQL database is running\n2. Database connection is configured correctly\n3. No other application is using port 3000\n\nCheck the console for more details.`,
+        buttons: ['Open DevTools', 'Quit'],
+      }).then((result) => {
+        if (result.response === 0) {
+          // Open DevTools to show console
+          mainWindow?.webContents.openDevTools();
+        } else {
+          app.quit();
+        }
+      });
+    }
   }
 
   // Show window when ready to prevent visual flash
@@ -47,6 +195,13 @@ function createWindow(): void {
     if (process.platform === 'darwin') {
       app.dock.show();
     }
+  });
+  
+  // If loading fails, show the window anyway with devtools
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+    console.error('Failed to load page:', errorCode, errorDescription);
+    mainWindow?.show();
+    mainWindow?.webContents.openDevTools();
   });
 
   // Handle window closed
@@ -78,8 +233,13 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    stopServer();
     app.quit();
   }
+});
+
+app.on('before-quit', () => {
+  stopServer();
 });
 
 // Create application menu
