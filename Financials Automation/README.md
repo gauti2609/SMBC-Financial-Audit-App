@@ -49,6 +49,7 @@ The Windows .exe installer is:
 - Available in GitHub Releases (not in the repository)
 - ~200-400MB in size
 - Includes full installer and portable version
+- **Self-contained** - Node.js runtime is bundled (no separate installation needed)
 
 ### Web Version
 ```bash
@@ -173,11 +174,13 @@ PORT=3000
 
 ## Development
 
-### Prerequisites
+### Prerequisites (for Developers)
 - Node.js 20+
 - PostgreSQL 16+
 - Redis 7+
 - MinIO (for file storage)
+
+**Note**: End users of the Windows installer do not need to install Node.js separately - it's bundled with the application.
 
 ### Development Workflow
 ```bash
