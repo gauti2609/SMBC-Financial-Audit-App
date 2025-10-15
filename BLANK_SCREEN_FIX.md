@@ -142,7 +142,7 @@ This issue only affects direct server testing during development. The packaged W
 ### For Users
 
 1. **First Launch**: May take a few extra seconds as the server starts
-2. **System Requirements**: Ensure Windows 10/11 with Node.js runtime (bundled in installer)
+2. **System Requirements**: Windows 10/11 (Node.js is bundled with the installer - no separate installation needed)
 3. **Firewall**: The app creates a local server; Windows Firewall may prompt for permission
 
 ## 📦 Packaging for Distribution

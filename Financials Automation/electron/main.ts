@@ -164,7 +164,31 @@ async function startServer(): Promise<number> {
       DATABASE_URL: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/financialsdb',
     };
     
-    serverProcess = spawn('node', [serverPath], {
+    // Determine the Node.js executable to use
+    // In packaged apps, we bundle node.exe; in development, use system node
+    let nodeExecutable: string;
+    
+    if (app.isPackaged) {
+      // In production, use bundled Node.js executable
+      // On Windows, it's in resources/node/node.exe
+      const bundledNodePath = join(process.resourcesPath, 'node', process.platform === 'win32' ? 'node.exe' : 'node');
+      
+      if (existsSync(bundledNodePath)) {
+        nodeExecutable = bundledNodePath;
+        console.log('Using bundled Node.js from:', bundledNodePath);
+      } else {
+        // Fallback: try to use system node (will fail if not installed)
+        console.warn('Bundled Node.js not found at:', bundledNodePath);
+        console.warn('Attempting to use system Node.js - this may fail if Node.js is not installed');
+        nodeExecutable = 'node';
+      }
+    } else {
+      // In development, use system Node.js
+      nodeExecutable = process.execPath.includes('node') ? process.execPath : 'node';
+      console.log('Using development Node.js:', nodeExecutable);
+    }
+    
+    serverProcess = spawn(nodeExecutable, [serverPath], {
       env: serverEnv,
       stdio: ['ignore', 'pipe', 'pipe'],
       cwd: basePath,

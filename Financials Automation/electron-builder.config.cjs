@@ -18,6 +18,11 @@ module.exports = {
       filter: ['**/*']
     },
     {
+      from: 'resources/node',
+      to: 'node',
+      filter: ['**/*']
+    },
+    {
       from: 'config.env.template',
       to: 'config.env.template'
     },

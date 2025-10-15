@@ -36,3 +36,6 @@ dist-electron/
 *.dmg
 *.AppImage
 *.deb
+
+# Bundled Node.js runtime (generated during build)
+resources/node/
