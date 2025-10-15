@@ -10,6 +10,8 @@
     "verify-prisma": "node scripts/verify-prisma",
     "prebuild": "npm run verify-prisma && node scripts/setup-prisma-symlink.js",
     "bundle-node": "node scripts/download-node.js",
+    "diagnose": "node scripts/diagnose.mjs",
+    "test-bundling": "node scripts/test-bundling.mjs",
     "dev": "vinxi dev",
     "build": "vinxi build",
     "start": "vinxi start",
